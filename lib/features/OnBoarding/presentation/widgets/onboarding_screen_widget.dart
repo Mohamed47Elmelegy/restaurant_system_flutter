@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/theme_helper.dart';
 import '../../data/models/onboarding_model.dart';
 
 class OnboardingScreenWidget extends StatelessWidget {
@@ -32,7 +33,7 @@ class OnboardingScreenWidget extends StatelessWidget {
             child: Text(
               screen.title,
               style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                color: AppColors.lightTextMain,
+                color: ThemeHelper.getPrimaryTextColor(context),
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,
@@ -45,7 +46,7 @@ class OnboardingScreenWidget extends StatelessWidget {
             child: Text(
               screen.description,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: AppColors.lightTextMain.withValues(alpha: 0.7),
+                color: ThemeHelper.getSecondaryTextColor(context),
                 height: 1.5,
               ),
               textAlign: TextAlign.center,

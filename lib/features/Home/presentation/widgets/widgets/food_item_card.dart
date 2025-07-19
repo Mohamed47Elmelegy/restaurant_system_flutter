@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../../core/constants/app_images.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/theme/theme_helper.dart';
 import '../../../domain/entities/food_item_entity.dart';
@@ -25,25 +26,34 @@ class FoodItemCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Image placeholder
-          Container(
-            height: 100.h,
-            decoration: BoxDecoration(
-              color: isDark ? AppColors.darkBackground : Colors.grey[200],
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(12.r),
-                topRight: Radius.circular(12.r),
+          Expanded(
+            flex: 3,
+            child: Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.darkBackground : Colors.grey[200],
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12.r),
+                  topRight: Radius.circular(12.r),
+                ),
               ),
-            ),
-            child: Center(
-              child: Icon(
-                Icons.restaurant,
-                size: 40.sp,
-                color: isDark ? AppColors.darkTextSecondary : Colors.grey[400],
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12.r),
+                  topRight: Radius.circular(12.r),
+                ),
+                child: Image.asset(
+                  AppImages.pizza,
+                  fit: BoxFit.fill,
+                  width: double.infinity,
+                  height: double.infinity,
+                ),
               ),
             ),
           ),
-          // Content section
+          // Content
           Expanded(
+            flex: 2,
             child: Padding(
               padding: EdgeInsets.all(12.w),
               child: Column(
@@ -55,9 +65,7 @@ class FoodItemCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.bold,
-                      color: isDark
-                          ? AppColors.darkTextPrimary
-                          : AppColors.lightTextMain,
+                      color: ThemeHelper.getPrimaryTextColor(context),
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -69,9 +77,7 @@ class FoodItemCard extends StatelessWidget {
                       foodItem.description,
                       style: TextStyle(
                         fontSize: 12.sp,
-                        color: isDark
-                            ? AppColors.darkTextSecondary
-                            : Colors.grey[600],
+                        color: ThemeHelper.getSecondaryTextColor(context),
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -85,29 +91,20 @@ class FoodItemCard extends StatelessWidget {
                       Text(
                         '\$${foodItem.price.toStringAsFixed(2)}',
                         style: TextStyle(
-                          fontSize: 16.sp,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.bold,
-                          color: isDark
-                              ? AppColors.darkPrimary
-                              : AppColors.lightPrimary,
+                          color: ThemeHelper.getPrimaryTextColor(context),
                         ),
                       ),
                       Row(
                         children: [
-                          Icon(
-                            Icons.star,
-                            size: 14.sp,
-                            color: Colors.amber[600],
-                          ),
+                          Icon(Icons.star, size: 12.sp, color: Colors.amber),
                           SizedBox(width: 2.w),
                           Text(
                             foodItem.rating.toString(),
                             style: TextStyle(
                               fontSize: 12.sp,
-                              fontWeight: FontWeight.w600,
-                              color: isDark
-                                  ? AppColors.darkTextPrimary
-                                  : AppColors.lightTextMain,
+                              color: ThemeHelper.getSecondaryTextColor(context),
                             ),
                           ),
                         ],

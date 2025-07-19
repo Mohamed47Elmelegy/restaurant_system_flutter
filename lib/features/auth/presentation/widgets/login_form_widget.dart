@@ -22,6 +22,8 @@ class LoginFormWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Form(
       key: formKey,
       child: Column(
@@ -30,21 +32,21 @@ class LoginFormWidget extends StatelessWidget {
           // Email Field
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: isDark ? AppColors.darkSurface : Colors.white,
               borderRadius: BorderRadius.circular(16),
               boxShadow: ThemeHelper.getInputFieldShadow(context),
             ),
             child: TextFormField(
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
-                color: AppColors.lightTextMain,
+                color: ThemeHelper.getPrimaryTextColor(context),
               ),
               decoration: InputDecoration(
                 hintText: 'Email',
                 hintStyle: TextStyle(
-                  color: AppColors.lightTextMain.withValues(alpha: 0.5),
+                  color: ThemeHelper.getSecondaryTextColor(context),
                   fontSize: 16,
                 ),
                 prefixIcon: Icon(
@@ -56,7 +58,7 @@ class LoginFormWidget extends StatelessWidget {
                   borderSide: BorderSide.none,
                 ),
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: isDark ? AppColors.darkSurface : Colors.white,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 20,
                   vertical: 16,
@@ -81,21 +83,21 @@ class LoginFormWidget extends StatelessWidget {
           // Password Field
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: isDark ? AppColors.darkSurface : Colors.white,
               borderRadius: BorderRadius.circular(16),
               boxShadow: ThemeHelper.getInputFieldShadow(context),
             ),
             child: TextFormField(
               controller: passwordController,
               obscureText: !isPasswordVisible,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
-                color: AppColors.lightTextMain,
+                color: ThemeHelper.getPrimaryTextColor(context),
               ),
               decoration: InputDecoration(
                 hintText: 'Password',
                 hintStyle: TextStyle(
-                  color: AppColors.lightTextMain.withValues(alpha: 0.5),
+                  color: ThemeHelper.getSecondaryTextColor(context),
                   fontSize: 16,
                 ),
                 prefixIcon: Icon(
@@ -116,7 +118,7 @@ class LoginFormWidget extends StatelessWidget {
                   borderSide: BorderSide.none,
                 ),
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: isDark ? AppColors.darkSurface : Colors.white,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 20,
                   vertical: 16,

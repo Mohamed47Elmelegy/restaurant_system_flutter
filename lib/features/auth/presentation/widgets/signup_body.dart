@@ -121,7 +121,7 @@ class _SignupBodyState extends State<SignupBody> {
                       Text(
                         "لديك حساب بالفعل؟ ",
                         style: TextStyle(
-                          color: AppColors.lightTextMain.withValues(alpha: 0.7),
+                          color: ThemeHelper.getSecondaryTextColor(context),
                           fontSize: 14,
                         ),
                       ),

@@ -107,7 +107,7 @@ class _LoginBodyState extends State<LoginBody> {
                       Text(
                         "ليس لديك حساب؟ ",
                         style: TextStyle(
-                          color: AppColors.lightTextMain.withValues(alpha: 0.7),
+                          color: ThemeHelper.getSecondaryTextColor(context),
                           fontSize: 14,
                         ),
                       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/theme_helper.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
 import '../bloc/home_state.dart';
@@ -44,9 +45,7 @@ class HomeBody extends StatelessWidget {
             expandedHeight: 200.h,
             floating: true,
             pinned: true,
-            backgroundColor: isDark
-                ? AppColors.darkPrimary
-                : AppColors.lightPrimary,
+            backgroundColor: ThemeHelper.getPrimaryColorForTheme(context),
             // // إضافة الأيقونات في actions لتظهر فقط عند السكرول
             actions: [
               IconButton(
@@ -70,9 +69,10 @@ class HomeBody extends StatelessWidget {
               background: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: isDark
-                        ? [AppColors.darkPrimary, AppColors.darkSecondary]
-                        : [AppColors.lightPrimary, AppColors.lightSecondary],
+                    colors: [
+                      ThemeHelper.getPrimaryColorForTheme(context),
+                      ThemeHelper.getSecondaryColorForTheme(context),
+                    ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -113,9 +113,9 @@ class HomeBody extends StatelessWidget {
                               child: Icon(
                                 Icons.person,
                                 size: 30.sp,
-                                color: isDark
-                                    ? AppColors.darkPrimary
-                                    : AppColors.lightPrimary,
+                                color: ThemeHelper.getPrimaryColorForTheme(
+                                  context,
+                                ),
                               ),
                             ),
                           ],
@@ -166,17 +166,15 @@ class HomeBody extends StatelessWidget {
                   // Categories
                   _buildCategoriesSection(state),
                   SizedBox(height: 24.h),
-
+                  // Special Offers
+                  _buildSpecialOffersSection(context, state),
+                  SizedBox(height: 24.h),
                   // Popular Items
                   _buildPopularItemsSection(context, state),
                   SizedBox(height: 24.h),
 
                   // Recommended Items
                   _buildRecommendedItemsSection(context, state),
-                  SizedBox(height: 24.h),
-
-                  // Special Offers
-                  _buildSpecialOffersSection(context, state),
                 ],
               ),
             ),
@@ -239,9 +237,7 @@ class HomeBody extends StatelessWidget {
               child: Text(
                 'See All',
                 style: TextStyle(
-                  color: isDark
-                      ? AppColors.darkPrimary
-                      : AppColors.lightPrimary,
+                  color: ThemeHelper.getPrimaryColorForTheme(context),
                   fontWeight: FontWeight.w600,
                   fontSize: 14.sp,
                 ),
@@ -287,9 +283,7 @@ class HomeBody extends StatelessWidget {
               child: Text(
                 'See All',
                 style: TextStyle(
-                  color: isDark
-                      ? AppColors.darkPrimary
-                      : AppColors.lightPrimary,
+                  color: ThemeHelper.getPrimaryColorForTheme(context),
                   fontWeight: FontWeight.w600,
                   fontSize: 14.sp,
                 ),

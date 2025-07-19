@@ -18,9 +18,10 @@ class BannerCard extends StatelessWidget {
       height: 180.h,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: isDark
-              ? [AppColors.darkPrimary, AppColors.darkSecondary]
-              : [AppColors.lightPrimary, AppColors.lightSecondary],
+          colors: [
+            ThemeHelper.getPrimaryColorForTheme(context),
+            ThemeHelper.getSecondaryColorForTheme(context),
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -55,9 +56,7 @@ class BannerCard extends StatelessWidget {
               onPressed: () {},
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
-                foregroundColor: isDark
-                    ? AppColors.darkPrimary
-                    : AppColors.lightPrimary,
+                foregroundColor: ThemeHelper.getPrimaryColorForTheme(context),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.r),
                 ),

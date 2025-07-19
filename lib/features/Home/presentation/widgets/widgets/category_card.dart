@@ -54,9 +54,7 @@ class CategoryCard extends StatelessWidget {
                 fontWeight: FontWeight.w600,
                 color: isSelected
                     ? Colors.white
-                    : (isDark
-                          ? AppColors.darkTextPrimary
-                          : AppColors.lightTextMain),
+                    : ThemeHelper.getPrimaryTextColor(context),
               ),
               textAlign: TextAlign.center,
               maxLines: 2,

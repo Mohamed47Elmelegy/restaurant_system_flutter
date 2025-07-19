@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/theme_helper.dart';
 import '../bloc/onboarding_bloc.dart';
 
 class OnboardingSkipButton extends StatelessWidget {
@@ -19,7 +20,7 @@ class OnboardingSkipButton extends StatelessWidget {
           child: Text(
             'Skip',
             style: TextStyle(
-              color: AppColors.lightPrimary,
+              color: ThemeHelper.getPrimaryTextColor(context),
               fontSize: 16,
               fontWeight: FontWeight.w600,
             ),

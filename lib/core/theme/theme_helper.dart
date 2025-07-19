@@ -44,6 +44,34 @@ class ThemeHelper {
     return AppColors.lightPrimary;
   }
 
+  static Color getPrimaryColorForTheme(BuildContext context) {
+    return isDarkMode(context) ? AppColors.darkPrimary : AppColors.lightPrimary;
+  }
+
+  static Color getSecondaryColorForTheme(BuildContext context) {
+    return isDarkMode(context)
+        ? AppColors.darkSecondary
+        : AppColors.lightSecondary;
+  }
+
+  static Color getCardBackgroundColor(BuildContext context) {
+    return isDarkMode(context) ? AppColors.darkSurface : Colors.white;
+  }
+
+  static Color getInputBackgroundColor(BuildContext context) {
+    return isDarkMode(context) ? AppColors.darkSurface : Colors.white;
+  }
+
+  static Color getDividerColor(BuildContext context) {
+    return isDarkMode(context)
+        ? AppColors.darkTextSecondary.withValues(alpha: 0.3)
+        : AppColors.lightTextMain.withValues(alpha: 0.2);
+  }
+
+  static Color getErrorColor(BuildContext context) {
+    return isDarkMode(context) ? AppColors.darkError : AppColors.error;
+  }
+
   // Shadow Helpers - Dynamic and Reusable
   static List<BoxShadow> getCardShadow(BuildContext context) {
     final isDark = isDarkMode(context);
@@ -142,17 +170,20 @@ class ThemeHelper {
     );
   }
 
-  static BoxDecoration getGradientDecoration() {
+  static BoxDecoration getGradientDecoration(BuildContext context) {
     return BoxDecoration(
-      gradient: const LinearGradient(
-        colors: [AppColors.lightPrimary, AppColors.lightSecondary],
+      gradient: LinearGradient(
+        colors: [
+          getPrimaryColorForTheme(context),
+          getSecondaryColorForTheme(context),
+        ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
       ),
       borderRadius: BorderRadius.circular(16),
       boxShadow: [
         BoxShadow(
-          color: AppColors.lightPrimary.withValues(alpha: 0.3),
+          color: getPrimaryColorForTheme(context).withValues(alpha: 0.3),
           blurRadius: 10,
           offset: const Offset(0, 5),
         ),

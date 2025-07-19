@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/theme_helper.dart';
 
 class SignupHeaderWidget extends StatelessWidget {
   const SignupHeaderWidget({super.key});
@@ -33,12 +34,12 @@ class SignupHeaderWidget extends StatelessWidget {
         const SizedBox(height: 32),
 
         // Welcome Text
-        const Text(
+        Text(
           'Create Account',
           style: TextStyle(
             fontSize: 32,
             fontWeight: FontWeight.bold,
-            color: AppColors.lightTextMain,
+            color: ThemeHelper.getPrimaryTextColor(context),
           ),
           textAlign: TextAlign.center,
         ),
@@ -50,7 +51,7 @@ class SignupHeaderWidget extends StatelessWidget {
           'Sign up to get started with your account',
           style: TextStyle(
             fontSize: 16,
-            color: AppColors.lightTextMain.withValues(alpha: 0.7),
+            color: ThemeHelper.getSecondaryTextColor(context),
           ),
           textAlign: TextAlign.center,
         ),

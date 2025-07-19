@@ -15,7 +15,9 @@ class SocialLoginWidget extends StatelessWidget {
             Expanded(
               child: Container(
                 height: 1,
-                color: AppColors.lightTextMain.withValues(alpha: 0.2),
+                color: ThemeHelper.getSecondaryTextColor(
+                  context,
+                ).withValues(alpha: 0.2),
               ),
             ),
             Padding(
@@ -23,7 +25,7 @@ class SocialLoginWidget extends StatelessWidget {
               child: Text(
                 'or continue with',
                 style: TextStyle(
-                  color: AppColors.lightTextMain.withValues(alpha: 0.6),
+                  color: ThemeHelper.getSecondaryTextColor(context),
                   fontSize: 14,
                 ),
               ),
@@ -31,7 +33,9 @@ class SocialLoginWidget extends StatelessWidget {
             Expanded(
               child: Container(
                 height: 1,
-                color: AppColors.lightTextMain.withValues(alpha: 0.2),
+                color: ThemeHelper.getSecondaryTextColor(
+                  context,
+                ).withValues(alpha: 0.2),
               ),
             ),
           ],
@@ -81,13 +85,17 @@ class _SocialLoginButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       height: 56,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? AppColors.darkSurface : Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.lightTextMain.withValues(alpha: 0.1),
+          color: ThemeHelper.getSecondaryTextColor(
+            context,
+          ).withValues(alpha: 0.1),
           width: 1,
         ),
         boxShadow: ThemeHelper.getSocialButtonShadow(context),
@@ -104,8 +112,8 @@ class _SocialLoginButton extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 label,
-                style: const TextStyle(
-                  color: AppColors.lightTextMain,
+                style: TextStyle(
+                  color: ThemeHelper.getPrimaryTextColor(context),
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                 ),

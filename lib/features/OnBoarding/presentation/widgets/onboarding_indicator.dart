@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/theme_helper.dart';
 
 class OnboardingIndicator extends StatelessWidget {
   final int currentPage;
@@ -13,6 +14,11 @@ class OnboardingIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = isDark
+        ? AppColors.darkPrimary
+        : AppColors.lightPrimary;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(
@@ -24,8 +30,8 @@ class OnboardingIndicator extends StatelessWidget {
           width: currentPage == index ? 24 : 8,
           decoration: BoxDecoration(
             color: currentPage == index
-                ? AppColors.lightPrimary
-                : AppColors.lightPrimary.withValues(alpha: 0.3),
+                ? primaryColor
+                : primaryColor.withValues(alpha: 0.3),
             borderRadius: BorderRadius.circular(4),
           ),
         ),
