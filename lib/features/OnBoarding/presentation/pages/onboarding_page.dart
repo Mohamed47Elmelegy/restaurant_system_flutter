@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/routes/app_routes.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/theme_helper.dart';
 import '../../data/datasources/onboarding_data.dart';
 import '../../data/models/onboarding_model.dart';
@@ -38,7 +37,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
           listener: (context, state) {
             if (state.isCompleted) {
               // Navigate to login page
-              Navigator.pushReplacementNamed(context, AppRoutes.login);
+              Navigator.pushReplacementNamed(
+                context,
+                AppRoutes.sellerDashboard,
+              );
             }
           },
           builder: (context, state) {

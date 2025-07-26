@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../features/admin/dashbord/presentation/pages/seller_dashboard_home.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
 import '../../features/OnBoarding/presentation/pages/onboarding_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
@@ -18,6 +19,8 @@ Route<dynamic>? appRouter(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => const SignupPage());
     case AppRoutes.home:
       return MaterialPageRoute(builder: (_) => const HomePage());
+    case AppRoutes.sellerDashboard:
+      return MaterialPageRoute(builder: (_) => const SellerDashboardHome());
     default:
       return MaterialPageRoute(
         builder: (_) =>
