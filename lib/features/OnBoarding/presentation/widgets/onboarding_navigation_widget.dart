@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/theme_helper.dart';
 import '../bloc/onboarding_bloc.dart';
 
 class OnboardingNavigationWidget extends StatelessWidget {

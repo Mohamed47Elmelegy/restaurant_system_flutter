@@ -15,6 +15,12 @@ import '../../features/Home/domain/usecases/get_popular_items_usecase.dart';
 import '../../features/Home/domain/usecases/get_recommended_items_usecase.dart';
 import '../../features/Home/domain/usecases/get_banners_usecase.dart';
 import '../../features/Home/presentation/bloc/home_bloc.dart';
+import '../../features/orders/data/repositories/order_repository_impl.dart';
+import '../../features/orders/domain/repositories/order_repository.dart';
+import '../../features/orders/domain/usecases/get_running_orders_usecase.dart';
+import '../../features/orders/domain/usecases/mark_order_done_usecase.dart';
+import '../../features/orders/domain/usecases/cancel_order_usecase.dart';
+import '../../features/orders/presentation/bloc/order_bloc.dart';
 import '../network/dio_client.dart';
 import '../network/simple_interceptor.dart';
 
@@ -48,6 +54,7 @@ Future<void> setup() async {
   getIt.registerLazySingleton<HomeRepository>(
     () => HomeRepositoryImpl(getIt<HomeDataSource>()),
   );
+  getIt.registerLazySingleton<OrderRepository>(() => OrderRepositoryImpl());
 
   // Use cases
   getIt.registerLazySingleton<LoginUseCase>(
@@ -68,6 +75,15 @@ Future<void> setup() async {
   getIt.registerLazySingleton<GetBannersUseCase>(
     () => GetBannersUseCase(getIt<HomeRepository>()),
   );
+  getIt.registerLazySingleton<GetRunningOrdersUseCase>(
+    () => GetRunningOrdersUseCase(getIt<OrderRepository>()),
+  );
+  getIt.registerLazySingleton<MarkOrderDoneUseCase>(
+    () => MarkOrderDoneUseCase(getIt<OrderRepository>()),
+  );
+  getIt.registerLazySingleton<CancelOrderUseCase>(
+    () => CancelOrderUseCase(getIt<OrderRepository>()),
+  );
 
   // Bloc
   getIt.registerFactory<AuthBloc>(
@@ -82,6 +98,13 @@ Future<void> setup() async {
       getPopularItemsUseCase: getIt<GetPopularItemsUseCase>(),
       getRecommendedItemsUseCase: getIt<GetRecommendedItemsUseCase>(),
       getBannersUseCase: getIt<GetBannersUseCase>(),
+    ),
+  );
+  getIt.registerFactory<OrderBloc>(
+    () => OrderBloc(
+      getRunningOrdersUseCase: getIt<GetRunningOrdersUseCase>(),
+      markOrderDoneUseCase: getIt<MarkOrderDoneUseCase>(),
+      cancelOrderUseCase: getIt<CancelOrderUseCase>(),
     ),
   );
 }

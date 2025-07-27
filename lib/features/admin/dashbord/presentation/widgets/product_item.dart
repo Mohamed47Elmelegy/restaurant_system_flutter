@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:restaurant_system_flutter/core/constants/app_images.dart';
+
+import '../../../../../core/theme/theme_helper.dart';
 
 class ProductItem extends StatelessWidget {
   const ProductItem({super.key});
@@ -8,16 +11,17 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(10),
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(10.r),
+        boxShadow: ThemeHelper.getCardShadow(context),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            height: 100,
+            height: 100.h,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(10.r)),
               image: DecorationImage(
                 image: AssetImage(AppImages.pizza), // Example image
                 fit: BoxFit.cover,
@@ -25,27 +29,30 @@ class ProductItem extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(8.r),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   'Food Name',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 Row(
                   children: [
-                    Icon(Icons.star, color: Colors.orange, size: 16),
+                    Icon(Icons.star, color: Colors.orange, size: 16.sp),
                     Text('4.5'),
                   ],
                 ),
                 Text(
                   'Description of the food item goes here.',
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                  style: TextStyle(fontSize: 12.sp, color: Colors.grey),
                 ),
                 Text(
                   'Breakfast, Lunch, Dinner',
-                  style: TextStyle(fontSize: 12, color: Colors.blue),
+                  style: TextStyle(fontSize: 12.sp, color: Colors.blue),
                 ),
               ],
             ),

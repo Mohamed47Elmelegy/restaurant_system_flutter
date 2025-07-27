@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/theme_helper.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
@@ -30,7 +29,7 @@ class HomeBody extends StatelessWidget {
   }
 
   Widget _buildHomeContent(BuildContext context, HomeLoaded state) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+   // final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return RefreshIndicator(
       onRefresh: () async {
@@ -220,7 +219,7 @@ class HomeBody extends StatelessWidget {
 
   // Popular Items
   Widget _buildPopularItemsSection(BuildContext context, HomeLoaded state) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+  //  final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -266,7 +265,7 @@ class HomeBody extends StatelessWidget {
 
   // Recommended Items
   Widget _buildRecommendedItemsSection(BuildContext context, HomeLoaded state) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+   // final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

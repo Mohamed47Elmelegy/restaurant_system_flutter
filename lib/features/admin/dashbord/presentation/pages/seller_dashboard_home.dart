@@ -3,7 +3,6 @@ import '../../../../../core/theme/app_bar_helper.dart';
 import '../../../../../core/utils/responsive_helper.dart';
 import '../widgets/orders_section.dart';
 import '../widgets/popular_items_section.dart';
-import '../widgets/revenue_line_chart.dart';
 import '../widgets/revenue_section.dart';
 import '../widgets/reviews_section.dart';
 
@@ -32,7 +31,7 @@ class SellerDashboardHome extends StatelessWidget {
                       OrdersSection(title: 'New Orders ', orderCount: 10),
                     ],
                   ),
-                  
+
                   RevenueSection(),
                   PopularItemsSection(),
                   // Add other sections here

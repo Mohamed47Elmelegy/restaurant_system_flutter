@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:restaurant_system_flutter/features/admin/dashbord/presentation/widgets/revenue_line_chart.dart';
 
+import '../../../../../core/theme/theme_helper.dart';
+
 class RevenueSection extends StatelessWidget {
   const RevenueSection({super.key});
 
@@ -11,13 +13,7 @@ class RevenueSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 8.0,
-            offset: Offset(0, 2),
-          ),
-        ],
+        boxShadow: ThemeHelper.getCardShadow(context),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -52,7 +48,10 @@ class RevenueSection extends StatelessWidget {
                 onPressed: () {},
                 child: Text(
                   'See Details',
-                  style: TextStyle(color: Colors.orange),
+                  style: TextStyle(
+                    color: ThemeHelper.getPrimaryColorForTheme(context),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],
