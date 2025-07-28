@@ -77,6 +77,8 @@ flutter:
     - assets/icons/
     - assets/icons/active_icons/
     - assets/icons/notActive_icons/
+    - assets/icons/basic/
+    - assets/icons/fruit/
     - assets/images/
     - assets/fonts/sen/
    

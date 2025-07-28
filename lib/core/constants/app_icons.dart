@@ -16,4 +16,22 @@ class AppIcons {
   static const String notActiveNotifications =
       "assets/icons/notActive_icons/notifications.png";
   static const String notActiveUser = "assets/icons/notActive_icons/user.png";
+  //add items icons
+  static const String uploadImage = "assets/icons/upload.png";
+
+  // Basic Icons
+  static const String salt = "assets/icons/basic/Salt.png";
+  static const String chicken = "assets/icons/basic/Chicken.png";
+  static const String broccoli = "assets/icons/basic/broccoli.png";
+  static const String ginger = "assets/icons/basic/Ginger.png";
+  static const String chiliPepper = "assets/icons/basic/Chili pepper.png";
+  static const String garlic = "assets/icons/basic/Garlic.png";
+  static const String onion = "assets/icons/basic/Onion.png";
+  static const String avocado = "assets/icons/basic/avocado.png";
+
+  // Fruit Icons
+  static const String walnut = "assets/icons/fruit/Walnut.png";
+  static const String orange = "assets/icons/fruit/Orange.png";
+  static const String blueberry = "assets/icons/fruit/Blueberry.png";
+  static const String apple = "assets/icons/fruit/Apple.png";
 }
