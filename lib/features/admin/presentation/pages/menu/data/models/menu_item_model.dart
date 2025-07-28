@@ -1,17 +1,27 @@
 import '../../domain/entities/menu_item.dart';
 
-class MenuItemModel extends MenuItem {
+class MenuItemModel {
   const MenuItemModel({
-    required super.id,
-    required super.name,
-    required super.category,
-    required super.rating,
-    required super.reviewCount,
-    required super.price,
-    required super.imagePath,
-    super.description,
-    super.isAvailable,
+    required this.id,
+    required this.name,
+    required this.category,
+    required this.rating,
+    required this.reviewCount,
+    required this.price,
+    required this.imagePath,
+    this.description,
+    this.isAvailable = true,
   });
+
+  final String id;
+  final String name;
+  final String category;
+  final double rating;
+  final int reviewCount;
+  final String price;
+  final String imagePath;
+  final String? description;
+  final bool isAvailable;
 
   // Factory constructor from JSON
   factory MenuItemModel.fromJson(Map<String, dynamic> json) {
@@ -29,7 +39,6 @@ class MenuItemModel extends MenuItem {
   }
 
   // Convert to JSON
-  @override
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -75,7 +84,6 @@ class MenuItemModel extends MenuItem {
   }
 
   // Copy with method
-  @override
   MenuItemModel copyWith({
     String? id,
     String? name,
@@ -100,39 +108,8 @@ class MenuItemModel extends MenuItem {
     );
   }
 
-  // Business logic methods
-  bool get isExpensive =>
-      double.tryParse(price) != null && double.parse(price) > 50;
-
-  bool get isPopular => rating >= 4.5 && reviewCount >= 5;
-
-  String get formattedPrice => '\$$price';
-
-  String get ratingText => '$rating ($reviewCount Review)';
-
-  String get categoryDisplayName {
-    switch (category.toLowerCase()) {
-      case 'breakfast':
-        return 'Breakfast';
-      case 'lunch':
-        return 'Lunch';
-      case 'dinner':
-        return 'Dinner';
-      default:
-        return category;
-    }
-  }
-
-  // Validation methods
-  bool get isValid {
-    return id.isNotEmpty &&
-        name.isNotEmpty &&
-        category.isNotEmpty &&
-        price.isNotEmpty &&
-        rating >= 0 &&
-        rating <= 5 &&
-        reviewCount >= 0;
-  }
+  // Data conversion methods only - no business logic
+  // Business logic should be in Domain layer or Use Cases
 
   // Comparison methods
   @override

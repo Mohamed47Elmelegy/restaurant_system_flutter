@@ -38,7 +38,7 @@ class _AdminMenuPageState extends State<AdminMenuPage> {
     const MenuItemModel(
       id: '3',
       name: 'Mazalichiken Halim',
-      category: 'Breakfast',
+      category: 'Lunch',
       rating: 4.9,
       reviewCount: 10,
       price: '25',
@@ -106,7 +106,7 @@ class _AdminMenuPageState extends State<AdminMenuPage> {
                     final item = _filteredItems[index];
                     return MenuItemCard(
                       name: item.name,
-                      category: item.categoryDisplayName,
+                      category: item.category,
                       rating: item.rating,
                       reviewCount: item.reviewCount,
                       price: item.price,

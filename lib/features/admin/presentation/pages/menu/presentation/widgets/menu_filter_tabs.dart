@@ -23,46 +23,44 @@ class _MenuFilterTabsState extends State<MenuFilterTabs> {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 40.h,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: widget.categories.length,
-        itemBuilder: (context, index) {
+      height: 50.h,
+      child: Row(
+        children: List.generate(widget.categories.length, (index) {
           final isSelected = index == widget.selectedIndex;
-          return GestureDetector(
-            onTap: () => widget.onCategorySelected(index),
-            child: Container(
-              margin: EdgeInsets.only(
-                right: index == widget.categories.length - 1 ? 0 : 16,
-              ),
+          return Expanded(
+            child: GestureDetector(
+              onTap: () => widget.onCategorySelected(index),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     widget.categories[index],
                     style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
                       color: isSelected
                           ? AppColors.lightPrimary
                           : Colors.black87,
                     ),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                   if (isSelected)
                     Container(
-                      width: 20,
-                      height: 3,
+                      width: 30.w,
+                      height: 3.h,
                       decoration: BoxDecoration(
                         color: AppColors.lightPrimary,
-                        borderRadius: BorderRadius.circular(2),
+                        borderRadius: BorderRadius.circular(2.r),
                       ),
                     ),
                 ],
               ),
             ),
           );
-        },
+        }),
       ),
     );
   }
