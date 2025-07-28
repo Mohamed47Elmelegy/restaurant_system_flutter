@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../../../core/constants/app_icons.dart';
-import '../../../../../../../core/theme/app_colors.dart';
 import '../../../../../../../core/theme/theme_helper.dart';
 
 class IngredientSelectionWidget extends StatelessWidget {
@@ -30,7 +30,7 @@ class IngredientSelectionWidget extends StatelessWidget {
             Text(
               categoryTitle,
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
                 color: ThemeHelper.getPrimaryTextColor(context),
               ),
@@ -43,14 +43,14 @@ class IngredientSelectionWidget extends StatelessWidget {
                     Text(
                       'See All',
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         color: ThemeHelper.getSecondaryTextColor(context),
                       ),
                     ),
-                    const SizedBox(width: 4),
+                    SizedBox(width: 4.w),
                     Icon(
                       Icons.keyboard_arrow_down,
-                      size: 16,
+                      size: 16.sp,
                       color: ThemeHelper.getSecondaryTextColor(context),
                     ),
                   ],
@@ -58,9 +58,9 @@ class IngredientSelectionWidget extends StatelessWidget {
               ),
           ],
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
         SizedBox(
-          height: 80,
+          height: 80.h,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: ingredients.length,
@@ -70,7 +70,7 @@ class IngredientSelectionWidget extends StatelessWidget {
 
               return Padding(
                 padding: EdgeInsets.only(
-                  right: index < ingredients.length - 1 ? 12 : 0,
+                  right: index < ingredients.length - 1 ? 12.w : 0,
                 ),
                 child: _buildIngredientButton(context, ingredient, isSelected),
               );
@@ -91,16 +91,18 @@ class IngredientSelectionWidget extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            width: 50,
-            height: 50,
+            width: 50.w,
+            height: 50.h,
             decoration: BoxDecoration(
               color: isSelected
-                  ? AppColors.lightPrimary.withValues(alpha: 0.1)
+                  ? ThemeHelper.getPrimaryColorForTheme(
+                      context,
+                    ).withValues(alpha: 0.1)
                   : ThemeHelper.getInputBackgroundColor(context),
               shape: BoxShape.circle,
               border: Border.all(
                 color: isSelected
-                    ? AppColors.lightPrimary
+                    ? ThemeHelper.getPrimaryColorForTheme(context)
                     : ThemeHelper.getSecondaryTextColor(
                         context,
                       ).withValues(alpha: 0.2),
@@ -110,21 +112,21 @@ class IngredientSelectionWidget extends StatelessWidget {
             child: Center(
               child: Image.asset(
                 ingredient.iconPath,
-                width: 24,
-                height: 24,
+                width: 24.w,
+                height: 24.h,
                 color: isSelected
-                    ? AppColors.lightPrimary
+                    ? ThemeHelper.getPrimaryColorForTheme(context)
                     : ThemeHelper.getSecondaryTextColor(context),
               ),
             ),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: 4.h),
           Text(
             ingredient.name,
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 12.sp,
               color: isSelected
-                  ? AppColors.lightPrimary
+                  ? ThemeHelper.getPrimaryColorForTheme(context)
                   : ThemeHelper.getPrimaryTextColor(context),
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
             ),

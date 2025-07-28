@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../../../../core/theme/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../../../../core/theme/theme_helper.dart';
 
 class SaveButtonWidget extends StatelessWidget {
   final VoidCallback onPressed;
@@ -15,10 +16,19 @@ class SaveButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 56,
+      height: 56.h,
       decoration: BoxDecoration(
-        color: AppColors.lightPrimary,
+        color: ThemeHelper.getPrimaryColorForTheme(context),
         borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: ThemeHelper.getPrimaryColorForTheme(
+              context,
+            ).withValues(alpha: 0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Material(
         color: Colors.transparent,
@@ -28,9 +38,9 @@ class SaveButtonWidget extends StatelessWidget {
           child: Center(
             child: Text(
               text,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
+              style: TextStyle(
+                color: ThemeHelper.getPrimaryTextColor(context),
+                fontSize: 16.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -39,4 +49,4 @@ class SaveButtonWidget extends StatelessWidget {
       ),
     );
   }
-} 
+}

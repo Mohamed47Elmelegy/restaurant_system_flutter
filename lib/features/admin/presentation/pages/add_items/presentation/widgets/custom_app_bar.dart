@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../../../../../core/theme/app_colors.dart';
 import '../../../../../../../core/theme/theme_helper.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -15,13 +14,22 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: ThemeHelper.getSurfaceColor(context),
       elevation: 0,
       leading: Container(
         margin: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: ThemeHelper.getInputBackgroundColor(context),
           shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: ThemeHelper.getPrimaryTextColor(
+                context,
+              ).withValues(alpha: 0.1),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: IconButton(
           onPressed: onBackPressed,
@@ -44,10 +52,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         TextButton(
           onPressed: onResetPressed,
+          style: TextButton.styleFrom(
+            foregroundColor: ThemeHelper.getPrimaryColorForTheme(context),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          ),
           child: Text(
             'RESET',
             style: TextStyle(
-              color: AppColors.lightPrimary,
+              color: ThemeHelper.getPrimaryColorForTheme(context),
               fontSize: 14,
               fontWeight: FontWeight.w600,
             ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../../../core/theme/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../../../core/theme/theme_helper.dart';
 
 class MealCategoryWidget extends StatelessWidget {
@@ -20,12 +20,12 @@ class MealCategoryWidget extends StatelessWidget {
         Text(
           'MEAL CATEGORY',
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w600,
             color: ThemeHelper.getPrimaryTextColor(context),
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
         Row(
           children: [
             _buildCategoryButton(
@@ -33,9 +33,9 @@ class MealCategoryWidget extends StatelessWidget {
               'Breakfast',
               selectedCategory == 'Breakfast',
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             _buildCategoryButton(context, 'Lunch', selectedCategory == 'Lunch'),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             _buildCategoryButton(
               context,
               'Dinner',
@@ -55,13 +55,15 @@ class MealCategoryWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () => onCategoryChanged(category),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.lightPrimary : Colors.transparent,
+          color: isSelected
+              ? ThemeHelper.getPrimaryColorForTheme(context)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isSelected
-                ? AppColors.lightPrimary
+                ? ThemeHelper.getPrimaryColorForTheme(context)
                 : ThemeHelper.getSecondaryTextColor(
                     context,
                   ).withValues(alpha: 0.3),
@@ -71,10 +73,10 @@ class MealCategoryWidget extends StatelessWidget {
         child: Text(
           category,
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w500,
             color: isSelected
-                ? Colors.white
+                ? ThemeHelper.getPrimaryTextColor(context)
                 : ThemeHelper.getPrimaryTextColor(context),
           ),
         ),

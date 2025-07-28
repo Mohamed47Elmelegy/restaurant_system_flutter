@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../../../../../core/theme/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../../../../core/theme/theme_helper.dart';
+import '../../../../../../../core/utils/responsive_helper.dart';
 import '../widgets/index.dart';
 
 class AdminAddItemPage extends StatefulWidget {
@@ -33,67 +35,73 @@ class _AdminAddItemPageState extends State<AdminAddItemPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: ThemeHelper.getBackgroundColor(context),
       appBar: CustomAppBar(
         onBackPressed: () => Navigator.pop(context),
         onResetPressed: _onResetPressed,
       ),
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.w),
-          child: AddItemFormWidget(
-            formKey: _formKey,
-            nameController: _nameController,
-            priceController: _priceController,
-            detailsController: _detailsController,
-            uploadedImages: _uploadedImages,
-            isPickupSelected: _isPickupSelected,
-            isDeliverySelected: _isDeliverySelected,
-            selectedBasicIngredients: _selectedBasicIngredients,
-            selectedFruitIngredients: _selectedFruitIngredients,
-            selectedMealCategory: _selectedMealCategory,
-            onAddMediaPressed: _onAddMediaPressed,
-            onPickupChanged: (value) {
-              setState(() {
-                _isPickupSelected = value;
-              });
-            },
-            onDeliveryChanged: (value) {
-              setState(() {
-                _isDeliverySelected = value;
-              });
-            },
-            onBasicIngredientToggled: (ingredientId) {
-              setState(() {
-                if (_selectedBasicIngredients.contains(ingredientId)) {
-                  _selectedBasicIngredients.remove(ingredientId);
-                } else {
-                  _selectedBasicIngredients.add(ingredientId);
-                }
-              });
-            },
-            onFruitIngredientToggled: (ingredientId) {
-              setState(() {
-                if (_selectedFruitIngredients.contains(ingredientId)) {
-                  _selectedFruitIngredients.remove(ingredientId);
-                } else {
-                  _selectedFruitIngredients.add(ingredientId);
-                }
-              });
-            },
-            onBasicSeeAllPressed: () {
-              // TODO: Navigate to see all basic ingredients
-            },
-            onFruitSeeAllPressed: () {
-              // TODO: Navigate to see all fruit ingredients
-            },
-            onMealCategoryChanged: (category) {
-              setState(() {
-                _selectedMealCategory = category;
-              });
-            },
-            onSavePressed: _onSaveChanges,
-          ),
+        child: ResponsiveHelper.responsiveLayout(
+          builder: (context, constraints) {
+            return Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: ResponsiveHelper.isMobile(context) ? 24.w : 32.w,
+              ),
+              child: AddItemFormWidget(
+                formKey: _formKey,
+                nameController: _nameController,
+                priceController: _priceController,
+                detailsController: _detailsController,
+                uploadedImages: _uploadedImages,
+                isPickupSelected: _isPickupSelected,
+                isDeliverySelected: _isDeliverySelected,
+                selectedBasicIngredients: _selectedBasicIngredients,
+                selectedFruitIngredients: _selectedFruitIngredients,
+                selectedMealCategory: _selectedMealCategory,
+                onAddMediaPressed: _onAddMediaPressed,
+                onPickupChanged: (value) {
+                  setState(() {
+                    _isPickupSelected = value;
+                  });
+                },
+                onDeliveryChanged: (value) {
+                  setState(() {
+                    _isDeliverySelected = value;
+                  });
+                },
+                onBasicIngredientToggled: (ingredientId) {
+                  setState(() {
+                    if (_selectedBasicIngredients.contains(ingredientId)) {
+                      _selectedBasicIngredients.remove(ingredientId);
+                    } else {
+                      _selectedBasicIngredients.add(ingredientId);
+                    }
+                  });
+                },
+                onFruitIngredientToggled: (ingredientId) {
+                  setState(() {
+                    if (_selectedFruitIngredients.contains(ingredientId)) {
+                      _selectedFruitIngredients.remove(ingredientId);
+                    } else {
+                      _selectedFruitIngredients.add(ingredientId);
+                    }
+                  });
+                },
+                onBasicSeeAllPressed: () {
+                  // TODO: Navigate to see all basic ingredients
+                },
+                onFruitSeeAllPressed: () {
+                  // TODO: Navigate to see all fruit ingredients
+                },
+                onMealCategoryChanged: (category) {
+                  setState(() {
+                    _selectedMealCategory = category;
+                  });
+                },
+                onSavePressed: _onSaveChanges,
+              ),
+            );
+          },
         ),
       ),
     );
@@ -127,8 +135,16 @@ class _AdminAddItemPageState extends State<AdminAddItemPage> {
       // TODO: Implement save functionality
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Item saved successfully'),
-          backgroundColor: AppColors.success,
+          content: Text(
+            'Item saved successfully',
+            style: TextStyle(
+              color: ThemeHelper.getPrimaryTextColor(context),
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          backgroundColor: ThemeHelper.getPrimaryColorForTheme(context),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
       );
       Navigator.pop(context);

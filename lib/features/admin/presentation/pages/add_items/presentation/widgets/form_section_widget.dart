@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class FormSectionWidget extends StatelessWidget {
   final Widget child;
@@ -16,9 +17,9 @@ class FormSectionWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: topSpacing),
+        SizedBox(height: topSpacing.h),
         child,
-        SizedBox(height: bottomSpacing),
+        SizedBox(height: bottomSpacing.h),
       ],
     );
   }

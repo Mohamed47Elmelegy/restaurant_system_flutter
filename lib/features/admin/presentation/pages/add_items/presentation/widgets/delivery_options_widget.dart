@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../../../core/theme/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../../../core/theme/theme_helper.dart';
 
 class DeliveryOptionsWidget extends StatelessWidget {
@@ -26,7 +26,7 @@ class DeliveryOptionsWidget extends StatelessWidget {
           onChanged: onPickupChanged,
           label: 'Pick up',
         ),
-        const SizedBox(width: 24),
+        SizedBox(width: 24.w),
         _buildCheckbox(
           context,
           value: isDeliverySelected,
@@ -48,13 +48,15 @@ class DeliveryOptionsWidget extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 20,
-            height: 20,
+            width: 20.w,
+            height: 20.h,
             decoration: BoxDecoration(
-              color: value ? AppColors.lightPrimary : Colors.transparent,
+              color: value
+                  ? ThemeHelper.getPrimaryColorForTheme(context)
+                  : Colors.transparent,
               border: Border.all(
                 color: value
-                    ? AppColors.lightPrimary
+                    ? ThemeHelper.getPrimaryColorForTheme(context)
                     : ThemeHelper.getSecondaryTextColor(
                         context,
                       ).withValues(alpha: 0.3),
@@ -63,15 +65,20 @@ class DeliveryOptionsWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(4),
             ),
             child: value
-                ? Icon(Icons.check, size: 14, color: Colors.white)
+                ? Icon(
+                    Icons.check,
+                    size: 14.sp,
+                    color: ThemeHelper.getPrimaryTextColor(context),
+                  )
                 : null,
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
           Text(
             label,
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 14.sp,
               color: ThemeHelper.getPrimaryTextColor(context),
+              fontWeight: FontWeight.w500,
             ),
           ),
         ],

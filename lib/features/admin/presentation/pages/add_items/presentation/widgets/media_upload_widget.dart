@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../../../core/theme/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../../../core/theme/theme_helper.dart';
 
 class MediaUploadWidget extends StatelessWidget {
@@ -20,12 +20,12 @@ class MediaUploadWidget extends StatelessWidget {
         Text(
           'UPLOAD PHOTO/VIDEO',
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w600,
             color: ThemeHelper.getPrimaryTextColor(context),
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
         Row(
           children: [
             // First upload area (shows uploaded image or placeholder)
@@ -38,10 +38,10 @@ class MediaUploadWidget extends StatelessWidget {
                     : null,
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             // Second upload area (add button)
             Expanded(child: _buildAddButton(context)),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             // Third upload area (add button)
             Expanded(child: _buildAddButton(context)),
           ],
@@ -56,7 +56,7 @@ class MediaUploadWidget extends StatelessWidget {
     String? imagePath,
   }) {
     return Container(
-      height: 80,
+      height: 80.h,
       decoration: BoxDecoration(
         color: hasImage
             ? Colors.transparent
@@ -82,9 +82,9 @@ class MediaUploadWidget extends StatelessWidget {
             )
           : Container(
               decoration: BoxDecoration(
-                color: const Color(
-                  0xFF6B7280,
-                ), // Medium gray-blue as shown in image
+                color: ThemeHelper.getSecondaryTextColor(
+                  context,
+                ).withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
@@ -93,7 +93,7 @@ class MediaUploadWidget extends StatelessWidget {
 
   Widget _buildAddButton(BuildContext context) {
     return Container(
-      height: 80,
+      height: 80.h,
       decoration: BoxDecoration(
         color: ThemeHelper.getInputBackgroundColor(context),
         borderRadius: BorderRadius.circular(8),
@@ -111,8 +111,8 @@ class MediaUploadWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 24,
-              height: 24,
+              width: 24.w,
+              height: 24.h,
               decoration: BoxDecoration(
                 color: ThemeHelper.getSecondaryTextColor(
                   context,
@@ -121,15 +121,15 @@ class MediaUploadWidget extends StatelessWidget {
               ),
               child: Icon(
                 Icons.cloud_upload,
-                size: 16,
+                size: 16.sp,
                 color: ThemeHelper.getSecondaryTextColor(context),
               ),
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: 4.h),
             Text(
               'Add',
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 12.sp,
                 color: ThemeHelper.getSecondaryTextColor(context),
               ),
             ),

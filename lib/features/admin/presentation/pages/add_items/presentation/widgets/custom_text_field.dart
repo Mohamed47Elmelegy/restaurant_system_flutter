@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../../../core/theme/app_colors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../../../core/theme/theme_helper.dart';
 
 class CustomTextField extends StatelessWidget {
@@ -30,22 +30,26 @@ class CustomTextField extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w600,
             color: ThemeHelper.getPrimaryTextColor(context),
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         TextFormField(
           controller: controller,
           keyboardType: keyboardType,
           maxLines: maxLines,
           validator: validator,
+          style: TextStyle(
+            color: ThemeHelper.getPrimaryTextColor(context),
+            fontSize: 14.sp,
+          ),
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(
               color: ThemeHelper.getSecondaryTextColor(context),
-              fontSize: 14,
+              fontSize: 14.sp,
             ),
             filled: true,
             fillColor: ThemeHelper.getInputBackgroundColor(context),
@@ -67,15 +71,25 @@ class CustomTextField extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: AppColors.lightPrimary, width: 2),
+              borderSide: BorderSide(
+                color: ThemeHelper.getPrimaryColorForTheme(context),
+                width: 2,
+              ),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: AppColors.error),
+              borderSide: BorderSide(color: ThemeHelper.getErrorColor(context)),
             ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 12,
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(
+                color: ThemeHelper.getErrorColor(context),
+                width: 2,
+              ),
+            ),
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: 16.w,
+              vertical: 12.h,
             ),
           ),
         ),
