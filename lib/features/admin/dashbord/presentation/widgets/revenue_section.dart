@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:restaurant_system_flutter/features/admin/dashbord/presentation/widgets/revenue_line_chart.dart';
+import '../../../../orders/domain/entities/order_entity.dart';
 
 import '../../../../../core/theme/theme_helper.dart';
 
 class RevenueSection extends StatelessWidget {
-  const RevenueSection({super.key});
+  final List<OrderEntity> orders;
+
+  const RevenueSection({super.key, required this.orders});
 
   @override
   Widget build(BuildContext context) {
+    final totalRevenue = _calculateTotalRevenue();
+
     return Container(
       padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
@@ -43,7 +48,10 @@ class RevenueSection extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(' 2,241', style: Theme.of(context).textTheme.headlineMedium),
+              Text(
+                ' \$${totalRevenue.toStringAsFixed(2)}',
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
               TextButton(
                 onPressed: () {},
                 child: Text(
@@ -58,10 +66,23 @@ class RevenueSection extends StatelessWidget {
           ),
           SizedBox(height: 16.0),
 
-          RevenueLineChart(),
+          RevenueLineChart(orders: orders),
           // Add more revenue details here
         ],
       ),
     );
+  }
+
+  /// حساب إجمالي الإيرادات من الطلبات المكتملة
+  double _calculateTotalRevenue() {
+    double total = 0.0;
+
+    for (final order in orders) {
+      if (order.status == 'completed' || order.status == 'done') {
+        total += order.price;
+      }
+    }
+
+    return total;
   }
 }

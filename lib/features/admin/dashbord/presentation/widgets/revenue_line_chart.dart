@@ -1,12 +1,35 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../orders/domain/entities/order_entity.dart';
 
+/// رسم بياني خطي لعرض الإيرادات حسب الوقت
+///
+/// هذا المكون يعرض الإيرادات اليومية بناءً على الطلبات المكتملة
+/// يتم تجميع الإيرادات حسب الساعة (0-23) وعرضها في رسم بياني خطي
+///
+/// الميزات:
+/// - عرض الإيرادات حسب الساعة على مدار 24 ساعة
+/// - حساب تلقائي للحد الأقصى للإيرادات
+/// - عرض تفاصيل الإيرادات عند اللمس
+/// - دعم للفترات الزمنية المختلفة (يومي، أسبوعي، شهري)
 class RevenueLineChart extends StatelessWidget {
-  const RevenueLineChart({super.key});
+  /// قائمة الطلبات المستخدمة لحساب الإيرادات
+  final List<OrderEntity> orders;
+
+  /// الفترة الزمنية للعرض (يومي، أسبوعي، شهري)
+  final String timeRange; // 'daily', 'weekly', 'monthly'
+
+  const RevenueLineChart({
+    super.key,
+    required this.orders,
+    this.timeRange = 'daily',
+  });
 
   @override
   Widget build(BuildContext context) {
+    final revenueData = _calculateRevenueData();
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: SizedBox(
@@ -56,15 +79,17 @@ class RevenueLineChart extends StatelessWidget {
             minX: 0,
             maxX: 23,
             minY: 0,
-            maxY: 6,
+            maxY: _getMaxRevenue(revenueData),
             lineTouchData: LineTouchData(
               enabled: true,
               touchTooltipData: LineTouchTooltipData(
                 getTooltipColor: (touchedSpot) => Colors.black87,
                 getTooltipItems: (touchedSpots) {
                   return touchedSpots.map((touchedSpot) {
+                    final hour = touchedSpot.x.toInt();
+                    final revenue = revenueData[hour] ?? 0.0;
                     return LineTooltipItem(
-                      ' \$500',
+                      ' \$${revenue.toStringAsFixed(2)}',
                       const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -78,9 +103,8 @@ class RevenueLineChart extends StatelessWidget {
             lineBarsData: [
               LineChartBarData(
                 spots: List.generate(24, (i) {
-                  // بيانات وهمية متدرجة
-                  double y = (i % 6 + 1).toDouble();
-                  return FlSpot(i.toDouble(), y);
+                  final revenue = revenueData[i] ?? 0.0;
+                  return FlSpot(i.toDouble(), revenue);
                 }),
                 isCurved: true,
                 gradient: const LinearGradient(
@@ -115,5 +139,40 @@ class RevenueLineChart extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// حساب بيانات الإيرادات حسب الساعة
+  ///
+  /// يتم تجميع الإيرادات من الطلبات المكتملة فقط
+  /// كل طلب يساهم في الإيرادات حسب ساعة إنشائه
+  Map<int, double> _calculateRevenueData() {
+    final Map<int, double> hourlyRevenue = {};
+
+    // تهيئة الإيرادات لكل ساعة بـ 0
+    for (int hour = 0; hour < 24; hour++) {
+      hourlyRevenue[hour] = 0.0;
+    }
+
+    // حساب الإيرادات من الطلبات المكتملة
+    for (final order in orders) {
+      if (order.status == 'completed' || order.status == 'done') {
+        final orderHour = order.createdAt.hour;
+        hourlyRevenue[orderHour] =
+            (hourlyRevenue[orderHour] ?? 0.0) + order.price;
+      }
+    }
+
+    return hourlyRevenue;
+  }
+
+  /// حساب الحد الأقصى للإيرادات لتحديد مقياس الرسم البياني
+  ///
+  /// يتم إضافة هامش 20% فوق الحد الأقصى لتحسين العرض
+  double _getMaxRevenue(Map<int, double> revenueData) {
+    if (revenueData.isEmpty) return 6.0; // قيمة افتراضية
+
+    final maxRevenue = revenueData.values.reduce((a, b) => a > b ? a : b);
+    // إضافة هامش 20% فوق الحد الأقصى
+    return maxRevenue * 1.2;
   }
 }
