@@ -37,7 +37,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           listener: (context, state) {
             if (state.isCompleted) {
               // Navigate to login page
-              Navigator.pushReplacementNamed(context, AppRoutes.sellerDashboard);
+              Navigator.pushReplacementNamed(context, AppRoutes.admin);
             }
           },
           builder: (context, state) {
