@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:developer';
-import '../../../../../../../core/network/endpoints.dart';
+import '../../../../../../../core/network/api_path.dart';
 import '../models/product_model.dart';
 
 abstract class ProductRemoteDataSource {
@@ -24,7 +24,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   Future<List<ProductModel>> getProducts() async {
     try {
       final response = await dio.get(
-        '${Endpoints.baseUrl}/admin/products',
+        ApiPath.adminProducts(),
         options: Options(
           headers: {
             'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
       }
 
       final response = await dio.post(
-        '${Endpoints.baseUrl}/admin/products',
+        ApiPath.adminProducts(),
         options: Options(
           headers: {
             'Content-Type': 'application/json',
@@ -107,7 +107,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   Future<ProductModel> updateProduct(ProductModel product) async {
     try {
       final response = await dio.put(
-        '${Endpoints.baseUrl}/admin/products/${product.id}',
+        ApiPath.adminProduct(product.id!),
         options: Options(
           headers: {
             'Content-Type': 'application/json',
@@ -138,7 +138,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   Future<void> deleteProduct(int id) async {
     try {
       final response = await dio.delete(
-        '${Endpoints.baseUrl}/admin/products/$id',
+        ApiPath.adminProduct(id),
         options: Options(
           headers: {
             'Content-Type': 'application/json',
@@ -160,7 +160,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   Future<ProductModel> getProductById(int id) async {
     try {
       final response = await dio.get(
-        '${Endpoints.baseUrl}/admin/products/$id',
+        ApiPath.adminProduct(id),
         options: Options(
           headers: {
             'Content-Type': 'application/json',

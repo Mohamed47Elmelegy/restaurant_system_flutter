@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:developer';
-import '../../../../../../../core/network/endpoints.dart';
+import '../../../../../../../core/network/api_path.dart';
 import '../models/menu_item_model.dart';
 
 abstract class MenuRemoteDataSource {
@@ -33,7 +33,7 @@ class MenuRemoteDataSourceImpl implements MenuRemoteDataSource {
       );
 
       final response = await dio.get(
-        '${Endpoints.baseUrl}/admin/products',
+        ApiPath.adminProducts(),
         options: Options(
           headers: {
             'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ class MenuRemoteDataSourceImpl implements MenuRemoteDataSource {
       );
 
       final response = await dio.get(
-        '${Endpoints.baseUrl}/admin/products',
+        ApiPath.adminProducts(),
         queryParameters: {'main_category_id': categoryId},
         options: Options(
           headers: {
@@ -146,7 +146,7 @@ class MenuRemoteDataSourceImpl implements MenuRemoteDataSource {
       final token = await storage.read(key: 'token');
 
       final response = await dio.get(
-        '${Endpoints.baseUrl}/admin/products/$id',
+        ApiPath.adminProduct(int.parse(id)),
         options: Options(
           headers: {
             'Content-Type': 'application/json',
@@ -179,7 +179,7 @@ class MenuRemoteDataSourceImpl implements MenuRemoteDataSource {
       final token = await storage.read(key: 'token');
 
       final response = await dio.post(
-        '${Endpoints.baseUrl}/admin/products',
+        ApiPath.adminProducts(),
         options: Options(
           headers: {
             'Content-Type': 'application/json',
@@ -211,7 +211,7 @@ class MenuRemoteDataSourceImpl implements MenuRemoteDataSource {
       final token = await storage.read(key: 'token');
 
       final response = await dio.put(
-        '${Endpoints.baseUrl}/admin/products/${menuItem.id}',
+        ApiPath.adminProduct(int.parse(menuItem.id)),
         options: Options(
           headers: {
             'Content-Type': 'application/json',
@@ -245,7 +245,7 @@ class MenuRemoteDataSourceImpl implements MenuRemoteDataSource {
       final token = await storage.read(key: 'token');
 
       final response = await dio.delete(
-        '${Endpoints.baseUrl}/admin/products/$id',
+        ApiPath.adminProduct(int.parse(id)),
         options: Options(
           headers: {
             'Content-Type': 'application/json',
@@ -267,7 +267,7 @@ class MenuRemoteDataSourceImpl implements MenuRemoteDataSource {
       final token = await storage.read(key: 'token');
 
       final response = await dio.get(
-        '${Endpoints.baseUrl}/admin/products',
+        ApiPath.adminProducts(),
         queryParameters: {'search': query},
         options: Options(
           headers: {
@@ -306,7 +306,7 @@ class MenuRemoteDataSourceImpl implements MenuRemoteDataSource {
       log('🔄 MenuRemoteDataSource: Fetching categories from backend...');
 
       final response = await dio.get(
-        '${Endpoints.baseUrl}/public/categories',
+        ApiPath.adminCategories(),
         options: Options(
           headers: {
             'Content-Type': 'application/json',
