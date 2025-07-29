@@ -1,5 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'dart:developer';
+import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../../../core/error/failures.dart';
 import '../../domain/entities/auth_entity.dart';
 import '../../domain/entities/user_entity.dart';
@@ -10,8 +12,9 @@ import '../datasources/auth_remote_data_source.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
+  final FlutterSecureStorage secureStorage;
 
-  AuthRepositoryImpl(this.remoteDataSource);
+  AuthRepositoryImpl(this.remoteDataSource, this.secureStorage);
 
   @override
   Future<Either<Failure, AuthEntity>> login(
@@ -37,6 +40,10 @@ class AuthRepositoryImpl implements AuthRepository {
           user: user,
           expiresAt: DateTime.parse(data['expires_at']),
         );
+
+        // حفظ البيانات في الـ secure storage
+        await _saveAuthDataToStorage(auth);
+        log('✅ Repository: Auth data saved to secure storage');
 
         log('✅ Repository: Auth model created successfully');
         return Right(auth);
@@ -81,6 +88,10 @@ class AuthRepositoryImpl implements AuthRepository {
           expiresAt: DateTime.parse(data['expires_at']),
         );
 
+        // حفظ البيانات في الـ secure storage
+        await _saveAuthDataToStorage(auth);
+        log('✅ Repository: Auth data saved to secure storage');
+
         log('✅ Repository: Auth model created successfully');
         return Right(auth);
       } else {
@@ -103,8 +114,17 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       log('🔄 Repository: Starting getCurrentUser process');
 
-      // TODO: Get token from secure storage
-      final token = 'mock_token'; // Replace with actual token
+      final token = await secureStorage.read(key: 'token');
+      if (token == null) {
+        log('❌ Repository: No token found in secure storage');
+        return Left(
+          AuthFailure(
+            message: 'لم يتم العثور على بيانات تسجيل الدخول',
+            code: 'NO_TOKEN_FOUND',
+          ),
+        );
+      }
+
       final response = await remoteDataSource.getUser(token);
       log('📦 Repository: Raw response received: $response');
 
@@ -129,8 +149,18 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Either<Failure, void>> logout() async {
-    // TODO: Implement logout - clear tokens from secure storage
-    return const Right(null);
+    try {
+      log('🔄 Repository: Starting logout process');
+
+      // حذف جميع البيانات من الـ secure storage
+      await secureStorage.deleteAll();
+      log('✅ Repository: All auth data cleared from secure storage');
+
+      return const Right(null);
+    } catch (e) {
+      log('💥 Repository: Logout error caught: $e');
+      return Left(AuthFailure(message: e.toString(), code: 'LOGOUT_ERROR'));
+    }
   }
 
   @override
@@ -146,19 +176,77 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Either<Failure, bool>> isLoggedIn() async {
-    // TODO: Check if user is logged in by checking token in secure storage
-    return const Right(false);
+    try {
+      final token = await secureStorage.read(key: 'token');
+      final isLoggedIn = token != null;
+      log('🔍 Repository: Is logged in: $isLoggedIn');
+      return Right(isLoggedIn);
+    } catch (e) {
+      log('💥 Repository: IsLoggedIn error caught: $e');
+      return Left(
+        AuthFailure(message: e.toString(), code: 'IS_LOGGED_IN_ERROR'),
+      );
+    }
   }
 
   @override
   Future<Either<Failure, void>> saveAuthData(AuthEntity auth) async {
-    // TODO: Save auth data to secure storage
-    return const Right(null);
+    try {
+      await _saveAuthDataToStorage(auth as AuthModel);
+      log('✅ Repository: Auth data saved to secure storage');
+      return const Right(null);
+    } catch (e) {
+      log('💥 Repository: SaveAuthData error caught: $e');
+      return Left(
+        AuthFailure(message: e.toString(), code: 'SAVE_AUTH_DATA_ERROR'),
+      );
+    }
   }
 
   @override
   Future<Either<Failure, AuthEntity?>> getAuthData() async {
-    // TODO: Get auth data from secure storage
-    return const Right(null);
+    try {
+      final token = await secureStorage.read(key: 'token');
+      final userJsonStr = await secureStorage.read(key: 'user');
+      final expiresAtStr = await secureStorage.read(key: 'expires_at');
+
+      if (token == null || userJsonStr == null || expiresAtStr == null) {
+        log('❌ Repository: Incomplete auth data in secure storage');
+        return const Right(null);
+      }
+
+      // تحويل الـ JSON string إلى Map
+      final userJson = jsonDecode(userJsonStr) as Map<String, dynamic>;
+      final user = UserModel.fromJson(userJson);
+
+      final auth = AuthModel(
+        accessToken: token,
+        refreshToken: token, // For now using same token
+        user: user,
+        expiresAt: DateTime.parse(expiresAtStr),
+      );
+
+      log('✅ Repository: Auth data retrieved from secure storage');
+      return Right(auth);
+    } catch (e) {
+      log('💥 Repository: GetAuthData error caught: $e');
+      return Left(
+        AuthFailure(message: e.toString(), code: 'GET_AUTH_DATA_ERROR'),
+      );
+    }
+  }
+
+  /// حفظ بيانات المصادقة في الـ secure storage
+  Future<void> _saveAuthDataToStorage(AuthModel auth) async {
+    await secureStorage.write(key: 'token', value: auth.accessToken);
+    await secureStorage.write(
+      key: 'user',
+      value: jsonEncode((auth.user as UserModel).toJson()),
+    );
+    await secureStorage.write(
+      key: 'expires_at',
+      value: auth.expiresAt.toIso8601String(),
+    );
+    log('💾 Repository: Auth data saved to secure storage');
   }
 }

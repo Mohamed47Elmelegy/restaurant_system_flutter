@@ -16,13 +16,28 @@ class OrderModel extends OrderEntity {
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
       category: json['category'] ?? '',
-      price: (json['price'] as num?)?.toDouble() ?? 0.0,
+      price: _parseDouble(json['price']),
       image: json['image'],
       status: json['status'] ?? '',
       createdAt: DateTime.parse(
         json['created_at'] ?? DateTime.now().toIso8601String(),
       ),
     );
+  }
+
+  /// Safely parse double values from various data types
+  static double _parseDouble(dynamic value) {
+    if (value == null) return 0.0;
+
+    if (value is num) {
+      return value.toDouble();
+    }
+
+    if (value is String) {
+      return double.tryParse(value) ?? 0.0;
+    }
+
+    return 0.0;
   }
 
   factory OrderModel.fromEntity(OrderEntity entity) {

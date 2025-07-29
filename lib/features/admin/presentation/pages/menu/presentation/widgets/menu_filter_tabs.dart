@@ -24,10 +24,14 @@ class _MenuFilterTabsState extends State<MenuFilterTabs> {
     return SizedBox(
       width: double.infinity,
       height: 50.h,
-      child: Row(
-        children: List.generate(widget.categories.length, (index) {
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: widget.categories.length,
+        padding: EdgeInsets.symmetric(horizontal: 8.w),
+        itemBuilder: (context, index) {
           final isSelected = index == widget.selectedIndex;
-          return Expanded(
+          return Container(
+            margin: EdgeInsets.only(right: 20.w),
             child: GestureDetector(
               onTap: () => widget.onCategorySelected(index),
               child: Column(
@@ -60,7 +64,7 @@ class _MenuFilterTabsState extends State<MenuFilterTabs> {
               ),
             ),
           );
-        }),
+        },
       ),
     );
   }

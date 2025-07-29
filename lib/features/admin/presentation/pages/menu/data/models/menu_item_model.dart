@@ -29,13 +29,28 @@ class MenuItemModel {
       id: json['id'] as String,
       name: json['name'] as String,
       category: json['category'] as String,
-      rating: (json['rating'] as num).toDouble(),
+      rating: _parseDouble(json['rating']),
       reviewCount: json['reviewCount'] as int,
       price: json['price'] as String,
       imagePath: json['imagePath'] as String,
       description: json['description'] as String?,
       isAvailable: json['isAvailable'] as bool? ?? true,
     );
+  }
+
+  /// Safely parse double values from various data types
+  static double _parseDouble(dynamic value) {
+    if (value == null) return 0.0;
+
+    if (value is num) {
+      return value.toDouble();
+    }
+
+    if (value is String) {
+      return double.tryParse(value) ?? 0.0;
+    }
+
+    return 0.0;
   }
 
   // Convert to JSON

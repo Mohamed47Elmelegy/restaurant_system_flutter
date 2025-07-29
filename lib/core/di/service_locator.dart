@@ -21,8 +21,30 @@ import '../../features/orders/domain/usecases/get_running_orders_usecase.dart';
 import '../../features/orders/domain/usecases/mark_order_done_usecase.dart';
 import '../../features/orders/domain/usecases/cancel_order_usecase.dart';
 import '../../features/orders/presentation/bloc/order_bloc.dart';
-import '../network/dio_client.dart';
-import '../network/simple_interceptor.dart';
+import '../../features/admin/presentation/pages/meal_times/data/datasources/meal_time_remote_datasource.dart';
+import '../../features/admin/presentation/pages/meal_times/data/datasources/meal_time_remote_datasource_impl.dart';
+import '../../features/admin/presentation/pages/meal_times/data/repositories/meal_time_repository_impl.dart';
+import '../../features/admin/presentation/pages/meal_times/domain/repositories/meal_time_repository.dart';
+import '../../features/admin/presentation/pages/meal_times/domain/usecases/get_meal_times.dart';
+import '../../features/admin/presentation/pages/meal_times/domain/usecases/create_meal_time.dart';
+import '../../features/admin/presentation/pages/meal_times/domain/usecases/update_meal_time.dart';
+import '../../features/admin/presentation/pages/meal_times/domain/usecases/delete_meal_time.dart';
+import '../../features/admin/presentation/pages/meal_times/domain/usecases/toggle_meal_time_status.dart';
+import '../../features/admin/presentation/pages/meal_times/domain/usecases/update_meal_times_order.dart';
+import '../../features/admin/presentation/pages/meal_times/presentation/bloc/meal_time_bloc.dart';
+import '../../core/network/dio_client.dart';
+import '../../core/network/simple_interceptor.dart';
+import '../../features/admin/presentation/pages/add_items/data/datasources/product_remote_data_source.dart';
+import '../../features/admin/presentation/pages/add_items/data/repositories/product_repository_impl.dart';
+import '../../features/admin/presentation/pages/add_items/domain/repositories/product_repository.dart';
+import '../../features/admin/presentation/pages/add_items/domain/usecases/get_products_usecase.dart';
+import '../../features/admin/presentation/pages/add_items/domain/usecases/create_product_usecase.dart';
+import '../../features/admin/presentation/pages/add_items/presentation/cubit/product_cubit.dart';
+// Menu imports
+import '../../features/admin/presentation/pages/menu/data/datasources/menu_remote_data_source.dart';
+import '../../features/admin/presentation/pages/menu/data/repositories/menu_repository_impl.dart';
+import '../../features/admin/presentation/pages/menu/domain/repositories/menu_repository.dart';
+import '../../features/admin/presentation/pages/menu/presentation/bloc/menu_cubit.dart';
 
 final getIt = GetIt.instance;
 
@@ -46,15 +68,42 @@ Future<void> setup() async {
     () => AuthRemoteDataSourceImpl(getIt<Dio>()),
   );
   getIt.registerLazySingleton<HomeDataSource>(() => HomeDataSourceImpl());
+  getIt.registerLazySingleton<MealTimeRemoteDataSource>(
+    () => MealTimeRemoteDataSourceImpl(dioClient: getIt<DioClient>()),
+  );
+  getIt.registerLazySingleton<ProductRemoteDataSource>(
+    () => ProductRemoteDataSourceImpl(dio: getIt<Dio>()),
+  );
+  // Menu data sources
+  getIt.registerLazySingleton<MenuRemoteDataSource>(
+    () => MenuRemoteDataSourceImpl(dio: getIt<DioClient>().dio),
+  );
 
   // Repository
   getIt.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(getIt<AuthRemoteDataSource>()),
+    () => AuthRepositoryImpl(
+      getIt<AuthRemoteDataSource>(),
+      getIt<FlutterSecureStorage>(),
+    ),
   );
   getIt.registerLazySingleton<HomeRepository>(
     () => HomeRepositoryImpl(getIt<HomeDataSource>()),
   );
   getIt.registerLazySingleton<OrderRepository>(() => OrderRepositoryImpl());
+  getIt.registerLazySingleton<MealTimeRepository>(
+    () => MealTimeRepositoryImpl(
+      remoteDataSource: getIt<MealTimeRemoteDataSource>(),
+    ),
+  );
+  getIt.registerLazySingleton<ProductRepository>(
+    () => ProductRepositoryImpl(
+      remoteDataSource: getIt<ProductRemoteDataSource>(),
+    ),
+  );
+  // Menu repository
+  getIt.registerLazySingleton<MenuRepository>(
+    () => MenuRepositoryImpl(remoteDataSource: getIt<MenuRemoteDataSource>()),
+  );
 
   // Use cases
   getIt.registerLazySingleton<LoginUseCase>(
@@ -85,11 +134,40 @@ Future<void> setup() async {
     () => CancelOrderUseCase(getIt<OrderRepository>()),
   );
 
+  // MealTime use cases
+  getIt.registerLazySingleton<GetMealTimes>(
+    () => GetMealTimes(repository: getIt<MealTimeRepository>()),
+  );
+  getIt.registerLazySingleton<CreateMealTime>(
+    () => CreateMealTime(repository: getIt<MealTimeRepository>()),
+  );
+  getIt.registerLazySingleton<UpdateMealTime>(
+    () => UpdateMealTime(repository: getIt<MealTimeRepository>()),
+  );
+  getIt.registerLazySingleton<DeleteMealTime>(
+    () => DeleteMealTime(repository: getIt<MealTimeRepository>()),
+  );
+  getIt.registerLazySingleton<ToggleMealTimeStatus>(
+    () => ToggleMealTimeStatus(repository: getIt<MealTimeRepository>()),
+  );
+  getIt.registerLazySingleton<UpdateMealTimesOrder>(
+    () => UpdateMealTimesOrder(repository: getIt<MealTimeRepository>()),
+  );
+
+  // Product use cases
+  getIt.registerLazySingleton<GetProductsUseCase>(
+    () => GetProductsUseCase(repository: getIt<ProductRepository>()),
+  );
+  getIt.registerLazySingleton<CreateProductUseCase>(
+    () => CreateProductUseCase(repository: getIt<ProductRepository>()),
+  );
+
   // Bloc
   getIt.registerFactory<AuthBloc>(
     () => AuthBloc(
       loginUseCase: getIt<LoginUseCase>(),
       registerUseCase: getIt<RegisterUseCase>(),
+      authRepository: getIt<AuthRepository>(),
     ),
   );
   getIt.registerFactory<HomeBloc>(
@@ -106,5 +184,25 @@ Future<void> setup() async {
       markOrderDoneUseCase: getIt<MarkOrderDoneUseCase>(),
       cancelOrderUseCase: getIt<CancelOrderUseCase>(),
     ),
+  );
+  getIt.registerFactory<MealTimeBloc>(
+    () => MealTimeBloc(
+      getMealTimes: getIt<GetMealTimes>(),
+      createMealTime: getIt<CreateMealTime>(),
+      updateMealTime: getIt<UpdateMealTime>(),
+      deleteMealTime: getIt<DeleteMealTime>(),
+      toggleMealTimeStatus: getIt<ToggleMealTimeStatus>(),
+      updateMealTimesOrder: getIt<UpdateMealTimesOrder>(),
+    ),
+  );
+  getIt.registerFactory<ProductCubit>(
+    () => ProductCubit(
+      getProductsUseCase: getIt<GetProductsUseCase>(),
+      createProductUseCase: getIt<CreateProductUseCase>(),
+    ),
+  );
+  // Menu cubit
+  getIt.registerFactory<MenuCubit>(
+    () => MenuCubit(menuRepository: getIt<MenuRepository>()),
   );
 }

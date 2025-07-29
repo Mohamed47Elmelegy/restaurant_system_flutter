@@ -22,11 +22,26 @@ class FoodItemModel {
       id: json['id'] as int,
       name: json['name'] as String,
       description: json['description'] as String,
-      price: (json['price'] as num).toDouble(),
-      rating: (json['rating'] as num).toDouble(),
+      price: _parseDouble(json['price']),
+      rating: _parseDouble(json['rating']),
       image: json['image'] as String,
       category: json['category'] as String,
     );
+  }
+
+  /// Safely parse double values from various data types
+  static double _parseDouble(dynamic value) {
+    if (value == null) return 0.0;
+
+    if (value is num) {
+      return value.toDouble();
+    }
+
+    if (value is String) {
+      return double.tryParse(value) ?? 0.0;
+    }
+
+    return 0.0;
   }
 
   Map<String, dynamic> toJson() {

@@ -55,8 +55,17 @@ class _LoginBodyState extends State<LoginBody> {
             );
           } else if (state is AuthSuccess) {
             EasyLoading.dismiss();
-            // Navigate to home page
-            Navigator.pushReplacementNamed(context, AppRoutes.home);
+            // Navigate based on user role
+            final userRole = state.auth.user.role.toLowerCase();
+
+            if (userRole == 'admin') {
+              Navigator.pushReplacementNamed(context, AppRoutes.admin);
+            } else if (userRole == 'user') {
+              Navigator.pushReplacementNamed(context, AppRoutes.home);
+            } else {
+              // Handle unexpected role - default to home page
+              Navigator.pushReplacementNamed(context, AppRoutes.home);
+            }
           } else if (state is AuthFailure) {
             EasyLoading.dismiss();
             EasyLoading.showError(

@@ -16,10 +16,10 @@ class ApiResponse<T> {
   /// تحويل JSON إلى ApiResponse
   factory ApiResponse.fromJson(
     Map<String, dynamic> json,
-    T Function(Map<String, dynamic>)? fromJsonT,
+    T Function(dynamic)? fromJsonT,
   ) {
     return ApiResponse<T>(
-      status: json['status'] ?? false,
+      status: json['success'] ?? json['status'] ?? false,
       message: json['message'] ?? 'حدث خطأ غير متوقع',
       data: json['data'] != null && fromJsonT != null
           ? fromJsonT(json['data'])

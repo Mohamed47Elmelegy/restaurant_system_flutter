@@ -25,6 +25,49 @@ class MenuItemCard extends StatelessWidget {
     this.onTap,
   });
 
+  Widget _buildImageWidget(String imagePath) {
+    // Check if it's a network URL or local asset
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+      // Network image
+      return Image.network(
+        imagePath,
+        fit: BoxFit.cover,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            color: Colors.grey[300],
+            child: Center(
+              child: CircularProgressIndicator(
+                value: loadingProgress.expectedTotalBytes != null
+                    ? loadingProgress.cumulativeBytesLoaded /
+                          loadingProgress.expectedTotalBytes!
+                    : null,
+              ),
+            ),
+          );
+        },
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            color: Colors.grey[300],
+            child: Icon(Icons.restaurant, color: Colors.grey[600], size: 32),
+          );
+        },
+      );
+    } else {
+      // Local asset image
+      return Image.asset(
+        imagePath,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            color: Colors.grey[300],
+            child: Icon(Icons.restaurant, color: Colors.grey[600], size: 32),
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -57,20 +100,7 @@ class MenuItemCard extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: imagePath.isNotEmpty
-                    ? Image.asset(
-                        imagePath,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            color: Colors.grey[300],
-                            child: Icon(
-                              Icons.restaurant,
-                              color: Colors.grey[600],
-                              size: 32,
-                            ),
-                          );
-                        },
-                      )
+                    ? _buildImageWidget(imagePath)
                     : Container(
                         color: Colors.grey[300],
                         child: Icon(

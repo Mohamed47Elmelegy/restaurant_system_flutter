@@ -7,6 +7,7 @@ import '../../features/auth/presentation/pages/signup_page.dart';
 import '../../features/Home/presentation/pages/home_page.dart';
 import '../../features/admin/presentation/pages/admin.dart';
 import '../../features/admin/presentation/pages/add_items/presentation/pages/admin_add_item_page.dart';
+import '../../features/admin/presentation/pages/meal_times/presentation/pages/meal_time_management_page.dart';
 import 'app_routes.dart';
 
 Route<dynamic>? appRouter(RouteSettings settings) {
@@ -27,6 +28,8 @@ Route<dynamic>? appRouter(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => const AdminMainView());
     case AppRoutes.adminAddItem:
       return MaterialPageRoute(builder: (_) => const AdminAddItemPage());
+    case AppRoutes.adminMealTimes:
+      return MaterialPageRoute(builder: (_) => const MealTimeManagementPage());
 
     default:
       return MaterialPageRoute(
