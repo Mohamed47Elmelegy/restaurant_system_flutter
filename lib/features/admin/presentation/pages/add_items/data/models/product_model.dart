@@ -1,26 +1,46 @@
 import '../../domain/entities/product.dart';
 
-class ProductModel extends Product {
+class ProductModel {
+  final int? id;
+  final String name;
+  final String nameAr;
+  final String? description;
+  final String? descriptionAr;
+  final double price;
+  final int mainCategoryId;
+  final int? subCategoryId;
+  final String? imageUrl;
+  final bool isAvailable;
+  final double? rating;
+  final int? reviewCount;
+  final int? preparationTime;
+  final List<String>? ingredients;
+  final List<String>? allergens;
+  final bool isFeatured;
+  final int? sortOrder;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+
   const ProductModel({
-    super.id,
-    required super.name,
-    required super.nameAr,
-    super.description,
-    super.descriptionAr,
-    required super.price,
-    required super.mainCategoryId,
-    super.subCategoryId,
-    super.imageUrl,
-    super.isAvailable,
-    super.rating,
-    super.reviewCount,
-    super.preparationTime,
-    super.ingredients,
-    super.allergens,
-    super.isFeatured,
-    super.sortOrder,
-    super.createdAt,
-    super.updatedAt,
+    required this.id,
+    required this.name,
+    required this.nameAr,
+    this.description,
+    this.descriptionAr,
+    required this.price,
+    required this.mainCategoryId,
+    this.subCategoryId,
+    this.imageUrl,
+    this.isAvailable = true,
+    this.rating,
+    this.reviewCount,
+    this.preparationTime,
+    this.ingredients,
+    this.allergens,
+    this.isFeatured = false,
+    this.sortOrder,
+    this.createdAt,
+    this.updatedAt,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
@@ -54,6 +74,31 @@ class ProductModel extends Product {
       updatedAt: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'])
           : null,
+    );
+  }
+
+  /// Create ProductModel from Product entity
+  factory ProductModel.fromEntity(Product entity) {
+    return ProductModel(
+      id: entity.id,
+      name: entity.name,
+      nameAr: entity.nameAr,
+      description: entity.description,
+      descriptionAr: entity.descriptionAr,
+      price: entity.price,
+      mainCategoryId: entity.mainCategoryId,
+      subCategoryId: entity.subCategoryId,
+      imageUrl: entity.imageUrl,
+      isAvailable: entity.isAvailable,
+      rating: entity.rating,
+      reviewCount: entity.reviewCount,
+      preparationTime: entity.preparationTime,
+      ingredients: entity.ingredients,
+      allergens: entity.allergens,
+      isFeatured: entity.isFeatured,
+      sortOrder: entity.sortOrder,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
     );
   }
 
@@ -126,5 +171,64 @@ class ProductModel extends Product {
       createdAt: createdAt,
       updatedAt: updatedAt,
     );
+  }
+
+  /// Create a copy of this model with updated fields
+  ProductModel copyWith({
+    int? id,
+    String? name,
+    String? nameAr,
+    String? description,
+    String? descriptionAr,
+    double? price,
+    int? mainCategoryId,
+    int? subCategoryId,
+    String? imageUrl,
+    bool? isAvailable,
+    double? rating,
+    int? reviewCount,
+    int? preparationTime,
+    List<String>? ingredients,
+    List<String>? allergens,
+    bool? isFeatured,
+    int? sortOrder,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return ProductModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      nameAr: nameAr ?? this.nameAr,
+      description: description ?? this.description,
+      descriptionAr: descriptionAr ?? this.descriptionAr,
+      price: price ?? this.price,
+      mainCategoryId: mainCategoryId ?? this.mainCategoryId,
+      subCategoryId: subCategoryId ?? this.subCategoryId,
+      imageUrl: imageUrl ?? this.imageUrl,
+      isAvailable: isAvailable ?? this.isAvailable,
+      rating: rating ?? this.rating,
+      reviewCount: reviewCount ?? this.reviewCount,
+      preparationTime: preparationTime ?? this.preparationTime,
+      ingredients: ingredients ?? this.ingredients,
+      allergens: allergens ?? this.allergens,
+      isFeatured: isFeatured ?? this.isFeatured,
+      sortOrder: sortOrder ?? this.sortOrder,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is ProductModel && other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
+
+  @override
+  String toString() {
+    return 'ProductModel(id: $id, name: $name, price: $price, isAvailable: $isAvailable)';
   }
 }

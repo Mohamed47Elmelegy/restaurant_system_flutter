@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../../../../../../core/theme/theme_helper.dart';
 import '../../../../../../../core/utils/responsive_helper.dart';
 import '../cubit/product_events.dart';
 import '../cubit/product_states.dart';
 import '../widgets/index.dart';
 import '../cubit/product_cubit.dart';
-import '../../domain/entities/product.dart';
+import '../../domain/usecases/create_product_usecase.dart';
 import '../../../../../../../core/di/service_locator.dart';
 
 class AdminAddItemPage extends StatefulWidget {
@@ -20,34 +19,29 @@ class AdminAddItemPage extends StatefulWidget {
 
 class _AdminAddItemPageState extends State<AdminAddItemPage> {
   final _formKey = GlobalKey<FormState>();
-  final _storage = FlutterSecureStorage();
 
-  // Controllers for English fields
+  // ✅ Controllers فقط
   final _nameController = TextEditingController();
   final _priceController = TextEditingController();
   final _detailsController = TextEditingController();
-
-  // Controllers for Arabic fields
   final _nameArController = TextEditingController();
   final _detailsArController = TextEditingController();
-
-  // Additional product fields
   final _preparationTimeController = TextEditingController();
   final _sortOrderController = TextEditingController();
 
-  // Lists for ingredients and allergens
-  List<String> _selectedIngredients = [];
-  List<String> _selectedAllergens = [];
-
-  // Product settings
+  // ✅ Product settings
   bool _isAvailable = true;
   bool _isFeatured = false;
 
-  // Category selection
+  // ✅ Category selection
   String? _selectedMainCategory;
   String? _selectedSubCategory;
 
-  // Existing fields
+  // ✅ Lists for ingredients and allergens
+  List<String> _selectedIngredients = [];
+  List<String> _selectedAllergens = [];
+
+  // ✅ Existing fields
   List<String> _uploadedImages = <String>[];
   bool _isPickupSelected = false;
   bool _isDeliverySelected = false;
@@ -81,6 +75,20 @@ class _AdminAddItemPageState extends State<AdminAddItemPage> {
               ),
             );
             Navigator.pop(context);
+          } else if (state is ProductValidationError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('خطأ في البيانات: ${state.message}'),
+                backgroundColor: Colors.orange,
+              ),
+            );
+          } else if (state is ProductAuthError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('خطأ في المصادقة: ${state.message}'),
+                backgroundColor: Colors.red,
+              ),
+            );
           } else if (state is ProductError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -138,8 +146,7 @@ class _AdminAddItemPageState extends State<AdminAddItemPage> {
                         onMainCategoryChanged: (category) {
                           setState(() {
                             _selectedMainCategory = category;
-                            _selectedSubCategory =
-                                null; // Reset sub category when main changes
+                            _selectedSubCategory = null;
                           });
                         },
                         onSubCategoryChanged: (category) {
@@ -270,34 +277,11 @@ class _AdminAddItemPageState extends State<AdminAddItemPage> {
     });
   }
 
-  void _onSaveChanges(BuildContext context) async {
+  // ✅ UI method مبسط - إنشاء Params فقط
+  void _onSaveChanges(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      // فحص وجود الـ token أولاً
-      final token = await _storage.read(key: 'token');
-
-      if (token == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'خطأ: لم يتم العثور على بيانات تسجيل الدخول. يرجى تسجيل الدخول مرة أخرى.',
-            ),
-            backgroundColor: Colors.red,
-          ),
-        );
-        return;
-      }
-
-      // عرض رسالة تأكيد للمستخدم
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('جاري إنشاء المنتج...'),
-          backgroundColor: Colors.blue,
-          duration: Duration(seconds: 2),
-        ),
-      );
-
-      // Create Product entity from form data
-      final product = Product(
+      // ✅ إنشاء Params فقط
+      final params = CreateProductParams(
         name: _nameController.text.trim(),
         nameAr: _nameArController.text.trim(),
         description: _detailsController.text.trim(),
@@ -322,11 +306,11 @@ class _AdminAddItemPageState extends State<AdminAddItemPage> {
         allergens: _selectedAllergens.isNotEmpty ? _selectedAllergens : null,
       );
 
-      // Create product using Bloc - Fixed: Use BlocProvider.of with listen: false
+      // ✅ إرسال Params فقط
       BlocProvider.of<ProductCubit>(
         context,
         listen: false,
-      ).add(CreateProduct(product));
+      ).add(CreateProduct(params));
     }
   }
 }

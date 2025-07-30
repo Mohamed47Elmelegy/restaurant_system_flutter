@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../../features/admin/presentation/pages/add_items/data/datasources/remoteDataSource/product_remote_data_source.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/domain/usecases/login_usecase.dart';
@@ -34,7 +35,7 @@ import '../../features/admin/presentation/pages/meal_times/domain/usecases/updat
 import '../../features/admin/presentation/pages/meal_times/presentation/bloc/meal_time_bloc.dart';
 import '../../core/network/dio_client.dart';
 import '../../core/network/simple_interceptor.dart';
-import '../../features/admin/presentation/pages/add_items/data/datasources/product_remote_data_source.dart';
+import '../../features/admin/presentation/pages/add_items/data/datasources/remoteDataSource/product_remote_data_source_imp.dart';
 import '../../features/admin/presentation/pages/add_items/data/repositories/product_repository_impl.dart';
 import '../../features/admin/presentation/pages/add_items/domain/repositories/product_repository.dart';
 import '../../features/admin/presentation/pages/add_items/domain/usecases/get_products_usecase.dart';

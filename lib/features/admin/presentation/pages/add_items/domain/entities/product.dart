@@ -43,46 +43,7 @@ class Product extends Equatable {
     this.updatedAt,
   });
 
-  /// Get display name based on current locale
-  String getDisplayName({bool isArabic = true}) {
-    return isArabic ? nameAr : name;
-  }
-
-  /// Get description based on current locale
-  String? getDescription({bool isArabic = true}) {
-    return isArabic ? descriptionAr : description;
-  }
-
-  /// Get formatted price with currency
-  String getFormattedPrice() {
-    return '${price.toStringAsFixed(2)} ر.س';
-  }
-
-  /// Get preparation time text
-  String getPreparationTimeText() {
-    if (preparationTime == null || preparationTime == 0) {
-      return 'غير محدد';
-    }
-    return '$preparationTime دقيقة';
-  }
-
-  /// Get rating text
-  String getRatingText() {
-    if (rating == null || reviewCount == null) {
-      return 'لا توجد تقييمات';
-    }
-    return '$rating ($reviewCount تقييم)';
-  }
-
-  /// Check if product is popular
-  bool get isPopular {
-    return (rating ?? 0) >= 4.0 && (reviewCount ?? 0) >= 5;
-  }
-
-  /// Check if product is expensive
-  bool get isExpensive {
-    return price > 30.0; // يمكن تعديل هذا المعيار
-  }
+ 
 
   @override
   List<Object?> get props => [
@@ -149,5 +110,45 @@ class Product extends Equatable {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
+  }
+   /// Get display name based on current locale
+  String getDisplayName({bool isArabic = true}) {
+    return isArabic ? nameAr : name;
+  }
+
+  /// Get description based on current locale
+  String? getDescription({bool isArabic = true}) {
+    return isArabic ? descriptionAr : description;
+  }
+
+  /// Get formatted price with currency
+  String getFormattedPrice() {
+    return '${price.toStringAsFixed(2)} ر.س';
+  }
+
+  /// Get preparation time text
+  String getPreparationTimeText() {
+    if (preparationTime == null || preparationTime == 0) {
+      return 'غير محدد';
+    }
+    return '$preparationTime دقيقة';
+  }
+
+  /// Get rating text
+  String getRatingText() {
+    if (rating == null || reviewCount == null) {
+      return 'لا توجد تقييمات';
+    }
+    return '$rating ($reviewCount تقييم)';
+  }
+
+  /// Check if product is popular
+  bool get isPopular {
+    return (rating ?? 0) >= 4.0 && (reviewCount ?? 0) >= 5;
+  }
+
+  /// Check if product is expensive
+  bool get isExpensive {
+    return price > 30.0; // يمكن تعديل هذا المعيار
   }
 }

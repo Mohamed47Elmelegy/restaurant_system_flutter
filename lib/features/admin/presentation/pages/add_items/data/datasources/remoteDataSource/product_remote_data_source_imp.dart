@@ -1,17 +1,9 @@
-import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:developer';
-import '../../../../../../../core/network/api_path.dart';
-import '../models/product_model.dart';
-
-abstract class ProductRemoteDataSource {
-  Future<List<ProductModel>> getProducts();
-  Future<ProductModel> createProduct(ProductModel product);
-  Future<ProductModel> updateProduct(ProductModel product);
-  Future<void> deleteProduct(int id);
-  Future<ProductModel> getProductById(int id);
-}
+import '../../../../../../../../core/network/api_path.dart';
+import '../../models/product_model.dart';
+import 'product_remote_data_source.dart';
 
 class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   final Dio dio;
@@ -37,6 +29,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
         final Map<String, dynamic> responseData = response.data;
         if (responseData['success'] == true) {
           final List<dynamic> productsData = responseData['data'];
+          // ✅ استخدام fromJson() للتحويل من JSON
           return productsData
               .map((json) => ProductModel.fromJson(json))
               .toList();
@@ -75,6 +68,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
             'Authorization': 'Bearer $token',
           },
         ),
+        // ✅ استخدام toJson() للتحويل إلى JSON
         data: product.toJson(),
       );
 
@@ -88,6 +82,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
       if (response.statusCode == 201) {
         final Map<String, dynamic> responseData = response.data;
         if (responseData['success'] == true) {
+          // ✅ استخدام fromJson() للتحويل من JSON
           return ProductModel.fromJson(responseData['data']);
         } else {
           throw Exception(
@@ -106,20 +101,25 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   @override
   Future<ProductModel> updateProduct(ProductModel product) async {
     try {
+      final token = await storage.read(key: 'token');
+
       final response = await dio.put(
         ApiPath.adminProduct(product.id!),
         options: Options(
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
           },
         ),
+        // ✅ استخدام toJson() للتحويل إلى JSON
         data: product.toJson(),
       );
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = response.data;
         if (responseData['success'] == true) {
+          // ✅ استخدام fromJson() للتحويل من JSON
           return ProductModel.fromJson(responseData['data']);
         } else {
           throw Exception(
@@ -128,28 +128,6 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
         }
       } else {
         throw Exception('Failed to update product: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Network error: $e');
-    }
-  }
-
-  @override
-  Future<void> deleteProduct(int id) async {
-    try {
-      final response = await dio.delete(
-        ApiPath.adminProduct(id),
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-        ),
-      );
-
-      if (response.statusCode != 200) {
-        final Map<String, dynamic> responseData = response.data;
-        throw Exception(responseData['message'] ?? 'Failed to delete product');
       }
     } catch (e) {
       throw Exception('Network error: $e');
@@ -172,6 +150,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = response.data;
         if (responseData['success'] == true) {
+          // ✅ استخدام fromJson() للتحويل من JSON
           return ProductModel.fromJson(responseData['data']);
         } else {
           throw Exception(responseData['message'] ?? 'Failed to load product');

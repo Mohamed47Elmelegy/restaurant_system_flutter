@@ -18,7 +18,6 @@ class ProductCubit extends Bloc<ProductEvent, ProductState> {
     on<LoadProducts>(_onLoadProducts);
     on<CreateProduct>(_onCreateProduct);
     on<UpdateProduct>(_onUpdateProduct);
-    on<DeleteProduct>(_onDeleteProduct);
     on<ResetProductForm>(_onResetProductForm);
     on<ValidateProduct>(_onValidateProduct);
   }
@@ -47,10 +46,11 @@ class ProductCubit extends Bloc<ProductEvent, ProductState> {
   ) async {
     emit(ProductLoading());
     try {
-      log('🔄 ProductCubit: Creating product - ${event.product.name}');
-      log('🔄 ProductCubit: Product data - ${event.product.toString()}');
+      log('🔄 ProductCubit: Creating product - ${event.params.name}');
+      log('🔄 ProductCubit: Product params - ${event.params.toString()}');
 
-      final createdProduct = await createProductUseCase(event.product);
+      // ✅ استخدام UseCase مع Params
+      final createdProduct = await createProductUseCase(event.params);
 
       log(
         '✅ ProductCubit: Product created successfully - ${createdProduct.name}',
@@ -60,7 +60,18 @@ class ProductCubit extends Bloc<ProductEvent, ProductState> {
       emit(ProductCreated(createdProduct));
     } catch (e) {
       log('❌ ProductCubit: Failed to create product - $e');
-      emit(ProductError(e.toString()));
+
+      // ✅ معالجة أخطاء مختلفة
+      if (e.toString().contains('اسم المنتج') ||
+          e.toString().contains('السعر') ||
+          e.toString().contains('فئة')) {
+        emit(ProductValidationError(e.toString()));
+      } else if (e.toString().contains('تسجيل الدخول') ||
+          e.toString().contains('مصادقة')) {
+        emit(ProductAuthError(e.toString()));
+      } else {
+        emit(ProductError(e.toString()));
+      }
     }
   }
 
@@ -70,42 +81,28 @@ class ProductCubit extends Bloc<ProductEvent, ProductState> {
   ) async {
     emit(ProductLoading());
     try {
-      log('🔄 ProductCubit: Updating product - ${event.product.name}');
-      log('🔄 ProductCubit: Product data - ${event.product.toString()}');
+      log('🔄 ProductCubit: Updating product - ${event.params.name}');
+      log('🔄 ProductCubit: Product params - ${event.params.toString()}');
 
       // TODO: Implement UpdateProductUseCase
-      // final updatedProduct = await updateProductUseCase(event.product);
+      // final updatedProduct = await updateProductUseCase(event.params);
 
       log(
-        '✅ ProductCubit: Product updated successfully - ${event.product.name}',
+        '✅ ProductCubit: Product updated successfully - ${event.params.name}',
       );
-      log('✅ ProductCubit: Updated product ID - ${event.product.id}');
 
-      emit(ProductUpdated(event.product));
+      emit(
+        ProductUpdated(
+          Product(
+            name: event.params.name,
+            nameAr: event.params.nameAr,
+            price: event.params.price,
+            mainCategoryId: event.params.mainCategoryId,
+          ),
+        ),
+      );
     } catch (e) {
       log('❌ ProductCubit: Failed to update product - $e');
-      emit(ProductError(e.toString()));
-    }
-  }
-
-  Future<void> _onDeleteProduct(
-    DeleteProduct event,
-    Emitter<ProductState> emit,
-  ) async {
-    emit(ProductLoading());
-    try {
-      log('🔄 ProductCubit: Deleting product with ID - ${event.productId}');
-
-      // TODO: Implement DeleteProductUseCase
-      // await deleteProductUseCase(event.productId);
-
-      log(
-        '✅ ProductCubit: Product deleted successfully - ID: ${event.productId}',
-      );
-
-      emit(ProductDeleted(event.productId));
-    } catch (e) {
-      log('❌ ProductCubit: Failed to delete product - $e');
       emit(ProductError(e.toString()));
     }
   }
@@ -116,25 +113,38 @@ class ProductCubit extends Bloc<ProductEvent, ProductState> {
   }
 
   void _onValidateProduct(ValidateProduct event, Emitter<ProductState> emit) {
-    log('🔄 ProductCubit: Validating product - ${event.product.name}');
+    log('🔄 ProductCubit: Validating product - ${event.params.name}');
 
     final errors = <String>[];
 
-    // Basic validation
-    if (event.product.name.isEmpty) {
+    // ✅ Basic validation
+    if (event.params.name.isEmpty) {
       errors.add('اسم المنتج مطلوب');
     }
 
-    if (event.product.nameAr.isEmpty) {
+    if (event.params.nameAr.isEmpty) {
       errors.add('اسم المنتج بالعربية مطلوب');
     }
 
-    if (event.product.price <= 0) {
+    if (event.params.price <= 0) {
       errors.add('السعر يجب أن يكون أكبر من صفر');
     }
 
-    if (event.product.mainCategoryId <= 0) {
+    if (event.params.mainCategoryId <= 0) {
       errors.add('يجب اختيار فئة رئيسية');
+    }
+
+    // ✅ Additional validations
+    if (event.params.name.length < 2) {
+      errors.add('اسم المنتج يجب أن يكون أكثر من حرفين');
+    }
+
+    if (event.params.nameAr.length < 2) {
+      errors.add('اسم المنتج بالعربية يجب أن يكون أكثر من حرفين');
+    }
+
+    if (event.params.price > 1000) {
+      errors.add('السعر يجب أن يكون أقل من 1000');
     }
 
     final isValid = errors.isEmpty;

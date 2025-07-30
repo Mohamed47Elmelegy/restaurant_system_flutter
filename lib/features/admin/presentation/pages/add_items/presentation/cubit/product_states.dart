@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import '../../domain/entities/product.dart';
 
-// States
 abstract class ProductState extends Equatable {
   const ProductState();
 
@@ -40,33 +39,41 @@ class ProductUpdated extends ProductState {
   List<Object?> get props => [product];
 }
 
-class ProductDeleted extends ProductState {
-  final int productId;
+class ProductValidationError extends ProductState {
+  final String message;
 
-  const ProductDeleted(this.productId);
+  const ProductValidationError(this.message);
 
   @override
-  List<Object?> get props => [productId];
+  List<Object?> get props => [message];
 }
+
+class ProductAuthError extends ProductState {
+  final String message;
+
+  const ProductAuthError(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class ProductError extends ProductState {
+  final String message;
+
+  const ProductError(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class ProductFormReset extends ProductState {}
 
 class ProductFormValidated extends ProductState {
   final bool isValid;
   final List<String> errors;
 
-  const ProductFormValidated({required this.isValid, this.errors = const []});
+  const ProductFormValidated({required this.isValid, required this.errors});
 
   @override
   List<Object?> get props => [isValid, errors];
-}
-
-class ProductFormReset extends ProductState {}
-
-class ProductError extends ProductState {
-  final String message;
-  final String? code;
-
-  const ProductError(this.message, {this.code});
-
-  @override
-  List<Object?> get props => [message, code];
 }
