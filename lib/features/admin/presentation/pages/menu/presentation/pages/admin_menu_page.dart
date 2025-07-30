@@ -6,6 +6,10 @@ import '../widgets/menu_filter_tabs.dart';
 import '../widgets/menu_item_card.dart';
 import '../bloc/menu_cubit.dart';
 import '../../domain/entities/menu_item.dart';
+import '../../domain/usecases/load_menu_items_by_category_usecase.dart';
+import '../../domain/usecases/search_menu_items_usecase.dart';
+import '../../domain/usecases/delete_menu_item_usecase.dart';
+import '../../domain/usecases/toggle_menu_item_availability_usecase.dart';
 import '../../../../../../../core/di/service_locator.dart';
 
 class AdminMenuPage extends StatefulWidget {
@@ -66,7 +70,11 @@ class _AdminMenuPageState extends State<AdminMenuPage> {
                                   cubit.add(LoadMenuItems());
                                 } else {
                                   cubit.add(
-                                    LoadMenuItemsByCategory(_categories[index]),
+                                    LoadMenuItemsByCategory(
+                                      LoadMenuItemsByCategoryParams(
+                                        category: _categories[index],
+                                      ),
+                                    ),
                                   );
                                 }
                               },
@@ -319,7 +327,9 @@ class _AdminMenuPageState extends State<AdminMenuPage> {
             onPressed: () {
               Navigator.pop(context);
               // Use service locator instead of context
-              getIt<MenuCubit>().add(DeleteMenuItem(item.id));
+              getIt<MenuCubit>().add(
+                DeleteMenuItem(DeleteMenuItemParams(id: item.id)),
+              );
 
               // Auto refresh after deletion
               _refreshMenuItems();
@@ -341,7 +351,13 @@ class _AdminMenuPageState extends State<AdminMenuPage> {
       cubit.add(LoadMenuItems());
     } else {
       // If specific category is selected, reload items for that category
-      cubit.add(LoadMenuItemsByCategory(_categories[_selectedCategoryIndex]));
+      cubit.add(
+        LoadMenuItemsByCategory(
+          LoadMenuItemsByCategoryParams(
+            category: _categories[_selectedCategoryIndex],
+          ),
+        ),
+      );
     }
   }
 

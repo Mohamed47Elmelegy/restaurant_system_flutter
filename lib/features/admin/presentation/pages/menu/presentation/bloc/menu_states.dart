@@ -130,6 +130,24 @@ class MenuError extends MenuState {
   List<Object?> get props => [message, code];
 }
 
+class MenuValidationError extends MenuState {
+  final String message;
+
+  const MenuValidationError(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class MenuAuthError extends MenuState {
+  final String message;
+
+  const MenuAuthError(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
 class MenuEmpty extends MenuState {
   final String? message;
   final String? selectedCategory;

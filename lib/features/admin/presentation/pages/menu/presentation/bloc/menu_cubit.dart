@@ -2,14 +2,36 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:developer';
 import '../../domain/entities/menu_item.dart';
 import '../../domain/repositories/menu_repository.dart';
+import '../../domain/usecases/load_menu_items_usecase.dart';
+import '../../domain/usecases/load_menu_items_by_category_usecase.dart';
+import '../../domain/usecases/search_menu_items_usecase.dart';
+import '../../domain/usecases/delete_menu_item_usecase.dart';
+import '../../domain/usecases/toggle_menu_item_availability_usecase.dart';
 import 'menu_events.dart';
 import 'menu_states.dart';
 
 // Cubit
 class MenuCubit extends Bloc<MenuEvent, MenuState> {
   final MenuRepository menuRepository;
+  final LoadMenuItemsUseCase loadMenuItemsUseCase;
+  final LoadMenuItemsByCategoryUseCase loadMenuItemsByCategoryUseCase;
+  final SearchMenuItemsUseCase searchMenuItemsUseCase;
+  final DeleteMenuItemUseCase deleteMenuItemUseCase;
+  final ToggleMenuItemAvailabilityUseCase toggleMenuItemAvailabilityUseCase;
 
-  MenuCubit({required this.menuRepository}) : super(MenuInitial()) {
+  MenuCubit({required this.menuRepository})
+    : loadMenuItemsUseCase = LoadMenuItemsUseCase(repository: menuRepository),
+      loadMenuItemsByCategoryUseCase = LoadMenuItemsByCategoryUseCase(
+        repository: menuRepository,
+      ),
+      searchMenuItemsUseCase = SearchMenuItemsUseCase(
+        repository: menuRepository,
+      ),
+      deleteMenuItemUseCase = DeleteMenuItemUseCase(repository: menuRepository),
+      toggleMenuItemAvailabilityUseCase = ToggleMenuItemAvailabilityUseCase(
+        repository: menuRepository,
+      ),
+      super(MenuInitial()) {
     on<LoadMenuItems>(_onLoadMenuItems);
     on<LoadMenuItemsByCategory>(_onLoadMenuItemsByCategory);
     on<SearchMenuItems>(_onSearchMenuItems);
@@ -33,7 +55,7 @@ class MenuCubit extends Bloc<MenuEvent, MenuState> {
     emit(MenuLoading());
     try {
       log('🔄 MenuCubit: Loading menu items...');
-      final menuItems = await menuRepository.getMenuItems();
+      final menuItems = await loadMenuItemsUseCase();
       final categories = await menuRepository.getCategories();
 
       log(
@@ -44,7 +66,7 @@ class MenuCubit extends Bloc<MenuEvent, MenuState> {
       emit(MenuItemsLoaded(menuItems, categories: categories));
     } catch (e) {
       log('❌ MenuCubit: Failed to load menu items - $e');
-      emit(MenuError(e.toString()));
+      _handleError(e, emit);
     }
   }
 
@@ -54,10 +76,10 @@ class MenuCubit extends Bloc<MenuEvent, MenuState> {
   ) async {
     emit(MenuLoading());
     try {
-      log('🔄 MenuCubit: Loading menu items for category: ${event.category}');
-      final menuItems = await menuRepository.getMenuItemsByCategory(
-        event.category,
+      log(
+        '🔄 MenuCubit: Loading menu items for category: ${event.params.category}',
       );
+      final menuItems = await loadMenuItemsByCategoryUseCase(event.params);
       final categories = await menuRepository.getCategories();
 
       log(
@@ -68,21 +90,21 @@ class MenuCubit extends Bloc<MenuEvent, MenuState> {
         emit(
           MenuEmpty(
             message: 'لا توجد منتجات في هذه الفئة',
-            selectedCategory: event.category,
+            selectedCategory: event.params.category,
           ),
         );
       } else {
         emit(
           MenuItemsLoaded(
             menuItems,
-            selectedCategory: event.category,
+            selectedCategory: event.params.category,
             categories: categories,
           ),
         );
       }
     } catch (e) {
       log('❌ MenuCubit: Failed to load menu items by category - $e');
-      emit(MenuError(e.toString()));
+      _handleError(e, emit);
     }
   }
 
@@ -92,18 +114,20 @@ class MenuCubit extends Bloc<MenuEvent, MenuState> {
   ) async {
     emit(MenuLoading());
     try {
-      log('🔄 MenuCubit: Searching menu items with query: ${event.query}');
-      final menuItems = await menuRepository.searchMenuItems(event.query);
+      log(
+        '🔄 MenuCubit: Searching menu items with query: ${event.params.query}',
+      );
+      final menuItems = await searchMenuItemsUseCase(event.params);
       log('✅ MenuCubit: Search completed - ${menuItems.length} items found');
 
       if (menuItems.isEmpty) {
-        emit(MenuSearchResults([], event.query));
+        emit(MenuSearchResults([], event.params.query));
       } else {
-        emit(MenuSearchResults(menuItems, event.query));
+        emit(MenuSearchResults(menuItems, event.params.query));
       }
     } catch (e) {
       log('❌ MenuCubit: Failed to search menu items - $e');
-      emit(MenuError(e.toString()));
+      _handleError(e, emit);
     }
   }
 
@@ -112,26 +136,20 @@ class MenuCubit extends Bloc<MenuEvent, MenuState> {
     Emitter<MenuState> emit,
   ) async {
     try {
-      log('🔄 MenuCubit: Deleting menu item with ID: ${event.id}');
-      final success = await menuRepository.deleteMenuItem(event.id);
+      log('🔄 MenuCubit: Deleting menu item with id: ${event.params.id}');
+      final success = await deleteMenuItemUseCase(event.params);
 
       if (success) {
         log('✅ MenuCubit: Menu item deleted successfully');
-        // Reload the current list after deletion
-        final currentState = state;
-        if (currentState is MenuItemsLoaded) {
-          final updatedItems = currentState.menuItems
-              .where((item) => item.id != event.id)
-              .toList();
-          emit(MenuItemDeleted(event.id, updatedItems));
-        }
+        // Reload menu items after deletion
+        final menuItems = await loadMenuItemsUseCase();
+        emit(MenuItemDeleted(event.params.id, menuItems));
       } else {
-        log('❌ MenuCubit: Failed to delete menu item');
-        emit(const MenuError('Failed to delete menu item'));
+        emit(MenuError('فشل في حذف المنتج'));
       }
     } catch (e) {
-      log('❌ MenuCubit: Error deleting menu item - $e');
-      emit(MenuError(e.toString()));
+      log('❌ MenuCubit: Failed to delete menu item - $e');
+      _handleError(e, emit);
     }
   }
 
@@ -139,91 +157,105 @@ class MenuCubit extends Bloc<MenuEvent, MenuState> {
     RefreshMenuItems event,
     Emitter<MenuState> emit,
   ) async {
-    log('🔄 MenuCubit: Refreshing menu items...');
-    add(LoadMenuItems());
+    emit(MenuLoading());
+    try {
+      log('🔄 MenuCubit: Refreshing menu items...');
+      final menuItems = await loadMenuItemsUseCase();
+      final categories = await menuRepository.getCategories();
+
+      log('✅ MenuCubit: Menu items refreshed - ${menuItems.length} items');
+      emit(MenuItemsLoaded(menuItems, categories: categories));
+    } catch (e) {
+      log('❌ MenuCubit: Failed to refresh menu items - $e');
+      _handleError(e, emit);
+    }
   }
 
-  void _onFilterMenuItems(FilterMenuItems event, Emitter<MenuState> emit) {
-    log(
-      '🔄 MenuCubit: Filtering menu items by ${event.filterType}: ${event.filterValue}',
-    );
-
-    final currentState = state;
-    if (currentState is MenuItemsLoaded) {
-      List<MenuItem> filteredItems = currentState.menuItems;
+  Future<void> _onFilterMenuItems(
+    FilterMenuItems event,
+    Emitter<MenuState> emit,
+  ) async {
+    try {
+      log('🔄 MenuCubit: Filtering menu items by ${event.filterType}');
+      final allItems = await loadMenuItemsUseCase();
+      List<MenuItem> filteredItems = [];
 
       switch (event.filterType) {
-        case 'price':
-          final maxPrice = event.filterValue as double;
-          filteredItems = filteredItems
-              .where((item) => double.parse(item.price) <= maxPrice)
+        case 'category':
+          filteredItems = allItems
+              .where((item) => item.category == event.filterValue)
               .toList();
           break;
-        case 'rating':
-          final minRating = event.filterValue as double;
-          filteredItems = filteredItems
-              .where((item) => item.rating >= minRating)
-              .toList();
+        case 'price':
+          final maxPrice = double.tryParse(event.filterValue.toString()) ?? 0.0;
+          filteredItems = allItems.where((item) {
+            final itemPrice = double.tryParse(item.price) ?? 0.0;
+            return itemPrice <= maxPrice;
+          }).toList();
           break;
         case 'availability':
           final isAvailable = event.filterValue as bool;
-          filteredItems = filteredItems
+          filteredItems = allItems
               .where((item) => item.isAvailable == isAvailable)
               .toList();
           break;
         default:
-          log('⚠️ MenuCubit: Unknown filter type: ${event.filterType}');
-          return;
+          filteredItems = allItems;
       }
 
+      log('✅ MenuCubit: Filtered items - ${filteredItems.length} items');
       emit(MenuFiltered(filteredItems, event.filterType, event.filterValue));
+    } catch (e) {
+      log('❌ MenuCubit: Failed to filter menu items - $e');
+      _handleError(e, emit);
     }
   }
 
-  void _onSortMenuItems(SortMenuItems event, Emitter<MenuState> emit) {
-    log(
-      '🔄 MenuCubit: Sorting menu items by ${event.sortBy} (ascending: ${event.ascending})',
-    );
-
-    final currentState = state;
-    if (currentState is MenuItemsLoaded) {
-      List<MenuItem> sortedItems = List.from(currentState.menuItems);
+  Future<void> _onSortMenuItems(
+    SortMenuItems event,
+    Emitter<MenuState> emit,
+  ) async {
+    try {
+      log('🔄 MenuCubit: Sorting menu items by ${event.sortBy}');
+      final allItems = await loadMenuItemsUseCase();
+      List<MenuItem> sortedItems = [];
 
       switch (event.sortBy) {
         case 'name':
-          sortedItems.sort(
-            (a, b) => event.ascending
-                ? a.name.compareTo(b.name)
-                : b.name.compareTo(a.name),
-          );
+          sortedItems = List.from(allItems)
+            ..sort(
+              (a, b) => event.ascending
+                  ? a.name.compareTo(b.name)
+                  : b.name.compareTo(a.name),
+            );
           break;
         case 'price':
-          sortedItems.sort(
-            (a, b) => event.ascending
-                ? double.parse(a.price).compareTo(double.parse(b.price))
-                : double.parse(b.price).compareTo(double.parse(a.price)),
-          );
+          sortedItems = List.from(allItems)
+            ..sort((a, b) {
+              final priceA = double.tryParse(a.price) ?? 0.0;
+              final priceB = double.tryParse(b.price) ?? 0.0;
+              return event.ascending
+                  ? priceA.compareTo(priceB)
+                  : priceB.compareTo(priceA);
+            });
           break;
         case 'rating':
-          sortedItems.sort(
-            (a, b) => event.ascending
-                ? a.rating.compareTo(b.rating)
-                : b.rating.compareTo(a.rating),
-          );
-          break;
-        case 'category':
-          sortedItems.sort(
-            (a, b) => event.ascending
-                ? a.category.compareTo(b.category)
-                : b.category.compareTo(a.category),
-          );
+          sortedItems = List.from(allItems)
+            ..sort(
+              (a, b) => event.ascending
+                  ? a.rating.compareTo(b.rating)
+                  : b.rating.compareTo(a.rating),
+            );
           break;
         default:
-          log('⚠️ MenuCubit: Unknown sort field: ${event.sortBy}');
-          return;
+          sortedItems = allItems;
       }
 
+      log('✅ MenuCubit: Sorted items - ${sortedItems.length} items');
       emit(MenuSorted(sortedItems, event.sortBy, event.ascending));
+    } catch (e) {
+      log('❌ MenuCubit: Failed to sort menu items - $e');
+      _handleError(e, emit);
     }
   }
 
@@ -238,7 +270,7 @@ class MenuCubit extends Bloc<MenuEvent, MenuState> {
       emit(MenuCategoriesLoaded(categories));
     } catch (e) {
       log('❌ MenuCubit: Failed to load categories - $e');
-      emit(MenuError(e.toString()));
+      _handleError(e, emit);
     }
   }
 
@@ -247,18 +279,30 @@ class MenuCubit extends Bloc<MenuEvent, MenuState> {
     Emitter<MenuState> emit,
   ) async {
     try {
-      log(
-        '🔄 MenuCubit: Toggling availability for item ${event.id} to ${event.isAvailable}',
+      log('🔄 MenuCubit: Toggling availability for item: ${event.params.id}');
+      final updatedItem = await toggleMenuItemAvailabilityUseCase(event.params);
+      log('✅ MenuCubit: Availability toggled successfully');
+      emit(
+        MenuItemAvailabilityToggled(event.params.id, event.params.isAvailable),
       );
-
-      // TODO: Implement toggle availability in repository
-      // await menuRepository.toggleMenuItemAvailability(event.id, event.isAvailable);
-
-      log('✅ MenuCubit: Item availability toggled successfully');
-      emit(MenuItemAvailabilityToggled(event.id, event.isAvailable));
     } catch (e) {
-      log('❌ MenuCubit: Failed to toggle item availability - $e');
-      emit(MenuError(e.toString()));
+      log('❌ MenuCubit: Failed to toggle availability - $e');
+      _handleError(e, emit);
+    }
+  }
+
+  void _handleError(dynamic error, Emitter<MenuState> emit) {
+    final errorMessage = error.toString();
+
+    if (errorMessage.contains('اسم الفئة') ||
+        errorMessage.contains('نص البحث') ||
+        errorMessage.contains('معرف المنتج')) {
+      emit(MenuValidationError(errorMessage));
+    } else if (errorMessage.contains('تسجيل الدخول') ||
+        errorMessage.contains('غير مصرح')) {
+      emit(MenuAuthError(errorMessage));
+    } else {
+      emit(MenuError(errorMessage));
     }
   }
 }

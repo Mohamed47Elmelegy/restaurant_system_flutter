@@ -1,4 +1,8 @@
 import 'package:equatable/equatable.dart';
+import '../../domain/usecases/load_menu_items_by_category_usecase.dart';
+import '../../domain/usecases/search_menu_items_usecase.dart';
+import '../../domain/usecases/delete_menu_item_usecase.dart';
+import '../../domain/usecases/toggle_menu_item_availability_usecase.dart';
 
 // Events
 abstract class MenuEvent extends Equatable {
@@ -11,30 +15,30 @@ abstract class MenuEvent extends Equatable {
 class LoadMenuItems extends MenuEvent {}
 
 class LoadMenuItemsByCategory extends MenuEvent {
-  final String category;
+  final LoadMenuItemsByCategoryParams params;
 
-  const LoadMenuItemsByCategory(this.category);
+  const LoadMenuItemsByCategory(this.params);
 
   @override
-  List<Object?> get props => [category];
+  List<Object?> get props => [params];
 }
 
 class SearchMenuItems extends MenuEvent {
-  final String query;
+  final SearchMenuItemsParams params;
 
-  const SearchMenuItems(this.query);
+  const SearchMenuItems(this.params);
 
   @override
-  List<Object?> get props => [query];
+  List<Object?> get props => [params];
 }
 
 class DeleteMenuItem extends MenuEvent {
-  final String id;
+  final DeleteMenuItemParams params;
 
-  const DeleteMenuItem(this.id);
+  const DeleteMenuItem(this.params);
 
   @override
-  List<Object?> get props => [id];
+  List<Object?> get props => [params];
 }
 
 class RefreshMenuItems extends MenuEvent {}
@@ -62,11 +66,10 @@ class SortMenuItems extends MenuEvent {
 class LoadMenuCategories extends MenuEvent {}
 
 class ToggleMenuItemAvailability extends MenuEvent {
-  final String id;
-  final bool isAvailable;
+  final ToggleMenuItemAvailabilityParams params;
 
-  const ToggleMenuItemAvailability(this.id, this.isAvailable);
+  const ToggleMenuItemAvailability(this.params);
 
   @override
-  List<Object?> get props => [id, isAvailable];
+  List<Object?> get props => [params];
 }
