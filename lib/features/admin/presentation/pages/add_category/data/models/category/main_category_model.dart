@@ -1,4 +1,4 @@
-import '../../../presentation/pages/add_items/domain/entities/category/main_category.dart';
+import '../../../../add_items/domain/entities/category/main_category.dart';
 import 'sub_category_model.dart';
 
 class MainCategoryModel extends MainCategory {

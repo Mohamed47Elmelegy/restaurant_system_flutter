@@ -1,4 +1,5 @@
-import '../../../presentation/pages/add_items/domain/entities/category/sub_category.dart';
+
+import '../../../../add_items/domain/entities/category/sub_category.dart';
 
 class SubCategoryModel extends SubCategory {
   const SubCategoryModel({

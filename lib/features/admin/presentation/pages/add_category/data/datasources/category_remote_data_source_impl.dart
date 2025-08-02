@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'dart:developer';
-import '../../../../core/network/api_path.dart';
-import '../../../../core/error/api_response.dart';
-import '../../../../core/error/simple_error.dart';
+import '../../../../../../../core/error/api_response.dart';
+import '../../../../../../../core/error/simple_error.dart';
+import '../../../../../../../core/network/api_path.dart';
 import '../models/category/main_category_model.dart';
 import 'category_remote_data_source.dart';
 
