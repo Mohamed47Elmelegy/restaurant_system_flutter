@@ -1,4 +1,7 @@
 import '../repositories/menu_repository.dart';
+import '../../../../../../../core/base/base_usecase.dart';
+import '../../../../../../../core/error/failures.dart';
+import 'package:dartz/dartz.dart';
 
 class DeleteMenuItemParams {
   final String id;
@@ -9,20 +12,21 @@ class DeleteMenuItemParams {
   String toString() => 'DeleteMenuItemParams(id: $id)';
 }
 
-class DeleteMenuItemUseCase {
+class DeleteMenuItemUseCase extends BaseUseCase<bool, DeleteMenuItemParams> {
   final MenuRepository repository;
 
   DeleteMenuItemUseCase({required this.repository});
 
-  Future<bool> call(DeleteMenuItemParams params) async {
+  @override
+  Future<Either<Failure, bool>> call(DeleteMenuItemParams params) async {
     try {
       if (params.id.isEmpty) {
-        throw Exception('معرف المنتج مطلوب');
+        return Left(ServerFailure(message: 'معرف المنتج مطلوب'));
       }
-      
+
       return await repository.deleteMenuItem(params.id);
     } catch (e) {
-      throw Exception('فشل في حذف المنتج: $e');
+      return Left(ServerFailure(message: 'فشل في حذف المنتج: $e'));
     }
   }
-} 
+}

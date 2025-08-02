@@ -1,7 +1,9 @@
 import 'package:equatable/equatable.dart';
+import '../../../../../../../core/base/base_entity.dart';
 
-class Product extends Equatable {
-  final int? id;
+/// 🟦 Product Entity - مبدأ المسؤولية الواحدة (SRP)
+/// مسؤول عن تمثيل منتج في الأعمال فقط
+class Product extends BaseEntity {
   final String name;
   final String nameAr;
   final String? description;
@@ -18,11 +20,9 @@ class Product extends Equatable {
   final List<String>? allergens;
   final bool isFeatured;
   final int? sortOrder;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
 
   const Product({
-    this.id,
+    required super.id,
     required this.name,
     required this.nameAr,
     this.description,
@@ -39,11 +39,59 @@ class Product extends Equatable {
     this.allergens,
     this.isFeatured = false,
     this.sortOrder,
-    this.createdAt,
-    this.updatedAt,
+    super.createdAt,
+    super.updatedAt,
   });
 
- 
+  /// Constructor for creating Product from existing data with int id
+  factory Product.fromIntId({
+    int? id,
+    required String name,
+    required String nameAr,
+    String? description,
+    String? descriptionAr,
+    required double price,
+    required int mainCategoryId,
+    int? subCategoryId,
+    String? imageUrl,
+    bool isAvailable = true,
+    double? rating,
+    int? reviewCount,
+    int? preparationTime,
+    List<String>? ingredients,
+    List<String>? allergens,
+    bool isFeatured = false,
+    int? sortOrder,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return Product(
+      id: id?.toString() ?? '',
+      name: name,
+      nameAr: nameAr,
+      description: description,
+      descriptionAr: descriptionAr,
+      price: price,
+      mainCategoryId: mainCategoryId,
+      subCategoryId: subCategoryId,
+      imageUrl: imageUrl,
+      isAvailable: isAvailable,
+      rating: rating,
+      reviewCount: reviewCount,
+      preparationTime: preparationTime,
+      ingredients: ingredients,
+      allergens: allergens,
+      isFeatured: isFeatured,
+      sortOrder: sortOrder,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+    );
+  }
+
+  /// Get int id for backward compatibility
+  int? get intId {
+    return int.tryParse(id);
+  }
 
   @override
   List<Object?> get props => [
@@ -68,8 +116,9 @@ class Product extends Equatable {
     updatedAt,
   ];
 
+  @override
   Product copyWith({
-    int? id,
+    String? id,
     String? name,
     String? nameAr,
     String? description,
@@ -111,7 +160,41 @@ class Product extends Equatable {
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
-   /// Get display name based on current locale
+
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'name_ar': nameAr,
+      'description': description,
+      'description_ar': descriptionAr,
+      'price': price,
+      'main_category_id': mainCategoryId,
+      'sub_category_id': subCategoryId,
+      'image_url': imageUrl,
+      'is_available': isAvailable,
+      'rating': rating,
+      'review_count': reviewCount,
+      'preparation_time': preparationTime,
+      'ingredients': ingredients,
+      'allergens': allergens,
+      'is_featured': isFeatured,
+      'sort_order': sortOrder,
+      'created_at': createdAt?.toIso8601String(),
+      'updated_at': updatedAt?.toIso8601String(),
+    };
+  }
+
+  @override
+  bool get isValid {
+    return name.isNotEmpty &&
+        nameAr.isNotEmpty &&
+        price > 0 &&
+        mainCategoryId > 0;
+  }
+
+  /// Get display name based on current locale
   String getDisplayName({bool isArabic = true}) {
     return isArabic ? nameAr : name;
   }

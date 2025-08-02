@@ -1,9 +1,36 @@
 import '../entities/menu_item.dart';
+import '../../../../../../../core/base/base_usecase.dart';
+import '../../../../../../../core/error/failures.dart';
+import 'package:dartz/dartz.dart';
+
+class ValidateMenuItemParams {
+  final MenuItem item;
+
+  const ValidateMenuItemParams({required this.item});
+
+  @override
+  String toString() => 'ValidateMenuItemParams(item: ${item.name})';
+}
 
 /// Use case for validating menu item data
-class ValidateMenuItemUseCase {
+class ValidateMenuItemUseCase
+    extends BaseUseCase<bool, ValidateMenuItemParams> {
   /// Validate menu item data
-  bool isValid(MenuItem item) {
+  @override
+  Future<Either<Failure, bool>> call(ValidateMenuItemParams params) async {
+    try {
+      final isValid = _isValid(params.item);
+      if (isValid) {
+        return const Right(true);
+      } else {
+        return Left(ServerFailure(message: 'Menu item validation failed'));
+      }
+    } catch (e) {
+      return Left(ServerFailure(message: 'Validation error: $e'));
+    }
+  }
+
+  bool _isValid(MenuItem item) {
     return item.id.isNotEmpty &&
         item.name.isNotEmpty &&
         item.category.isNotEmpty &&
@@ -46,6 +73,6 @@ class ValidateMenuItemUseCase {
 
   /// Check if menu item can be saved
   bool canBeSaved(MenuItem item) {
-    return isValid(item);
+    return _isValid(item);
   }
 }

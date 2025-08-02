@@ -1,5 +1,8 @@
 import '../repositories/menu_repository.dart';
 import '../entities/menu_item.dart';
+import '../../../../../../../core/base/base_usecase.dart';
+import '../../../../../../../core/error/failures.dart';
+import 'package:dartz/dartz.dart';
 
 class SearchMenuItemsParams {
   final String query;
@@ -10,24 +13,30 @@ class SearchMenuItemsParams {
   String toString() => 'SearchMenuItemsParams(query: $query)';
 }
 
-class SearchMenuItemsUseCase {
+class SearchMenuItemsUseCase
+    extends BaseUseCase<List<MenuItem>, SearchMenuItemsParams> {
   final MenuRepository repository;
 
   SearchMenuItemsUseCase({required this.repository});
 
-  Future<List<MenuItem>> call(SearchMenuItemsParams params) async {
+  @override
+  Future<Either<Failure, List<MenuItem>>> call(
+    SearchMenuItemsParams params,
+  ) async {
     try {
-      if (params.query.trim().isEmpty) {
-        throw Exception('نص البحث مطلوب');
+      if (params.query.isEmpty) {
+        return Left(ServerFailure(message: 'نص البحث مطلوب'));
       }
-      
-      if (params.query.trim().length < 2) {
-        throw Exception('نص البحث يجب أن يكون على الأقل حرفين');
+
+      if (params.query.length < 2) {
+        return Left(
+          ServerFailure(message: 'نص البحث يجب أن يكون أكثر من حرفين'),
+        );
       }
-      
-      return await repository.searchMenuItems(params.query.trim());
+
+      return await repository.searchMenuItems(params.query);
     } catch (e) {
-      throw Exception('فشل في البحث عن المنتجات: $e');
+      return Left(ServerFailure(message: 'فشل في البحث عن المنتجات: $e'));
     }
   }
-} 
+}

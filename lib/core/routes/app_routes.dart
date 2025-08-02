@@ -8,4 +8,5 @@ class AppRoutes {
   static const String admin = '/admin';
   static const String adminAddItem = '/admin/add-item';
   static const String adminMealTimes = '/admin/meal-times';
+  static const String adminCategories = '/admin/categories';  
 }

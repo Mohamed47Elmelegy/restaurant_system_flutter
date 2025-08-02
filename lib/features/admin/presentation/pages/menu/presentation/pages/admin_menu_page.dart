@@ -127,7 +127,7 @@ class _AdminMenuPageState extends State<AdminMenuPage> {
       final categories = await cubit.getCategories();
 
       setState(() {
-        _categories = ['All', ...categories];
+        _categories = ['All', ...categories.fold((l) => [], (r) => r)];
         _isLoadingCategories = false;
       });
 

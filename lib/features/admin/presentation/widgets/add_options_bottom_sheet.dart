@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../core/routes/app_routes.dart';
 import '../../../../core/theme/theme_helper.dart';
 
 class AddOptionsBottomSheet extends StatelessWidget {
@@ -51,7 +52,7 @@ class AddOptionsBottomSheet extends StatelessWidget {
                 subtitle: 'إضافة منتج جديد للقائمة',
                 onTap: () {
                   Navigator.pop(context);
-                  Navigator.pushNamed(context, '/admin/add-item');
+                  Navigator.pushNamed(context, AppRoutes.adminAddItem);
                 },
               ),
 
@@ -64,7 +65,7 @@ class AddOptionsBottomSheet extends StatelessWidget {
                 subtitle: 'إدارة الفئات الرئيسية والفرعية',
                 onTap: () {
                   Navigator.pop(context);
-                  Navigator.pushNamed(context, '/admin/categories');
+                  Navigator.pushNamed(context, AppRoutes.adminCategories);
                 },
               ),
 
@@ -77,7 +78,7 @@ class AddOptionsBottomSheet extends StatelessWidget {
                 subtitle: 'تحديد أوقات الفطار والغداء والعشاء',
                 onTap: () {
                   Navigator.pop(context);
-                  Navigator.pushNamed(context, '/admin/meal-times');
+                  Navigator.pushNamed(context, AppRoutes.adminMealTimes);
                 },
               ),
 

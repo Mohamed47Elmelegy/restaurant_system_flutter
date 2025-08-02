@@ -1,7 +1,10 @@
 import '../../domain/entities/product.dart';
+import '../../../../../../../core/base/base_model.dart';
 
-class ProductModel {
-  final int? id;
+/// 🟦 ProductModel - مبدأ المسؤولية الواحدة (SRP)
+/// مسؤول عن تحويل البيانات من/إلى JSON والـ Entity
+class ProductModel extends BaseModel<Product> {
+  final String id;
   final String name;
   final String nameAr;
   final String? description;
@@ -21,7 +24,7 @@ class ProductModel {
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
-  const ProductModel({
+  ProductModel({
     required this.id,
     required this.name,
     required this.nameAr,
@@ -43,9 +46,59 @@ class ProductModel {
     this.updatedAt,
   });
 
+  /// Constructor for creating ProductModel from existing data with int id
+  factory ProductModel.fromIntId({
+    int? id,
+    required String name,
+    required String nameAr,
+    String? description,
+    String? descriptionAr,
+    required double price,
+    required int mainCategoryId,
+    int? subCategoryId,
+    String? imageUrl,
+    bool isAvailable = true,
+    double? rating,
+    int? reviewCount,
+    int? preparationTime,
+    List<String>? ingredients,
+    List<String>? allergens,
+    bool isFeatured = false,
+    int? sortOrder,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return ProductModel(
+      id: id?.toString() ?? '',
+      name: name,
+      nameAr: nameAr,
+      description: description,
+      descriptionAr: descriptionAr,
+      price: price,
+      mainCategoryId: mainCategoryId,
+      subCategoryId: subCategoryId,
+      imageUrl: imageUrl,
+      isAvailable: isAvailable,
+      rating: rating,
+      reviewCount: reviewCount,
+      preparationTime: preparationTime,
+      ingredients: ingredients,
+      allergens: allergens,
+      isFeatured: isFeatured,
+      sortOrder: sortOrder,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+    );
+  }
+
+  /// Get int id for backward compatibility
+  int? get intId {
+    return int.tryParse(id);
+  }
+
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(
-      id: json['id'],
+      id: json['id']?.toString() ?? '',
       name: json['name'] ?? '',
       nameAr: json['name_ar'] ?? '',
       description: json['description'],
@@ -173,48 +226,28 @@ class ProductModel {
     );
   }
 
-  /// Create a copy of this model with updated fields
-  ProductModel copyWith({
-    int? id,
-    String? name,
-    String? nameAr,
-    String? description,
-    String? descriptionAr,
-    double? price,
-    int? mainCategoryId,
-    int? subCategoryId,
-    String? imageUrl,
-    bool? isAvailable,
-    double? rating,
-    int? reviewCount,
-    int? preparationTime,
-    List<String>? ingredients,
-    List<String>? allergens,
-    bool? isFeatured,
-    int? sortOrder,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-  }) {
+  @override
+  ProductModel copyWith(Map<String, dynamic> changes) {
     return ProductModel(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      nameAr: nameAr ?? this.nameAr,
-      description: description ?? this.description,
-      descriptionAr: descriptionAr ?? this.descriptionAr,
-      price: price ?? this.price,
-      mainCategoryId: mainCategoryId ?? this.mainCategoryId,
-      subCategoryId: subCategoryId ?? this.subCategoryId,
-      imageUrl: imageUrl ?? this.imageUrl,
-      isAvailable: isAvailable ?? this.isAvailable,
-      rating: rating ?? this.rating,
-      reviewCount: reviewCount ?? this.reviewCount,
-      preparationTime: preparationTime ?? this.preparationTime,
-      ingredients: ingredients ?? this.ingredients,
-      allergens: allergens ?? this.allergens,
-      isFeatured: isFeatured ?? this.isFeatured,
-      sortOrder: sortOrder ?? this.sortOrder,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
+      id: changes['id'] ?? id,
+      name: changes['name'] ?? name,
+      nameAr: changes['nameAr'] ?? nameAr,
+      description: changes['description'] ?? description,
+      descriptionAr: changes['descriptionAr'] ?? descriptionAr,
+      price: changes['price'] ?? price,
+      mainCategoryId: changes['mainCategoryId'] ?? mainCategoryId,
+      subCategoryId: changes['subCategoryId'] ?? subCategoryId,
+      imageUrl: changes['imageUrl'] ?? imageUrl,
+      isAvailable: changes['isAvailable'] ?? isAvailable,
+      rating: changes['rating'] ?? rating,
+      reviewCount: changes['reviewCount'] ?? reviewCount,
+      preparationTime: changes['preparationTime'] ?? preparationTime,
+      ingredients: changes['ingredients'] ?? ingredients,
+      allergens: changes['allergens'] ?? allergens,
+      isFeatured: changes['isFeatured'] ?? isFeatured,
+      sortOrder: changes['sortOrder'] ?? sortOrder,
+      createdAt: changes['createdAt'] ?? createdAt,
+      updatedAt: changes['updatedAt'] ?? updatedAt,
     );
   }
 

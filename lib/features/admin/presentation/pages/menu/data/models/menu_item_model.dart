@@ -1,7 +1,8 @@
 import '../../domain/entities/menu_item.dart';
+import '../../../../../../../core/base/base_model.dart';
 
-class MenuItemModel {
-  const MenuItemModel({
+class MenuItemModel extends BaseModel<MenuItem> {
+  MenuItemModel({
     required this.id,
     required this.name,
     required this.category,
@@ -23,14 +24,44 @@ class MenuItemModel {
   final String? description;
   final bool isAvailable;
 
+  /// Constructor for creating MenuItemModel from existing data with int id
+  factory MenuItemModel.fromIntId({
+    int? id,
+    required String name,
+    required String category,
+    required double rating,
+    required int reviewCount,
+    required String price,
+    required String imagePath,
+    String? description,
+    bool isAvailable = true,
+  }) {
+    return MenuItemModel(
+      id: id?.toString() ?? '',
+      name: name,
+      category: category,
+      rating: rating,
+      reviewCount: reviewCount,
+      price: price,
+      imagePath: imagePath,
+      description: description,
+      isAvailable: isAvailable,
+    );
+  }
+
+  /// Get int id for backward compatibility
+  int? get intId {
+    return int.tryParse(id);
+  }
+
   // Factory constructor from JSON
   factory MenuItemModel.fromJson(Map<String, dynamic> json) {
     return MenuItemModel(
-      id: json['id'] as String,
+      id: json['id']?.toString() ?? '',
       name: json['name'] as String,
       category: json['category'] as String,
       rating: _parseDouble(json['rating']),
-      reviewCount: json['reviewCount'] as int,
+      reviewCount: json['reviewCount'] as int? ?? 0,
       price: json['price'] as String,
       imagePath: json['imagePath'] as String,
       description: json['description'] as String?,
@@ -53,10 +84,10 @@ class MenuItemModel {
     return 0.0;
   }
 
-  // Convert to JSON
+  @override
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      if (id.isNotEmpty) 'id': id,
       'name': name,
       'category': category,
       'rating': rating,
@@ -66,6 +97,36 @@ class MenuItemModel {
       'description': description,
       'isAvailable': isAvailable,
     };
+  }
+
+  @override
+  MenuItem toEntity() {
+    return MenuItem(
+      id: id,
+      name: name,
+      category: category,
+      rating: rating,
+      reviewCount: reviewCount,
+      price: price,
+      imagePath: imagePath,
+      description: description,
+      isAvailable: isAvailable,
+    );
+  }
+
+  @override
+  MenuItemModel copyWith(Map<String, dynamic> changes) {
+    return MenuItemModel(
+      id: changes['id'] ?? id,
+      name: changes['name'] ?? name,
+      category: changes['category'] ?? category,
+      rating: changes['rating'] ?? rating,
+      reviewCount: changes['reviewCount'] ?? reviewCount,
+      price: changes['price'] ?? price,
+      imagePath: changes['imagePath'] ?? imagePath,
+      description: changes['description'] ?? description,
+      isAvailable: changes['isAvailable'] ?? isAvailable,
+    );
   }
 
   // Create from entity
@@ -82,49 +143,6 @@ class MenuItemModel {
       isAvailable: entity.isAvailable,
     );
   }
-
-  // Convert to entity
-  MenuItem toEntity() {
-    return MenuItem(
-      id: id,
-      name: name,
-      category: category,
-      rating: rating,
-      reviewCount: reviewCount,
-      price: price,
-      imagePath: imagePath,
-      description: description,
-      isAvailable: isAvailable,
-    );
-  }
-
-  // Copy with method
-  MenuItemModel copyWith({
-    String? id,
-    String? name,
-    String? category,
-    double? rating,
-    int? reviewCount,
-    String? price,
-    String? imagePath,
-    String? description,
-    bool? isAvailable,
-  }) {
-    return MenuItemModel(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      category: category ?? this.category,
-      rating: rating ?? this.rating,
-      reviewCount: reviewCount ?? this.reviewCount,
-      price: price ?? this.price,
-      imagePath: imagePath ?? this.imagePath,
-      description: description ?? this.description,
-      isAvailable: isAvailable ?? this.isAvailable,
-    );
-  }
-
-  // Data conversion methods only - no business logic
-  // Business logic should be in Domain layer or Use Cases
 
   // Comparison methods
   @override

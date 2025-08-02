@@ -1,5 +1,8 @@
 import '../repositories/menu_repository.dart';
 import '../entities/menu_item.dart';
+import '../../../../../../../core/base/base_usecase.dart';
+import '../../../../../../../core/error/failures.dart';
+import 'package:dartz/dartz.dart';
 
 class ToggleMenuItemAvailabilityParams {
   final String id;
@@ -15,30 +18,41 @@ class ToggleMenuItemAvailabilityParams {
       'ToggleMenuItemAvailabilityParams(id: $id, isAvailable: $isAvailable)';
 }
 
-class ToggleMenuItemAvailabilityUseCase {
+class ToggleMenuItemAvailabilityUseCase
+    extends BaseUseCase<MenuItem, ToggleMenuItemAvailabilityParams> {
   final MenuRepository repository;
 
   ToggleMenuItemAvailabilityUseCase({required this.repository});
 
-  Future<MenuItem> call(ToggleMenuItemAvailabilityParams params) async {
+  @override
+  Future<Either<Failure, MenuItem>> call(
+    ToggleMenuItemAvailabilityParams params,
+  ) async {
     try {
       if (params.id.isEmpty) {
-        throw Exception('معرف المنتج مطلوب');
+        return Left(ServerFailure(message: 'معرف المنتج مطلوب'));
       }
 
-      // Get current menu item
-      final currentItem = await repository.getMenuItemById(params.id);
-      if (currentItem == null) {
-        throw Exception('المنتج غير موجود');
-      }
+      // First get the current menu item
+      final currentItemResult = await repository.getMenuItemById(params.id);
 
-      // Create updated item with new availability
-      final updatedItem = currentItem.copyWith(isAvailable: params.isAvailable);
+      return currentItemResult.fold((failure) => Left(failure), (
+        currentItem,
+      ) async {
+        if (currentItem == null) {
+          return Left(ServerFailure(message: 'المنتج غير موجود'));
+        }
 
-      // Update the item
-      return await repository.updateMenuItem(updatedItem);
+        // Create updated menu item with new availability
+        final updatedItem = currentItem.copyWith(
+          isAvailable: params.isAvailable,
+        );
+
+        // Update the menu item
+        return await repository.updateMenuItem(updatedItem);
+      });
     } catch (e) {
-      throw Exception('فشل في تغيير حالة توفر المنتج: $e');
+      return Left(ServerFailure(message: 'فشل في تغيير حالة التوفر: $e'));
     }
   }
 }

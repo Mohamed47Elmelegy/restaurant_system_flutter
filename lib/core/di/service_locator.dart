@@ -46,6 +46,16 @@ import '../../features/admin/presentation/pages/menu/data/datasources/menu_remot
 import '../../features/admin/presentation/pages/menu/data/repositories/menu_repository_impl.dart';
 import '../../features/admin/presentation/pages/menu/domain/repositories/menu_repository.dart';
 import '../../features/admin/presentation/pages/menu/presentation/bloc/menu_cubit.dart';
+import '../../features/admin/presentation/pages/add_category/data/datasources/category_remote_data_source.dart';
+import '../../features/admin/presentation/pages/add_category/data/datasources/category_remote_data_source_impl.dart';
+import '../../features/admin/presentation/pages/add_category/data/repositories/category_repository.dart';
+import '../../features/admin/presentation/pages/add_category/data/repositories/category_repository_impl.dart';
+import '../../features/admin/presentation/pages/add_category/presentation/cubit/category_cubit.dart';
+import '../../features/admin/presentation/pages/add_category/domain/usecases/create_category_usecase.dart';
+import '../../features/admin/presentation/pages/add_category/domain/usecases/update_category_usecase.dart';
+import '../../features/admin/presentation/pages/add_category/domain/usecases/get_category_by_id_usecase.dart';
+import '../../features/admin/presentation/pages/add_category/domain/usecases/get_categories_usecase.dart'
+    as admin_category;
 
 final getIt = GetIt.instance;
 
@@ -79,6 +89,9 @@ Future<void> setup() async {
   getIt.registerLazySingleton<MenuRemoteDataSource>(
     () => MenuRemoteDataSourceImpl(dio: getIt<DioClient>().dio),
   );
+  getIt.registerLazySingleton<CategoryRemoteDataSource>(
+    () => CategoryRemoteDataSourceImpl(getIt<DioClient>().dio),
+  );
 
   // Repository
   getIt.registerLazySingleton<AuthRepository>(
@@ -99,6 +112,11 @@ Future<void> setup() async {
   getIt.registerLazySingleton<ProductRepository>(
     () => ProductRepositoryImpl(
       remoteDataSource: getIt<ProductRemoteDataSource>(),
+    ),
+  );
+  getIt.registerLazySingleton<CategoryRepository>(
+    () => CategoryRepositoryImpl(
+      remoteDataSource: getIt<CategoryRemoteDataSource>(),
     ),
   );
   // Menu repository
@@ -163,6 +181,22 @@ Future<void> setup() async {
     () => CreateProductUseCase(repository: getIt<ProductRepository>()),
   );
 
+  // Category use cases
+  getIt.registerLazySingleton<CreateCategoryUseCase>(
+    () => CreateCategoryUseCase(repository: getIt<CategoryRepository>()),
+  );
+  getIt.registerLazySingleton<admin_category.GetCategoriesUseCase>(
+    () => admin_category.GetCategoriesUseCase(
+      repository: getIt<CategoryRepository>(),
+    ),
+  );
+  getIt.registerLazySingleton<UpdateCategoryUseCase>(
+    () => UpdateCategoryUseCase(repository: getIt<CategoryRepository>()),
+  );
+  getIt.registerLazySingleton<GetCategoryByIdUseCase>(
+    () => GetCategoryByIdUseCase(repository: getIt<CategoryRepository>()),
+  );
+
   // Bloc
   getIt.registerFactory<AuthBloc>(
     () => AuthBloc(
@@ -205,5 +239,16 @@ Future<void> setup() async {
   // Menu cubit
   getIt.registerFactory<MenuCubit>(
     () => MenuCubit(menuRepository: getIt<MenuRepository>()),
+  );
+
+  // Category cubit
+  getIt.registerFactory<CategoryCubit>(
+    () => CategoryCubit(
+      createCategoryUseCase: getIt<CreateCategoryUseCase>(),
+      getCategoriesUseCase: getIt<admin_category.GetCategoriesUseCase>(),
+      updateCategoryUseCase: getIt<UpdateCategoryUseCase>(),
+      getCategoryByIdUseCase: getIt<GetCategoryByIdUseCase>(),
+      categoryRepository: getIt<CategoryRepository>(),
+    ),
   );
 }

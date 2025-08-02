@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../core/di/service_locator.dart';
+import '../../features/admin/presentation/pages/add_category/presentation/pages/add_category_page.dart';
+import '../../features/admin/presentation/pages/add_category/presentation/pages/admin_add_category_page.dart';
+import '../../features/admin/presentation/pages/add_category/presentation/cubit/category_cubit.dart';
 import '../../features/admin/presentation/pages/dashbord/presentation/pages/seller_dashboard_home.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
 import '../../features/OnBoarding/presentation/pages/onboarding_page.dart';
@@ -28,6 +33,13 @@ Route<dynamic>? appRouter(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => const AdminMainView());
     case AppRoutes.adminAddItem:
       return MaterialPageRoute(builder: (_) => const AdminAddItemPage());
+    case AppRoutes.adminCategories:
+      return MaterialPageRoute(
+        builder: (_) => BlocProvider(
+          create: (context) => getIt<CategoryCubit>(),
+          child: const AdminAddCategoryPage(),
+        ),
+      );
     case AppRoutes.adminMealTimes:
       return MaterialPageRoute(builder: (_) => const MealTimeManagementPage());
 

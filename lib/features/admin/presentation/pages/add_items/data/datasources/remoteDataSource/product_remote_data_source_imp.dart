@@ -104,7 +104,7 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
       final token = await storage.read(key: 'token');
 
       final response = await dio.put(
-        ApiPath.adminProduct(product.id!),
+        ApiPath.adminProduct(int.parse(product.id!)),
         options: Options(
           headers: {
             'Content-Type': 'application/json',

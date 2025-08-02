@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../../domain/entities/category/main_category.dart';
+import '../../../../add_category/domain/entities/main_category.dart';
 
 abstract class CategoryState extends Equatable {
   const CategoryState();

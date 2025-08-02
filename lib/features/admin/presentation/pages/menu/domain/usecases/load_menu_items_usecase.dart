@@ -1,16 +1,16 @@
 import '../repositories/menu_repository.dart';
 import '../entities/menu_item.dart';
+import '../../../../../../../core/base/base_usecase.dart';
+import '../../../../../../../core/error/failures.dart';
+import 'package:dartz/dartz.dart';
 
-class LoadMenuItemsUseCase {
+class LoadMenuItemsUseCase extends BaseUseCaseNoParams<List<MenuItem>> {
   final MenuRepository repository;
 
   LoadMenuItemsUseCase({required this.repository});
 
-  Future<List<MenuItem>> call() async {
-    try {
-      return await repository.getMenuItems();
-    } catch (e) {
-      throw Exception('فشل في تحميل المنتجات: $e');
-    }
+  @override
+  Future<Either<Failure, List<MenuItem>>> call() async {
+    return await repository.getMenuItems();
   }
-} 
+}

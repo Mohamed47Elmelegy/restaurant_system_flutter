@@ -7,7 +7,7 @@ import '../cubit/product_events.dart';
 import '../cubit/product_states.dart';
 import '../widgets/index.dart';
 import '../cubit/product_cubit.dart';
-import '../../domain/usecases/create_product_usecase.dart';
+import '../../domain/entities/product.dart';
 import '../../../../../../../core/di/service_locator.dart';
 
 class AdminAddItemPage extends StatefulWidget {
@@ -277,18 +277,20 @@ class _AdminAddItemPageState extends State<AdminAddItemPage> {
     });
   }
 
-  // ✅ UI method مبسط - إنشاء Params فقط
+  // ✅ UI method مبسط - إنشاء Product مباشرة
   void _onSaveChanges(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      // ✅ إنشاء Params فقط
-      final params = CreateProductParams(
+      // ✅ إنشاء Product مباشرة
+      final product = Product(
+        id: '', // Will be set by the server
         name: _nameController.text.trim(),
         nameAr: _nameArController.text.trim(),
         description: _detailsController.text.trim(),
         descriptionAr: _detailsArController.text.trim(),
         price: double.tryParse(_priceController.text) ?? 0.0,
         mainCategoryId: int.tryParse(_selectedMainCategory ?? '1') ?? 1,
-        subCategoryId: _selectedSubCategory != null
+        subCategoryId:
+            _selectedSubCategory != null && _selectedSubCategory!.isNotEmpty
             ? int.tryParse(_selectedSubCategory!)
             : null,
         imageUrl: _uploadedImages.isNotEmpty ? _uploadedImages.first : null,
@@ -306,11 +308,11 @@ class _AdminAddItemPageState extends State<AdminAddItemPage> {
         allergens: _selectedAllergens.isNotEmpty ? _selectedAllergens : null,
       );
 
-      // ✅ إرسال Params فقط
+      // ✅ إرسال Product مباشرة
       BlocProvider.of<ProductCubit>(
         context,
         listen: false,
-      ).add(CreateProduct(params));
+      ).add(CreateProduct(product));
     }
   }
 }
