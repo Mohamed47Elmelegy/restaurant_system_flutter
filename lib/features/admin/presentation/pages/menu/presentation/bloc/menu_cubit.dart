@@ -7,6 +7,7 @@ import '../../domain/usecases/load_menu_items_by_category_usecase.dart';
 import '../../domain/usecases/search_menu_items_usecase.dart';
 import '../../domain/usecases/delete_menu_item_usecase.dart';
 import '../../domain/usecases/toggle_menu_item_availability_usecase.dart';
+import '../../domain/usecases/refresh_menu_items_usecase.dart';
 import '../../../../../../../core/error/failures.dart';
 import 'package:dartz/dartz.dart';
 import 'menu_events.dart';
@@ -20,6 +21,7 @@ class MenuCubit extends Bloc<MenuEvent, MenuState> {
   final SearchMenuItemsUseCase searchMenuItemsUseCase;
   final DeleteMenuItemUseCase deleteMenuItemUseCase;
   final ToggleMenuItemAvailabilityUseCase toggleMenuItemAvailabilityUseCase;
+  final RefreshMenuItemsUseCase refreshMenuItemsUseCase;
 
   MenuCubit({required this.menuRepository})
     : loadMenuItemsUseCase = LoadMenuItemsUseCase(repository: menuRepository),
@@ -31,6 +33,9 @@ class MenuCubit extends Bloc<MenuEvent, MenuState> {
       ),
       deleteMenuItemUseCase = DeleteMenuItemUseCase(repository: menuRepository),
       toggleMenuItemAvailabilityUseCase = ToggleMenuItemAvailabilityUseCase(
+        repository: menuRepository,
+      ),
+      refreshMenuItemsUseCase = RefreshMenuItemsUseCase(
         repository: menuRepository,
       ),
       super(MenuInitial()) {
@@ -231,8 +236,8 @@ class MenuCubit extends Bloc<MenuEvent, MenuState> {
   ) async {
     emit(MenuLoading());
     try {
-      log('🔄 MenuCubit: Refreshing menu items...');
-      final menuItemsResult = await loadMenuItemsUseCase();
+      log('🔄 MenuCubit: Refreshing menu items from API...');
+      final menuItemsResult = await refreshMenuItemsUseCase();
 
       return menuItemsResult.fold(
         (failure) {
@@ -251,7 +256,7 @@ class MenuCubit extends Bloc<MenuEvent, MenuState> {
             },
             (categories) {
               log(
-                '✅ MenuCubit: Menu items refreshed - ${menuItems.length} items',
+                '✅ MenuCubit: Menu items refreshed from API - ${menuItems.length} items',
               );
               emit(MenuItemsLoaded(menuItems, categories: categories));
             },

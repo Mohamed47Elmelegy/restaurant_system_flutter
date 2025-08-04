@@ -1,10 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:developer';
-import '../../domain/entities/product.dart';
 import '../../domain/usecases/get_products_usecase.dart';
 import '../../domain/usecases/create_product_usecase.dart';
-import '../../../../../../../core/error/failures.dart';
-import 'package:dartz/dartz.dart';
 import 'product_events.dart';
 import 'product_states.dart';
 

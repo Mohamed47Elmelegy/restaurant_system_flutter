@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../../../../core/theme/app_bar_helper.dart';
+import '../../../../../../../core/utils/app_bar_helper.dart';
 import '../../../../../../../core/utils/responsive_helper.dart';
 import '../../../../../../orders/data/repositories/order_repository_impl.dart';
 import '../../../../../../orders/domain/entities/order_entity.dart';
@@ -67,7 +67,7 @@ class _SellerDashboardHomeState extends State<SellerDashboardHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBarHelper.createAppBar(title: 'Seller Dashboard'),
+      appBar: AppBarHelper.appBar(title: 'Seller Dashboard'),
       body: ResponsiveHelper.responsiveLayout(
         builder: (context, constraints) {
           return BlocProvider(

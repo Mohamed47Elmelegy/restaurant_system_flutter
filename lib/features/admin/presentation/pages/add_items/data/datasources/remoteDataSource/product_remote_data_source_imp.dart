@@ -1,165 +1,200 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:developer';
+import '../../../../../../../../core/error/api_response.dart';
 import '../../../../../../../../core/network/api_path.dart';
 import '../../models/product_model.dart';
 import 'product_remote_data_source.dart';
 
 class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
   final Dio dio;
-  final FlutterSecureStorage storage;
 
-  ProductRemoteDataSourceImpl({required this.dio})
-    : storage = FlutterSecureStorage();
+  ProductRemoteDataSourceImpl(this.dio);
 
   @override
-  Future<List<ProductModel>> getProducts() async {
+  Future<ApiResponse<List<ProductModel>>> getProducts() async {
     try {
-      final response = await dio.get(
-        ApiPath.adminProducts(),
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-        ),
-      );
+      log('🔄 ProductRemoteDataSourceImpl: Getting products');
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = response.data;
-        if (responseData['success'] == true) {
-          final List<dynamic> productsData = responseData['data'];
-          // ✅ استخدام fromJson() للتحويل من JSON
-          return productsData
-              .map((json) => ProductModel.fromJson(json))
-              .toList();
-        } else {
-          throw Exception(responseData['message'] ?? 'Failed to load products');
-        }
-      } else {
-        throw Exception('Failed to load products: ${response.statusCode}');
-      }
+      final response = await dio.get(ApiPath.adminProducts());
+
+      final List<dynamic> data = response.data['data'];
+      final products = data.map((json) => ProductModel.fromJson(json)).toList();
+
+      log(
+        '✅ ProductRemoteDataSourceImpl: Products loaded - ${products.length}',
+      );
+      return ApiResponse.success(products);
+    } on DioException catch (e) {
+      log('❌ ProductRemoteDataSourceImpl: Failed to get products - $e');
+      return ApiResponse.fromDioException(e);
     } catch (e) {
-      throw Exception('Network error: $e');
+      log('❌ ProductRemoteDataSourceImpl: Failed to get products - $e');
+      return ApiResponse.error('Failed to get products: $e');
     }
   }
 
   @override
-  Future<ProductModel> createProduct(ProductModel product) async {
+  Future<ApiResponse<ProductModel>> createProduct(ProductModel product) async {
     try {
-      // فحص وجود الـ token
-      final token = await storage.read(key: 'token');
-      log(
-        '🔍 ProductRemoteDataSource: Token found: ${token != null ? 'Yes' : 'No'}',
-      );
+      log('🔄 ProductRemoteDataSourceImpl: Creating product - ${product.name}');
 
-      if (token != null) {
-        log(
-          '🔍 ProductRemoteDataSource: Token preview: ${token.substring(0, 10)}...',
-        );
-      }
+      final requestData = product.toJson();
+      log('📤 ProductRemoteDataSourceImpl: Request data - $requestData');
 
       final response = await dio.post(
         ApiPath.adminProducts(),
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-          },
-        ),
-        // ✅ استخدام toJson() للتحويل إلى JSON
-        data: product.toJson(),
+        data: requestData,
       );
 
-      log(
-        '🟢 ProductRemoteDataSource: Create product response status: ${response.statusCode}',
-      );
-      log(
-        '🟢 ProductRemoteDataSource: Create product response data: ${response.data}',
-      );
-
-      if (response.statusCode == 201) {
-        final Map<String, dynamic> responseData = response.data;
-        if (responseData['success'] == true) {
-          // ✅ استخدام fromJson() للتحويل من JSON
-          return ProductModel.fromJson(responseData['data']);
-        } else {
-          throw Exception(
-            responseData['message'] ?? 'Failed to create product',
-          );
-        }
-      } else {
-        throw Exception('Failed to create product: ${response.statusCode}');
-      }
+      log('✅ ProductRemoteDataSourceImpl: Product created successfully');
+      return ApiResponse.success(ProductModel.fromJson(response.data['data']));
+    } on DioException catch (e) {
+      log('❌ ProductRemoteDataSourceImpl: DioException - ${e.type}');
+      return ApiResponse.fromDioException(e);
     } catch (e) {
-      log('🔴 ProductRemoteDataSource: Create product error: $e');
-      throw Exception('Network error: $e');
+      log('❌ ProductRemoteDataSourceImpl: Unexpected error - $e');
+      return ApiResponse.error('Unexpected error: $e');
     }
   }
 
   @override
-  Future<ProductModel> updateProduct(ProductModel product) async {
+  Future<ApiResponse<ProductModel>> updateProduct(ProductModel product) async {
     try {
-      final token = await storage.read(key: 'token');
+      log('🔄 ProductRemoteDataSourceImpl: Updating product - ${product.name}');
+
+      final requestData = product.toJson();
+      log('📤 ProductRemoteDataSourceImpl: Request data - $requestData');
 
       final response = await dio.put(
         ApiPath.adminProduct(int.parse(product.id!)),
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer $token',
-          },
-        ),
-        // ✅ استخدام toJson() للتحويل إلى JSON
-        data: product.toJson(),
+        data: requestData,
       );
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = response.data;
-        if (responseData['success'] == true) {
-          // ✅ استخدام fromJson() للتحويل من JSON
-          return ProductModel.fromJson(responseData['data']);
-        } else {
-          throw Exception(
-            responseData['message'] ?? 'Failed to update product',
-          );
-        }
-      } else {
-        throw Exception('Failed to update product: ${response.statusCode}');
-      }
+      log('✅ ProductRemoteDataSourceImpl: Product updated successfully');
+      return ApiResponse.success(ProductModel.fromJson(response.data['data']));
+    } on DioException catch (e) {
+      log('❌ ProductRemoteDataSourceImpl: Failed to update product - $e');
+      return ApiResponse.fromDioException(e);
     } catch (e) {
-      throw Exception('Network error: $e');
+      log('❌ ProductRemoteDataSourceImpl: Failed to update product - $e');
+      return ApiResponse.error('Failed to update product: $e');
     }
   }
 
   @override
-  Future<ProductModel> getProductById(int id) async {
+  Future<ApiResponse<ProductModel>> getProductById(int id) async {
     try {
-      final response = await dio.get(
-        ApiPath.adminProduct(id),
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-        ),
+      log('🔄 ProductRemoteDataSourceImpl: Getting product by ID - $id');
+
+      final response = await dio.get(ApiPath.adminProduct(id));
+
+      log('✅ ProductRemoteDataSourceImpl: Product loaded successfully');
+      return ApiResponse.success(ProductModel.fromJson(response.data['data']));
+    } on DioException catch (e) {
+      log('❌ ProductRemoteDataSourceImpl: Failed to get product by ID - $e');
+      return ApiResponse.fromDioException(e);
+    } catch (e) {
+      log('❌ ProductRemoteDataSourceImpl: Failed to get product by ID - $e');
+      return ApiResponse.error('Failed to get product by ID: $e');
+    }
+  }
+
+  @override
+  Future<ApiResponse<bool>> deleteProduct(int id) async {
+    try {
+      log('🔄 ProductRemoteDataSourceImpl: Deleting product - $id');
+
+      await dio.delete(ApiPath.adminProduct(id));
+
+      log('✅ ProductRemoteDataSourceImpl: Product deleted successfully');
+      return ApiResponse.success(true);
+    } on DioException catch (e) {
+      log('❌ ProductRemoteDataSourceImpl: Failed to delete product - $e');
+      return ApiResponse.fromDioException(e);
+    } catch (e) {
+      log('❌ ProductRemoteDataSourceImpl: Failed to delete product - $e');
+      return ApiResponse.error('Failed to delete product: $e');
+    }
+  }
+
+  @override
+  Future<ApiResponse<bool>> toggleProductAvailability(int id) async {
+    try {
+      log(
+        '🔄 ProductRemoteDataSourceImpl: Toggling product availability - $id',
       );
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = response.data;
-        if (responseData['success'] == true) {
-          // ✅ استخدام fromJson() للتحويل من JSON
-          return ProductModel.fromJson(responseData['data']);
-        } else {
-          throw Exception(responseData['message'] ?? 'Failed to load product');
-        }
-      } else {
-        throw Exception('Failed to load product: ${response.statusCode}');
-      }
+      await dio.patch(ApiPath.adminProductToggleAvailability(id));
+
+      log(
+        '✅ ProductRemoteDataSourceImpl: Product availability toggled successfully',
+      );
+      return ApiResponse.success(true);
+    } on DioException catch (e) {
+      log(
+        '❌ ProductRemoteDataSourceImpl: Failed to toggle product availability - $e',
+      );
+      return ApiResponse.fromDioException(e);
     } catch (e) {
-      throw Exception('Network error: $e');
+      log(
+        '❌ ProductRemoteDataSourceImpl: Failed to toggle product availability - $e',
+      );
+      return ApiResponse.error('Failed to toggle product availability: $e');
+    }
+  }
+
+  @override
+  Future<ApiResponse<bool>> toggleProductFeatured(int id) async {
+    try {
+      log('🔄 ProductRemoteDataSourceImpl: Toggling product featured - $id');
+
+      await dio.patch(ApiPath.adminProductToggleFeatured(id));
+
+      log(
+        '✅ ProductRemoteDataSourceImpl: Product featured toggled successfully',
+      );
+      return ApiResponse.success(true);
+    } on DioException catch (e) {
+      log(
+        '❌ ProductRemoteDataSourceImpl: Failed to toggle product featured - $e',
+      );
+      return ApiResponse.fromDioException(e);
+    } catch (e) {
+      log(
+        '❌ ProductRemoteDataSourceImpl: Failed to toggle product featured - $e',
+      );
+      return ApiResponse.error('Failed to toggle product featured: $e');
+    }
+  }
+
+  @override
+  Future<ApiResponse<List<ProductModel>>> getProductsByCategory(
+    int categoryId,
+  ) async {
+    try {
+      log(
+        '🔄 ProductRemoteDataSourceImpl: Getting products by category - $categoryId',
+      );
+
+      final response = await dio.get(ApiPath.adminCategoryProducts(categoryId));
+
+      final List<dynamic> data = response.data['data'];
+      final products = data.map((json) => ProductModel.fromJson(json)).toList();
+
+      log(
+        '✅ ProductRemoteDataSourceImpl: Products by category loaded - ${products.length}',
+      );
+      return ApiResponse.success(products);
+    } on DioException catch (e) {
+      log(
+        '❌ ProductRemoteDataSourceImpl: Failed to get products by category - $e',
+      );
+      return ApiResponse.fromDioException(e);
+    } catch (e) {
+      log(
+        '❌ ProductRemoteDataSourceImpl: Failed to get products by category - $e',
+      );
+      return ApiResponse.error('Failed to get products by category: $e');
     }
   }
 }

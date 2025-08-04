@@ -7,10 +7,11 @@ import '../widgets/menu_item_card.dart';
 import '../bloc/menu_cubit.dart';
 import '../../domain/entities/menu_item.dart';
 import '../../domain/usecases/load_menu_items_by_category_usecase.dart';
-import '../../domain/usecases/search_menu_items_usecase.dart';
 import '../../domain/usecases/delete_menu_item_usecase.dart';
-import '../../domain/usecases/toggle_menu_item_availability_usecase.dart';
 import '../../../../../../../core/di/service_locator.dart';
+import '../../../../../../../core/utils/app_bar_helper.dart';
+import '../../../add_category/presentation/cubit/category_cubit.dart';
+import '../../../add_category/presentation/cubit/category_events.dart';
 
 class AdminMenuPage extends StatefulWidget {
   const AdminMenuPage({super.key});
@@ -27,7 +28,7 @@ class _AdminMenuPageState extends State<AdminMenuPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<MenuCubit>()..add(LoadMenuItems()),
+      create: (context) => getIt<MenuCubit>()..add(RefreshMenuItems()),
       child: BlocListener<MenuCubit, MenuState>(
         listener: (context, state) {
           if (state is MenuError) {
@@ -50,10 +51,10 @@ class _AdminMenuPageState extends State<AdminMenuPage> {
           builder: (context, state) {
             return Scaffold(
               backgroundColor: Colors.white,
+              appBar: AppBarHelper.appBarWithDefaultBack(title: 'قائمة الطعام'),
               body: SafeArea(
                 child: Column(
                   children: [
-                    _buildHeader(),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: _isLoadingCategories
@@ -113,6 +114,7 @@ class _AdminMenuPageState extends State<AdminMenuPage> {
     // تأخير تحميل الفئات حتى يكون BlocProvider متاحاً
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadCategories();
+      _refreshCategories();
     });
   }
 
@@ -162,6 +164,16 @@ class _AdminMenuPageState extends State<AdminMenuPage> {
           ),
         );
       }
+    }
+  }
+
+  void _refreshCategories() {
+    try {
+      final categoryCubit = getIt<CategoryCubit>();
+      categoryCubit.add(const LoadCategories());
+      print('🔄 AdminMenuPage: Triggered categories refresh');
+    } catch (e) {
+      print('❌ AdminMenuPage: Error refreshing categories - $e');
     }
   }
 
@@ -263,47 +275,6 @@ class _AdminMenuPageState extends State<AdminMenuPage> {
     return const Center(child: Text('لا توجد بيانات'));
   }
 
-  Widget _buildHeader() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          // Back Button
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              shape: BoxShape.circle,
-            ),
-            child: IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(
-                Icons.arrow_back,
-                color: Colors.black87,
-                size: 20,
-              ),
-            ),
-          ),
-
-          const SizedBox(width: 16),
-
-          // Title
-          const Expanded(
-            child: Text(
-              'My Food List',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   void _onEditItem(MenuItem item) {
     // Handle edit item
     ScaffoldMessenger.of(
@@ -343,21 +314,12 @@ class _AdminMenuPageState extends State<AdminMenuPage> {
 
   // Auto refresh method
   void _refreshMenuItems() {
-    final cubit = getIt<MenuCubit>();
-
-    // Refresh based on current category selection
-    if (_selectedCategoryIndex == 0) {
-      // If "All" is selected, reload all items
-      cubit.add(LoadMenuItems());
-    } else {
-      // If specific category is selected, reload items for that category
-      cubit.add(
-        LoadMenuItemsByCategory(
-          LoadMenuItemsByCategoryParams(
-            category: _categories[_selectedCategoryIndex],
-          ),
-        ),
-      );
+    try {
+      final menuCubit = getIt<MenuCubit>();
+      menuCubit.add(RefreshMenuItems());
+      print('🔄 AdminMenuPage: Triggered menu items refresh');
+    } catch (e) {
+      print('❌ AdminMenuPage: Error refreshing menu items - $e');
     }
   }
 

@@ -9,9 +9,14 @@ import 'package:provider/provider.dart';
 import 'core/theme/theme_provider.dart';
 import 'core/theme/app_theme.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // تهيئة Hive للتخزين المحلي
+  await Hive.initFlutter();
+
   Bloc.observer = AppBlocObserver();
   await setup();
   runApp(const MyApp());

@@ -29,4 +29,7 @@ abstract class MenuRepository extends BaseRepository<MenuItem> {
 
   /// Get available categories
   Future<Either<Failure, List<String>>> getCategories();
+
+  /// Refresh menu items from API and save to local storage
+  Future<Either<Failure, List<MenuItem>>> refreshMenuItems();
 }

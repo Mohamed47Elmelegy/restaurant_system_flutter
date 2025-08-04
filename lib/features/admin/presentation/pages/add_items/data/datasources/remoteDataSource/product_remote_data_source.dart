@@ -1,7 +1,13 @@
+import '../../../../../../../../core/error/api_response.dart';
 import '../../models/product_model.dart';
+
 abstract class ProductRemoteDataSource {
-  Future<List<ProductModel>> getProducts();
-  Future<ProductModel> createProduct(ProductModel product);
-  Future<ProductModel> updateProduct(ProductModel product);
-  Future<ProductModel> getProductById(int id);
+  Future<ApiResponse<List<ProductModel>>> getProducts();
+  Future<ApiResponse<ProductModel>> createProduct(ProductModel product);
+  Future<ApiResponse<ProductModel>> updateProduct(ProductModel product);
+  Future<ApiResponse<ProductModel>> getProductById(int id);
+  Future<ApiResponse<bool>> deleteProduct(int id);
+  Future<ApiResponse<bool>> toggleProductAvailability(int id);
+  Future<ApiResponse<bool>> toggleProductFeatured(int id);
+  Future<ApiResponse<List<ProductModel>>> getProductsByCategory(int categoryId);
 }

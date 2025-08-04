@@ -128,22 +128,39 @@ class MainCategoryModel extends BaseModel<MainCategory> {
 
   @override
   Map<String, dynamic> toJson() {
-    return {
-      if (id.isNotEmpty) 'id': id,
+    final Map<String, dynamic> data = {
       'name': name,
       'name_ar': nameAr,
-      'icon': icon,
-      'color': color,
-      'description': description,
-      'description_ar': descriptionAr,
       'is_active': isActive,
       'sort_order': sortOrder,
-      'created_at': createdAt?.toIso8601String(),
-      'updated_at': updatedAt?.toIso8601String(),
-      'products_count': productsCount,
-      'sub_categories_count': subCategoriesCount,
-      'sub_categories': subCategories?.map((e) => e.toJson()).toList(),
     };
+
+    // Only add non-null optional fields
+    if (icon != null) data['icon'] = icon;
+    if (color != null) data['color'] = color;
+    if (description != null && description!.isNotEmpty)
+      data['description'] = description;
+    if (descriptionAr != null && descriptionAr!.isNotEmpty)
+      data['description_ar'] = descriptionAr;
+
+    // Only add ID if it's not empty (for updates)
+    if (id.isNotEmpty) data['id'] = id;
+
+    // Only add timestamps if they exist (for updates)
+    if (createdAt != null) data['created_at'] = createdAt!.toIso8601String();
+    if (updatedAt != null) data['updated_at'] = updatedAt!.toIso8601String();
+
+    // Only add counts if they exist (for responses)
+    if (productsCount != null) data['products_count'] = productsCount;
+    if (subCategoriesCount != null)
+      data['sub_categories_count'] = subCategoriesCount;
+
+    // Only add sub-categories if they exist (for responses)
+    if (subCategories != null && subCategories!.isNotEmpty) {
+      data['sub_categories'] = subCategories!.map((e) => e.toJson()).toList();
+    }
+
+    return data;
   }
 
   @override

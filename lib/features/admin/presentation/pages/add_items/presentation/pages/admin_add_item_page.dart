@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../../../core/theme/theme_helper.dart';
 import '../../../../../../../core/utils/responsive_helper.dart';
 import '../cubit/product_events.dart';
@@ -9,6 +8,8 @@ import '../widgets/index.dart';
 import '../cubit/product_cubit.dart';
 import '../../domain/entities/product.dart';
 import '../../../../../../../core/di/service_locator.dart';
+import '../../../add_category/presentation/cubit/category_cubit.dart';
+import '../../../add_category/presentation/cubit/category_events.dart';
 
 class AdminAddItemPage extends StatefulWidget {
   const AdminAddItemPage({super.key});
@@ -19,8 +20,6 @@ class AdminAddItemPage extends StatefulWidget {
 
 class _AdminAddItemPageState extends State<AdminAddItemPage> {
   final _formKey = GlobalKey<FormState>();
-
-  // ✅ Controllers فقط
   final _nameController = TextEditingController();
   final _priceController = TextEditingController();
   final _detailsController = TextEditingController();
@@ -63,8 +62,14 @@ class _AdminAddItemPageState extends State<AdminAddItemPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => getIt<ProductCubit>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<ProductCubit>(create: (context) => getIt<ProductCubit>()),
+        BlocProvider<CategoryCubit>(
+          create: (context) =>
+              getIt<CategoryCubit>()..add(const LoadCategories()),
+        ),
+      ],
       child: BlocListener<ProductCubit, ProductState>(
         listener: (context, state) {
           if (state is ProductCreated) {

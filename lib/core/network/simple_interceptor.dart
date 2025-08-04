@@ -14,6 +14,10 @@ class SimpleInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
+    // إضافة Headers الافتراضية
+    options.headers['Content-Type'] = 'application/json';
+    options.headers['Accept'] = 'application/json';
+
     // إضافة التوكن تلقائياً
     final token = await storage.read(key: 'token');
     if (token != null) {

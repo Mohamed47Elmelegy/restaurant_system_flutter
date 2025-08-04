@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+
 class ApiResponse<T> {
   final bool status;
   final String message;
@@ -129,6 +131,63 @@ class ApiResponse<T> {
       message: message,
       errors: errors,
       statusCode: 422,
+    );
+  }
+
+  /// إنشاء استجابة خطأ من DioException
+  factory ApiResponse.fromDioException(DioException e) {
+    final statusCode = e.response?.statusCode;
+    final data = e.response?.data;
+
+    String message = 'حدث خطأ في الاتصال';
+    Map<String, List<String>>? errors;
+
+    switch (e.type) {
+      case DioExceptionType.connectionTimeout:
+      case DioExceptionType.sendTimeout:
+      case DioExceptionType.receiveTimeout:
+        message = 'انتهت مهلة الاتصال. يرجى المحاولة مرة أخرى.';
+        break;
+      case DioExceptionType.badResponse:
+        if (statusCode == 422 && data is Map && data['errors'] != null) {
+          // Validation errors
+          final validationErrors = data['errors'] as Map<String, dynamic>;
+          errors = validationErrors.map((key, value) {
+            if (value is List) {
+              return MapEntry(key, value.cast<String>());
+            } else if (value is String) {
+              return MapEntry(key, [value]);
+            }
+            return MapEntry(key, [value.toString()]);
+          });
+          message = 'يرجى تصحيح الأخطاء في البيانات المدخلة';
+        } else if (statusCode == 401) {
+          message = 'فشل في المصادقة. يرجى تسجيل الدخول مرة أخرى.';
+        } else if (statusCode == 403) {
+          message = 'ليس لديك صلاحية لتنفيذ هذا الإجراء.';
+        } else if (statusCode == 404) {
+          message = 'لم يتم العثور على المورد المطلوب.';
+        } else if (statusCode == 500) {
+          message = 'خطأ في الخادم. يرجى المحاولة مرة أخرى لاحقاً.';
+        } else {
+          message = data?['message'] ?? 'حدث خطأ في الخادم';
+        }
+        break;
+      case DioExceptionType.connectionError:
+        message = 'لا يوجد اتصال بالإنترنت. يرجى التحقق من الشبكة.';
+        break;
+      case DioExceptionType.cancel:
+        message = 'تم إلغاء الطلب.';
+        break;
+      default:
+        message = e.message ?? 'حدث خطأ غير متوقع';
+    }
+
+    return ApiResponse<T>(
+      status: false,
+      message: message,
+      errors: errors,
+      statusCode: statusCode,
     );
   }
 

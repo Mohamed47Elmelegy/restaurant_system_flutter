@@ -1,5 +1,6 @@
 import '../../../../../../../core/error/api_response.dart';
 import '../models/main_category_model.dart';
+import '../models/sub_category_model.dart';
 
 /// 🟦 CategoryRemoteDataSource - مبدأ المسؤولية الواحدة (SRP)
 /// مسؤول عن استدعاء API الفئات فقط
@@ -47,4 +48,28 @@ abstract class CategoryRemoteDataSource {
     String? sortBy,
     bool ascending = true,
   });
+
+  // ==================== SUB-CATEGORIES METHODS ====================
+
+  /// Get sub-categories for a specific category
+  Future<ApiResponse<List<SubCategoryModel>>> getSubCategories(int categoryId);
+
+  /// Create new sub-category
+  Future<ApiResponse<SubCategoryModel>> createSubCategory(
+    int categoryId,
+    SubCategoryModel subCategory,
+  );
+
+  /// Update existing sub-category
+  Future<ApiResponse<SubCategoryModel>> updateSubCategory(
+    int categoryId,
+    int subCategoryId,
+    SubCategoryModel subCategory,
+  );
+
+  /// Delete sub-category
+  Future<ApiResponse<bool>> deleteSubCategory(
+    int categoryId,
+    int subCategoryId,
+  );
 }

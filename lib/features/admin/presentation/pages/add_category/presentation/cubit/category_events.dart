@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import '../../domain/entities/main_category.dart';
+import '../../domain/entities/sub_category.dart';
 
 /// 🟦 CategoryEvents - مبدأ المسؤولية الواحدة (SRP)
 /// مسؤول عن أحداث إدارة الفئات فقط
@@ -80,12 +81,52 @@ class GetCategoriesWithSubCategories extends CategoryEvent {
   const GetCategoriesWithSubCategories();
 }
 
-/// Validate category data
-class ValidateCategory extends CategoryEvent {
-  final MainCategory category;
+// ==================== SUB-CATEGORIES EVENTS ====================
 
-  const ValidateCategory(this.category);
+/// Load sub-categories for a specific category
+class LoadSubCategories extends CategoryEvent {
+  final int categoryId;
+
+  const LoadSubCategories(this.categoryId);
 
   @override
-  List<Object?> get props => [category];
+  List<Object?> get props => [categoryId];
+}
+
+/// Create new sub-category
+class CreateSubCategory extends CategoryEvent {
+  final int categoryId;
+  final SubCategory subCategory;
+
+  const CreateSubCategory(this.categoryId, this.subCategory);
+
+  @override
+  List<Object?> get props => [categoryId, subCategory];
+}
+
+/// Update existing sub-category
+class UpdateSubCategory extends CategoryEvent {
+  final int categoryId;
+  final int subCategoryId;
+  final SubCategory subCategory;
+
+  const UpdateSubCategory(
+    this.categoryId,
+    this.subCategoryId,
+    this.subCategory,
+  );
+
+  @override
+  List<Object?> get props => [categoryId, subCategoryId, subCategory];
+}
+
+/// Delete sub-category
+class DeleteSubCategory extends CategoryEvent {
+  final int categoryId;
+  final int subCategoryId;
+
+  const DeleteSubCategory(this.categoryId, this.subCategoryId);
+
+  @override
+  List<Object?> get props => [categoryId, subCategoryId];
 }

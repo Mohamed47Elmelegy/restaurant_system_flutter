@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppBarHelper {
   /// إنشاء AppBar بدون زر رجوع
-  static AppBar createAppBar({
+  static AppBar appBar({
     required String title,
     List<Widget>? actions,
     Color? backgroundColor,
@@ -22,7 +22,7 @@ class AppBarHelper {
   }
 
   /// إنشاء AppBar مع زر رجوع مخصص
-  static AppBar createAppBarWithBack({
+  static AppBar appBarWithBack({
     required String title,
     required VoidCallback onBackPressed,
     List<Widget>? actions,
@@ -46,7 +46,7 @@ class AppBarHelper {
   }
 
   /// إنشاء AppBar مع زر رجوع افتراضي
-  static AppBar createAppBarWithDefaultBack({
+  static AppBar appBarWithDefaultBack({
     required String title,
     List<Widget>? actions,
     Color? backgroundColor,
@@ -56,10 +56,26 @@ class AppBarHelper {
   }) {
     return AppBar(
       title: Text(title),
-      automaticallyImplyLeading: true, // إظهار زر الرجوع الافتراضي
+      automaticallyImplyLeading: false, // إظهار زر الرجوع الافتراضي
       actions: actions,
       backgroundColor: backgroundColor,
       foregroundColor: foregroundColor,
+      centerTitle: centerTitle,
+      elevation: elevation,
+    );
+  }
+
+  /// إنشاء AppBar مع لون للعنوان فقط
+  static AppBar appBarWithTitleOnly({
+    required String title,
+    required Color titleColor,
+    List<Widget>? actions,
+    bool centerTitle = true,
+    double elevation = 0,
+  }) {
+    return AppBar(
+      title: Text(title, style: TextStyle(color: titleColor)),
+      actions: actions,
       centerTitle: centerTitle,
       elevation: elevation,
     );

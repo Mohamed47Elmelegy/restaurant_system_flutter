@@ -23,4 +23,16 @@ abstract class ProductRepository extends BaseRepository<Product> {
 
   /// Get product by int id for backward compatibility
   Future<Either<Failure, Product?>> getProductById(int id);
+
+  /// Delete product by int id
+  Future<Either<Failure, bool>> deleteProduct(int id);
+
+  /// Toggle product availability
+  Future<Either<Failure, bool>> toggleProductAvailability(int id);
+
+  /// Toggle product featured status
+  Future<Either<Failure, bool>> toggleProductFeatured(int id);
+
+  /// Get products by category
+  Future<Either<Failure, List<Product>>> getProductsByCategory(int categoryId);
 }

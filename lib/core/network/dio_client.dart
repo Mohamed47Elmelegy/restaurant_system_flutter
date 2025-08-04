@@ -12,9 +12,9 @@ class DioClient {
 
   DioClient(this.dio, this.simpleInterceptor) {
     dio.options.baseUrl = Endpoints.baseUrl;
-    dio.options.connectTimeout = const Duration(seconds: 5);
-    dio.options.receiveTimeout = const Duration(seconds: 5);
-    dio.options.sendTimeout = const Duration(seconds: 5);
+    dio.options.connectTimeout = const Duration(seconds: 30);
+    dio.options.receiveTimeout = const Duration(seconds: 30);
+    dio.options.sendTimeout = const Duration(seconds: 30);
 
     // إضافة interceptor واحد فقط
     dio.interceptors.add(simpleInterceptor);
@@ -31,7 +31,7 @@ class DioClient {
     );
     log(
       DebugConsoleMessages.success(
-        'DioClient initialized with simplified error handling!',
+        'DioClient initialized with extended timeout (30s) for better reliability!',
       ),
     );
   }
