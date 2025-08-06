@@ -19,7 +19,12 @@ class MenuButton extends StatelessWidget {
       ),
       child: IconButton(
         onPressed: onPressed,
-        icon: SvgPicture.asset(AppIcons.menu, width: 20.w, height: 20.h),
+        icon: SvgPicture.asset(
+          AppIcons.menu,
+          width: 20.w,
+          height: 20.h,
+          
+        ),
         padding: EdgeInsets.zero,
       ),
     );
