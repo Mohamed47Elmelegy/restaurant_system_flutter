@@ -18,4 +18,4 @@ class GetProductByIdUseCase extends BaseUseCase<Product?, int> {
   Future<Either<Failure, Product?>> call(int id) async {
     return await repository.getProductById(id);
   }
-} 
+}

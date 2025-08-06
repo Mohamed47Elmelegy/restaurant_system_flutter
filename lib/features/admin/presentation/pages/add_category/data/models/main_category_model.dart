@@ -1,6 +1,5 @@
 import '../../domain/entities/main_category.dart';
 import '../../../../../../../core/base/base_model.dart';
-import 'sub_category_model.dart';
 
 /// 🟦 MainCategoryModel - مبدأ المسؤولية الواحدة (SRP)
 /// مسؤول عن تحويل البيانات فقط
@@ -17,8 +16,6 @@ class MainCategoryModel extends BaseModel<MainCategory> {
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final int? productsCount;
-  final int? subCategoriesCount;
-  final List<SubCategoryModel>? subCategories;
 
   MainCategoryModel({
     required this.id,
@@ -33,8 +30,6 @@ class MainCategoryModel extends BaseModel<MainCategory> {
     this.createdAt,
     this.updatedAt,
     this.productsCount,
-    this.subCategoriesCount,
-    this.subCategories,
   });
 
   /// Constructor for creating MainCategoryModel from existing data with int id
@@ -51,8 +46,6 @@ class MainCategoryModel extends BaseModel<MainCategory> {
     DateTime? createdAt,
     DateTime? updatedAt,
     int? productsCount,
-    int? subCategoriesCount,
-    List<SubCategoryModel>? subCategories,
   }) {
     return MainCategoryModel(
       id: id?.toString() ?? '',
@@ -67,8 +60,6 @@ class MainCategoryModel extends BaseModel<MainCategory> {
       createdAt: createdAt,
       updatedAt: updatedAt,
       productsCount: productsCount,
-      subCategoriesCount: subCategoriesCount,
-      subCategories: subCategories,
     );
   }
 
@@ -92,10 +83,6 @@ class MainCategoryModel extends BaseModel<MainCategory> {
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
       productsCount: entity.productsCount,
-      subCategoriesCount: entity.subCategoriesCount,
-      subCategories: entity.subCategories
-          ?.map((e) => SubCategoryModel.fromEntity(e))
-          .toList(),
     );
   }
 
@@ -117,12 +104,6 @@ class MainCategoryModel extends BaseModel<MainCategory> {
           ? DateTime.parse(json['updated_at'])
           : null,
       productsCount: json['products_count'],
-      subCategoriesCount: json['sub_categories_count'],
-      subCategories: json['sub_categories'] != null
-          ? (json['sub_categories'] as List)
-                .map((i) => SubCategoryModel.fromJson(i))
-                .toList()
-          : null,
     );
   }
 
@@ -152,13 +133,6 @@ class MainCategoryModel extends BaseModel<MainCategory> {
 
     // Only add counts if they exist (for responses)
     if (productsCount != null) data['products_count'] = productsCount;
-    if (subCategoriesCount != null)
-      data['sub_categories_count'] = subCategoriesCount;
-
-    // Only add sub-categories if they exist (for responses)
-    if (subCategories != null && subCategories!.isNotEmpty) {
-      data['sub_categories'] = subCategories!.map((e) => e.toJson()).toList();
-    }
 
     return data;
   }
@@ -178,8 +152,6 @@ class MainCategoryModel extends BaseModel<MainCategory> {
       createdAt: createdAt,
       updatedAt: updatedAt,
       productsCount: productsCount,
-      subCategoriesCount: subCategoriesCount,
-      subCategories: subCategories?.map((e) => e.toEntity()).toList(),
     );
   }
 
@@ -198,8 +170,6 @@ class MainCategoryModel extends BaseModel<MainCategory> {
       createdAt: changes['createdAt'] ?? createdAt,
       updatedAt: changes['updatedAt'] ?? updatedAt,
       productsCount: changes['productsCount'] ?? productsCount,
-      subCategoriesCount: changes['subCategoriesCount'] ?? subCategoriesCount,
-      subCategories: changes['subCategories'] ?? subCategories,
     );
   }
 

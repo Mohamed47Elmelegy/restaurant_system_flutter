@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import '../../../../../../../core/base/base_entity.dart';
 import '../../../meal_times/domain/entities/meal_time.dart';
-import 'sub_category.dart';
 
 /// 🟦 MainCategory Entity - مبدأ المسؤولية الواحدة (SRP)
 /// مسؤول عن تمثيل فئة رئيسية في الأعمال فقط
@@ -15,8 +14,6 @@ class MainCategory extends BaseEntity {
   final bool isActive;
   final int sortOrder;
   final int? productsCount;
-  final int? subCategoriesCount;
-  final List<SubCategory>? subCategories;
   final List<MealTime>? mealTimes;
 
   const MainCategory({
@@ -32,8 +29,6 @@ class MainCategory extends BaseEntity {
     super.createdAt,
     super.updatedAt,
     this.productsCount,
-    this.subCategoriesCount,
-    this.subCategories,
     this.mealTimes,
   });
 
@@ -51,8 +46,6 @@ class MainCategory extends BaseEntity {
     DateTime? createdAt,
     DateTime? updatedAt,
     int? productsCount,
-    int? subCategoriesCount,
-    List<SubCategory>? subCategories,
     List<MealTime>? mealTimes,
   }) {
     return MainCategory(
@@ -68,8 +61,6 @@ class MainCategory extends BaseEntity {
       createdAt: createdAt,
       updatedAt: updatedAt,
       productsCount: productsCount,
-      subCategoriesCount: subCategoriesCount,
-      subCategories: subCategories,
       mealTimes: mealTimes,
     );
   }
@@ -103,8 +94,6 @@ class MainCategory extends BaseEntity {
     createdAt,
     updatedAt,
     productsCount,
-    subCategoriesCount,
-    subCategories,
     mealTimes,
   ];
 
@@ -122,8 +111,6 @@ class MainCategory extends BaseEntity {
     DateTime? createdAt,
     DateTime? updatedAt,
     int? productsCount,
-    int? subCategoriesCount,
-    List<SubCategory>? subCategories,
     List<MealTime>? mealTimes,
   }) {
     return MainCategory(
@@ -139,8 +126,6 @@ class MainCategory extends BaseEntity {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       productsCount: productsCount ?? this.productsCount,
-      subCategoriesCount: subCategoriesCount ?? this.subCategoriesCount,
-      subCategories: subCategories ?? this.subCategories,
       mealTimes: mealTimes ?? this.mealTimes,
     );
   }
@@ -160,25 +145,6 @@ class MainCategory extends BaseEntity {
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
       'products_count': productsCount,
-      'sub_categories_count': subCategoriesCount,
-      'sub_categories': subCategories
-          ?.map(
-            (e) => {
-              'id': e.id,
-              'main_category_id': e.mainCategoryId,
-              'name': e.name,
-              'name_ar': e.nameAr,
-              'icon': e.icon,
-              'description': e.description,
-              'description_ar': e.descriptionAr,
-              'is_active': e.isActive,
-              'sort_order': e.sortOrder,
-              'created_at': e.createdAt?.toIso8601String(),
-              'updated_at': e.updatedAt?.toIso8601String(),
-              'products_count': e.productsCount,
-            },
-          )
-          .toList(),
       'meal_times': mealTimes
           ?.map(
             (e) => {

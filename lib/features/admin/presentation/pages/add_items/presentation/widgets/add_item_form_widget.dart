@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'index.dart';
+import '../../../../../../../core/widgets/custom_text_field.dart' as core;
 
 class AddItemFormWidget extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -8,10 +9,6 @@ class AddItemFormWidget extends StatelessWidget {
   final TextEditingController nameController;
   final TextEditingController priceController;
   final TextEditingController detailsController;
-
-  // Arabic fields
-  final TextEditingController nameArController;
-  final TextEditingController detailsArController;
 
   // Additional fields
   final TextEditingController preparationTimeController;
@@ -25,9 +22,7 @@ class AddItemFormWidget extends StatelessWidget {
 
   // Category selection
   final String? selectedMainCategory;
-  final String? selectedSubCategory;
   final ValueChanged<String> onMainCategoryChanged;
-  final ValueChanged<String> onSubCategoryChanged;
 
   // Ingredients and allergens
   final List<String> selectedIngredients;
@@ -59,9 +54,6 @@ class AddItemFormWidget extends StatelessWidget {
     required this.nameController,
     required this.priceController,
     required this.detailsController,
-    // Arabic fields
-    required this.nameArController,
-    required this.detailsArController,
     // Additional fields
     required this.preparationTimeController,
     required this.sortOrderController,
@@ -72,9 +64,7 @@ class AddItemFormWidget extends StatelessWidget {
     required this.onFeaturedChanged,
     // Category selection
     this.selectedMainCategory,
-    this.selectedSubCategory,
     required this.onMainCategoryChanged,
-    required this.onSubCategoryChanged,
     // Ingredients and allergens
     required this.selectedIngredients,
     required this.selectedAllergens,
@@ -102,40 +92,26 @@ class AddItemFormWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Form(
       key: formKey,
-      child: ListView(
-        padding: const EdgeInsets.all(16),
+      child: Column(
         children: [
-          // Item Name Section (English)
-          CustomTextField(
-            label: 'ITEM NAME (ENGLISH)',
-            hint: 'Classic Beef Burger',
+          // Name Section
+          _buildLabeledTextField(
+            label: 'NAME (ENGLISH)',
             controller: nameController,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter item name in English';
+                return 'Please enter name';
               }
               return null;
             },
           ),
 
-          // Item Name Section (Arabic)
-          CustomTextField(
-            label: 'ITEM NAME (ARABIC)',
-            hint: 'برجر لحم كلاسيك',
-            controller: nameArController,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter item name in Arabic';
-              }
-              return null;
-            },
-          ),
-
-          FormSectionWidget(
-            child: MediaUploadWidget(
-              uploadedImages: uploadedImages,
-              onAddPressed: onAddMediaPressed,
-            ),
+          // Details Section
+          _buildLabeledTextField(
+            label: 'DETAILS (ENGLISH)',
+           
+            controller: detailsController,
+            maxLines: 3,
           ),
 
           // Main Category Section
@@ -146,18 +122,8 @@ class AddItemFormWidget extends StatelessWidget {
             ),
           ),
 
-          // Sub Category Section (only show if main category is selected)
-          if (selectedMainCategory != null)
-            FormSectionWidget(
-              child: SubCategoryWidget(
-                mainCategoryId: selectedMainCategory!,
-                selectedCategory: selectedSubCategory,
-                onCategoryChanged: onSubCategoryChanged,
-              ),
-            ),
-
           // Price Section
-          CustomTextField(
+          _buildLabeledTextField(
             label: 'PRICE (SAR)',
             hint: '25.00',
             controller: priceController,
@@ -174,7 +140,7 @@ class AddItemFormWidget extends StatelessWidget {
           ),
 
           // Preparation Time Section
-          CustomTextField(
+          _buildLabeledTextField(
             label: 'PREPARATION TIME (MINUTES)',
             hint: '15',
             controller: preparationTimeController,
@@ -190,7 +156,7 @@ class AddItemFormWidget extends StatelessWidget {
           ),
 
           // Sort Order Section
-          CustomTextField(
+          _buildLabeledTextField(
             label: 'SORT ORDER',
             hint: '1',
             controller: sortOrderController,
@@ -241,6 +207,14 @@ class AddItemFormWidget extends StatelessWidget {
             ),
           ),
 
+          // Media Section
+          FormSectionWidget(
+            child: MediaUploadWidget(
+              uploadedImages: uploadedImages,
+              onAddPressed: onAddMediaPressed,
+            ),
+          ),
+
           // Basic Ingredients Section
           FormSectionWidget(
             child: IngredientSelectionWidget(
@@ -263,41 +237,67 @@ class AddItemFormWidget extends StatelessWidget {
             ),
           ),
 
-          // Details Section (English)
-          CustomTextField(
-            label: 'DETAILS (ENGLISH)',
-            hint:
-                'Juicy beef patty with fresh lettuce, tomato, and special sauce',
-            controller: detailsController,
-            maxLines: 4,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter details in English';
-              }
-              return null;
-            },
-          ),
-
-          // Details Section (Arabic)
-          CustomTextField(
-            label: 'DETAILS (ARABIC)',
-            hint: 'برجر لحم عصير مع خس طازج وطماطم وصلصة خاصة',
-            controller: detailsArController,
-            maxLines: 4,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter details in Arabic';
-              }
-              return null;
-            },
-          ),
-
+          // Meal Category Section
           FormSectionWidget(
-            topSpacing: 32,
-            child: SaveButtonWidget(onPressed: onSavePressed),
+            child: MealCategoryWidget(
+              selectedCategory: selectedMealCategory,
+              onCategoryChanged: onMealCategoryChanged,
+            ),
+          ),
+
+          // Save Button
+          const SizedBox(height: 24),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: onSavePressed,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orange,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+              child: const Text(
+                'SAVE ITEM',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildLabeledTextField({
+    required String label,
+    String? hint,
+    required TextEditingController controller,
+    TextInputType? keyboardType,
+    int? maxLines,
+    String? Function(String?)? validator,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8.0),
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Colors.black87,
+            ),
+          ),
+        ),
+        core.CustomTextField(
+          controller: controller,
+          hint: hint,
+          keyboardType: keyboardType,
+          maxLines: maxLines,
+          onValidate: validator,
+        ),
+        const SizedBox(height: 16),
+      ],
     );
   }
 }

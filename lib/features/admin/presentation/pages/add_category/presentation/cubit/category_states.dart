@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import '../../domain/entities/main_category.dart';
-import '../../domain/entities/sub_category.dart';
 
 /// 🟦 CategoryStates - مبدأ المسؤولية الواحدة (SRP)
 /// مسؤول عن حالات إدارة الفئات فقط
@@ -91,16 +90,6 @@ class ActiveCategoriesLoaded extends CategoryState {
   List<Object?> get props => [categories];
 }
 
-/// Categories with subcategories loaded
-class CategoriesWithSubCategoriesLoaded extends CategoryState {
-  final List<MainCategory> categories;
-
-  const CategoriesWithSubCategoriesLoaded(this.categories);
-
-  @override
-  List<Object?> get props => [categories];
-}
-
 /// Authentication error
 class CategoryAuthError extends CategoryState {
   final String message;
@@ -119,47 +108,4 @@ class CategoryError extends CategoryState {
 
   @override
   List<Object?> get props => [message];
-}
-
-// ==================== SUB-CATEGORIES STATES ====================
-
-/// Sub-categories loaded successfully
-class SubCategoriesLoaded extends CategoryState {
-  final List<SubCategory> subCategories;
-
-  const SubCategoriesLoaded(this.subCategories);
-
-  @override
-  List<Object?> get props => [subCategories];
-}
-
-/// Sub-category created successfully
-class SubCategoryCreated extends CategoryState {
-  final SubCategory subCategory;
-
-  const SubCategoryCreated(this.subCategory);
-
-  @override
-  List<Object?> get props => [subCategory];
-}
-
-/// Sub-category updated successfully
-class SubCategoryUpdated extends CategoryState {
-  final SubCategory subCategory;
-
-  const SubCategoryUpdated(this.subCategory);
-
-  @override
-  List<Object?> get props => [subCategory];
-}
-
-/// Sub-category deleted successfully
-class SubCategoryDeleted extends CategoryState {
-  final int categoryId;
-  final int subCategoryId;
-
-  const SubCategoryDeleted(this.categoryId, this.subCategoryId);
-
-  @override
-  List<Object?> get props => [categoryId, subCategoryId];
 }

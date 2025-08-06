@@ -3,7 +3,6 @@ import 'dart:developer';
 import '../../../../../../../core/error/api_response.dart';
 import '../../../../../../../core/network/api_path.dart';
 import '../models/main_category_model.dart';
-import '../models/sub_category_model.dart';
 import 'category_remote_data_source.dart';
 
 class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
@@ -99,66 +98,149 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
   }
 
   @override
-  Future<ApiResponse<List<MainCategoryModel>>> getActiveCategories() async {
-    try {
-      log('🔄 CategoryRemoteDataSourceImpl: Getting active categories');
-
-      final response = await dio.get('${ApiPath.adminCategories()}?active=1');
-
-      final List<dynamic> data = response.data['data'];
-      final categories = data
-          .map((json) => MainCategoryModel.fromJson(json))
-          .toList();
-
-      log(
-        '✅ CategoryRemoteDataSourceImpl: Active categories loaded - ${categories.length}',
-      );
-      return ApiResponse.success(categories);
-    } on DioException catch (e) {
-      log(
-        '❌ CategoryRemoteDataSourceImpl: Failed to get active categories - $e',
-      );
-      return ApiResponse.fromDioException(e);
-    } catch (e) {
-      log(
-        '❌ CategoryRemoteDataSourceImpl: Failed to get active categories - $e',
-      );
-      return ApiResponse.error('Failed to get active categories: $e');
-    }
-  }
-
-  @override
   Future<ApiResponse<List<MainCategoryModel>>> getCategoriesByMealTime(
     int mealTimeId,
   ) async {
     try {
-      log(
-        '🔄 CategoryRemoteDataSourceImpl: Getting categories by meal time - $mealTimeId',
-      );
+      log('🔵 Categories by Meal Time Request - URL: ${ApiPath.categories()}');
 
       final response = await dio.get(
-        '${ApiPath.adminCategories()}?meal_time_id=$mealTimeId',
+        ApiPath.categories(),
+        queryParameters: {'meal_time_id': mealTimeId},
       );
 
-      final List<dynamic> data = response.data['data'];
-      final categories = data
-          .map((json) => MainCategoryModel.fromJson(json))
-          .toList();
+      log('🟢 Categories by Meal Time Response Status: ${response.statusCode}');
 
-      log(
-        '✅ CategoryRemoteDataSourceImpl: Categories by meal time loaded - ${categories.length}',
-      );
-      return ApiResponse.success(categories);
+      return ApiResponse.fromJson(response.data, (data) {
+        final categoriesJson = data as List;
+        return categoriesJson
+            .map((json) => MainCategoryModel.fromJson(json))
+            .toList();
+      });
     } on DioException catch (e) {
-      log(
-        '❌ CategoryRemoteDataSourceImpl: Failed to get categories by meal time - $e',
-      );
+      log('🔴 Categories by Meal Time DioException: ${e.message}');
       return ApiResponse.fromDioException(e);
     } catch (e) {
-      log(
-        '❌ CategoryRemoteDataSourceImpl: Failed to get categories by meal time - $e',
+      log('🔴 Categories by Meal Time Unexpected Error: $e');
+      return const ApiResponse<List<MainCategoryModel>>(
+        status: false,
+        message: 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.',
       );
-      return ApiResponse.error('Failed to get categories by meal time: $e');
+    }
+  }
+
+  @override
+  Future<ApiResponse<List<MainCategoryModel>>> getActiveCategories() async {
+    try {
+      log('🔵 Active Categories Request - URL: ${ApiPath.categories()}');
+
+      final response = await dio.get(
+        ApiPath.categories(),
+        queryParameters: {'is_active': true},
+      );
+
+      log('🟢 Active Categories Response Status: ${response.statusCode}');
+
+      return ApiResponse.fromJson(response.data, (data) {
+        final categoriesJson = data as List;
+        return categoriesJson
+            .map((json) => MainCategoryModel.fromJson(json))
+            .toList();
+      });
+    } on DioException catch (e) {
+      log('🔴 Active Categories DioException: ${e.message}');
+      return ApiResponse.fromDioException(e);
+    } catch (e) {
+      log('🔴 Active Categories Unexpected Error: $e');
+      return const ApiResponse<List<MainCategoryModel>>(
+        status: false,
+        message: 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.',
+      );
+    }
+  }
+
+  @override
+  Future<ApiResponse<MainCategoryModel?>> getCategoryByName(String name) async {
+    try {
+      log('🔵 Category by Name Request - URL: ${ApiPath.categories()}');
+
+      final response = await dio.get(
+        ApiPath.categories(),
+        queryParameters: {'name': name},
+      );
+
+      log('🟢 Category by Name Response Status: ${response.statusCode}');
+
+      return ApiResponse.fromJson(response.data, (data) {
+        if (data == null) return null;
+        return MainCategoryModel.fromJson(data);
+      });
+    } on DioException catch (e) {
+      log('🔴 Category by Name DioException: ${e.message}');
+      return ApiResponse.fromDioException(e);
+    } catch (e) {
+      log('🔴 Category by Name Unexpected Error: $e');
+      return const ApiResponse<MainCategoryModel?>(
+        status: false,
+        message: 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.',
+      );
+    }
+  }
+
+  @override
+  Future<ApiResponse<MainCategoryModel?>> getCategoryById(int id) async {
+    try {
+      log('🔵 Category by ID Request - URL: ${ApiPath.categories()}/$id');
+
+      final response = await dio.get('${ApiPath.categories()}/$id');
+
+      log('🟢 Category by ID Response Status: ${response.statusCode}');
+
+      return ApiResponse.fromJson(response.data, (data) {
+        if (data == null) return null;
+        return MainCategoryModel.fromJson(data);
+      });
+    } on DioException catch (e) {
+      log('🔴 Category by ID DioException: ${e.message}');
+      return ApiResponse.fromDioException(e);
+    } catch (e) {
+      log('🔴 Category by ID Unexpected Error: $e');
+      return const ApiResponse<MainCategoryModel?>(
+        status: false,
+        message: 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.',
+      );
+    }
+  }
+
+  @override
+  Future<ApiResponse<List<MainCategoryModel>>> searchCategories(
+    String query,
+  ) async {
+    try {
+      log('🔵 Search Categories Request - URL: ${ApiPath.categories()}');
+
+      final response = await dio.get(
+        ApiPath.categories(),
+        queryParameters: {'search': query},
+      );
+
+      log('🟢 Search Categories Response Status: ${response.statusCode}');
+
+      return ApiResponse.fromJson(response.data, (data) {
+        final categoriesJson = data as List;
+        return categoriesJson
+            .map((json) => MainCategoryModel.fromJson(json))
+            .toList();
+      });
+    } on DioException catch (e) {
+      log('🔴 Search Categories DioException: ${e.message}');
+      return ApiResponse.fromDioException(e);
+    } catch (e) {
+      log('🔴 Search Categories Unexpected Error: $e');
+      return const ApiResponse<List<MainCategoryModel>>(
+        status: false,
+        message: 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.',
+      );
     }
   }
 
@@ -168,34 +250,43 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
     int limit = 10,
     String? sortBy,
     bool ascending = true,
-  }) {
-    // TODO: implement getCategoriesPaginated
-    throw UnimplementedError();
-  }
+  }) async {
+    try {
+      log('🔵 Paginated Categories Request - URL: ${ApiPath.categories()}');
 
-  @override
-  Future<ApiResponse<List<MainCategoryModel>>>
-  getCategoriesWithSubCategories() {
-    // TODO: implement getCategoriesWithSubCategories
-    throw UnimplementedError();
-  }
+      final queryParameters = <String, dynamic>{
+        'page': page,
+        'limit': limit,
+        'sort_direction': ascending ? 'asc' : 'desc',
+      };
 
-  @override
-  Future<ApiResponse<MainCategoryModel?>> getCategoryById(int id) {
-    // TODO: implement getCategoryById
-    throw UnimplementedError();
-  }
+      if (sortBy != null) {
+        queryParameters['sort_by'] = sortBy;
+      }
 
-  @override
-  Future<ApiResponse<MainCategoryModel?>> getCategoryByName(String name) {
-    // TODO: implement getCategoryByName
-    throw UnimplementedError();
-  }
+      final response = await dio.get(
+        ApiPath.categories(),
+        queryParameters: queryParameters,
+      );
 
-  @override
-  Future<ApiResponse<List<MainCategoryModel>>> searchCategories(String query) {
-    // TODO: implement searchCategories
-    throw UnimplementedError();
+      log('🟢 Paginated Categories Response Status: ${response.statusCode}');
+
+      return ApiResponse.fromJson(response.data, (data) {
+        final categoriesJson = data as List;
+        return categoriesJson
+            .map((json) => MainCategoryModel.fromJson(json))
+            .toList();
+      });
+    } on DioException catch (e) {
+      log('🔴 Paginated Categories DioException: ${e.message}');
+      return ApiResponse.fromDioException(e);
+    } catch (e) {
+      log('🔴 Paginated Categories Unexpected Error: $e');
+      return const ApiResponse<List<MainCategoryModel>>(
+        status: false,
+        message: 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.',
+      );
+    }
   }
 
   @override
@@ -204,120 +295,5 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
   ) {
     // TODO: implement updateCategory
     throw UnimplementedError();
-  }
-
-  // ==================== SUB-CATEGORIES IMPLEMENTATION ====================
-
-  @override
-  Future<ApiResponse<List<SubCategoryModel>>> getSubCategories(
-    int categoryId,
-  ) async {
-    try {
-      log(
-        '🔄 CategoryRemoteDataSourceImpl: Getting sub-categories for category - $categoryId',
-      );
-
-      final response = await dio.get(
-        ApiPath.adminCategorySubCategories(categoryId),
-      );
-
-      final List<dynamic> data = response.data['data'];
-      final subCategories = data
-          .map((json) => SubCategoryModel.fromJson(json))
-          .toList();
-
-      log(
-        '✅ CategoryRemoteDataSourceImpl: Sub-categories loaded - ${subCategories.length}',
-      );
-      return ApiResponse.success(subCategories);
-    } on DioException catch (e) {
-      log('❌ CategoryRemoteDataSourceImpl: Failed to get sub-categories - $e');
-      return ApiResponse.fromDioException(e);
-    } catch (e) {
-      log('❌ CategoryRemoteDataSourceImpl: Failed to get sub-categories - $e');
-      return ApiResponse.error('Failed to get sub-categories: $e');
-    }
-  }
-
-  @override
-  Future<ApiResponse<SubCategoryModel>> createSubCategory(
-    int categoryId,
-    SubCategoryModel subCategory,
-  ) async {
-    try {
-      log(
-        '🔄 CategoryRemoteDataSourceImpl: Creating sub-category - ${subCategory.name}',
-      );
-
-      final response = await dio.post(
-        ApiPath.adminCategorySubCategories(categoryId),
-        data: subCategory.toJson(),
-      );
-
-      log('✅ CategoryRemoteDataSourceImpl: Sub-category created successfully');
-      return ApiResponse.success(
-        SubCategoryModel.fromJson(response.data['data']),
-      );
-    } on DioException catch (e) {
-      log('❌ CategoryRemoteDataSourceImpl: DioException - ${e.type}');
-      return ApiResponse.fromDioException(e);
-    } catch (e) {
-      log('❌ CategoryRemoteDataSourceImpl: Unexpected error - $e');
-      return ApiResponse.error('Unexpected error: $e');
-    }
-  }
-
-  @override
-  Future<ApiResponse<SubCategoryModel>> updateSubCategory(
-    int categoryId,
-    int subCategoryId,
-    SubCategoryModel subCategory,
-  ) async {
-    try {
-      log(
-        '🔄 CategoryRemoteDataSourceImpl: Updating sub-category - $subCategoryId',
-      );
-
-      final response = await dio.put(
-        '${ApiPath.adminCategorySubCategories(categoryId)}/$subCategoryId',
-        data: subCategory.toJson(),
-      );
-
-      log('✅ CategoryRemoteDataSourceImpl: Sub-category updated successfully');
-      return ApiResponse.success(
-        SubCategoryModel.fromJson(response.data['data']),
-      );
-    } on DioException catch (e) {
-      log('❌ CategoryRemoteDataSourceImpl: Failed to update sub-category - $e');
-      return ApiResponse.fromDioException(e);
-    } catch (e) {
-      log('❌ CategoryRemoteDataSourceImpl: Failed to update sub-category - $e');
-      return ApiResponse.error('Failed to update sub-category: $e');
-    }
-  }
-
-  @override
-  Future<ApiResponse<bool>> deleteSubCategory(
-    int categoryId,
-    int subCategoryId,
-  ) async {
-    try {
-      log(
-        '🔄 CategoryRemoteDataSourceImpl: Deleting sub-category - $subCategoryId',
-      );
-
-      await dio.delete(
-        '${ApiPath.adminCategorySubCategories(categoryId)}/$subCategoryId',
-      );
-
-      log('✅ CategoryRemoteDataSourceImpl: Sub-category deleted successfully');
-      return ApiResponse.success(true);
-    } on DioException catch (e) {
-      log('❌ CategoryRemoteDataSourceImpl: Failed to delete sub-category - $e');
-      return ApiResponse.fromDioException(e);
-    } catch (e) {
-      log('❌ CategoryRemoteDataSourceImpl: Failed to delete sub-category - $e');
-      return ApiResponse.error('Failed to delete sub-category: $e');
-    }
   }
 }

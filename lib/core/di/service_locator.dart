@@ -56,8 +56,6 @@ import '../../features/admin/presentation/pages/add_category/domain/usecases/upd
 import '../../features/admin/presentation/pages/add_category/domain/usecases/get_category_by_id_usecase.dart';
 import '../../features/admin/presentation/pages/add_category/domain/usecases/get_categories_usecase.dart'
     as admin_category;
-import '../../features/admin/presentation/pages/add_category/domain/usecases/create_sub_category_usecase.dart';
-import '../../features/admin/presentation/pages/add_category/domain/usecases/get_sub_categories_usecase.dart';
 import '../../features/admin/presentation/pages/add_category/data/datasources/category_local_data_source.dart';
 import '../../features/admin/presentation/pages/menu/data/datasources/menu_local_data_source.dart';
 import '../../features/admin/presentation/pages/add_items/data/datasources/product_local_data_source.dart';
@@ -135,7 +133,7 @@ Future<void> setup() async {
     ),
   );
   getIt.registerLazySingleton<CategoryRepository>(
-    () => CategoryRepositoryImpl(
+    () => CategoryRepositoryImpl( 
       remoteDataSource: getIt<CategoryRemoteDataSource>(),
       localDataSource: getIt<CategoryLocalDataSource>(),
     ),
@@ -220,12 +218,6 @@ Future<void> setup() async {
   getIt.registerLazySingleton<GetCategoryByIdUseCase>(
     () => GetCategoryByIdUseCase(repository: getIt<CategoryRepository>()),
   );
-  getIt.registerLazySingleton<CreateSubCategoryUseCase>(
-    () => CreateSubCategoryUseCase(getIt<CategoryRepository>()),
-  );
-  getIt.registerLazySingleton<GetSubCategoriesUseCase>(
-    () => GetSubCategoriesUseCase(getIt<CategoryRepository>()),
-  );
 
   // Bloc
   getIt.registerFactory<AuthBloc>(
@@ -278,8 +270,6 @@ Future<void> setup() async {
       getCategoriesUseCase: getIt<admin_category.GetCategoriesUseCase>(),
       updateCategoryUseCase: getIt<UpdateCategoryUseCase>(),
       getCategoryByIdUseCase: getIt<GetCategoryByIdUseCase>(),
-      createSubCategoryUseCase: getIt<CreateSubCategoryUseCase>(),
-      getSubCategoriesUseCase: getIt<GetSubCategoriesUseCase>(),
       categoryRepository: getIt<CategoryRepository>(),
     ),
   );

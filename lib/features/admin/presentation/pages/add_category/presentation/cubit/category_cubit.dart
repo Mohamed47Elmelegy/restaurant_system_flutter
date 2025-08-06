@@ -1,26 +1,21 @@
 import 'dart:developer';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/main_category.dart';
-import '../../domain/entities/sub_category.dart';
 import '../../domain/usecases/create_category_usecase.dart';
 import '../../domain/usecases/get_categories_usecase.dart';
 import '../../domain/usecases/update_category_usecase.dart';
 import '../../domain/usecases/get_category_by_id_usecase.dart';
-import '../../domain/usecases/create_sub_category_usecase.dart';
-import '../../domain/usecases/get_sub_categories_usecase.dart';
 import '../../data/repositories/category_repository.dart';
 import 'category_events.dart';
 import 'category_states.dart';
 
 /// 🟦 CategoryCubit - مبدأ المسؤولية الواحدة (SRP)
-/// مسؤول عن إدارة حالة الفئات والفئات الفرعية
+/// مسؤول عن إدارة حالة الفئات
 class CategoryCubit extends Bloc<CategoryEvent, CategoryState> {
   final CreateCategoryUseCase createCategoryUseCase;
   final GetCategoriesUseCase getCategoriesUseCase;
   final UpdateCategoryUseCase updateCategoryUseCase;
   final GetCategoryByIdUseCase getCategoryByIdUseCase;
-  final CreateSubCategoryUseCase createSubCategoryUseCase;
-  final GetSubCategoriesUseCase getSubCategoriesUseCase;
   final CategoryRepository categoryRepository;
 
   CategoryCubit({
@@ -28,8 +23,6 @@ class CategoryCubit extends Bloc<CategoryEvent, CategoryState> {
     required this.getCategoriesUseCase,
     required this.updateCategoryUseCase,
     required this.getCategoryByIdUseCase,
-    required this.createSubCategoryUseCase,
-    required this.getSubCategoriesUseCase,
     required this.categoryRepository,
   }) : super(const CategoryInitial()) {
     on<LoadCategories>(_onLoadCategories);
@@ -39,13 +32,6 @@ class CategoryCubit extends Bloc<CategoryEvent, CategoryState> {
     on<GetCategoryById>(_onGetCategoryById);
     on<SearchCategories>(_onSearchCategories);
     on<GetActiveCategories>(_onGetActiveCategories);
-    on<GetCategoriesWithSubCategories>(_onGetCategoriesWithSubCategories);
-
-    // Sub-category events
-    on<LoadSubCategories>(_onLoadSubCategories);
-    on<CreateSubCategory>(_onCreateSubCategory);
-    on<UpdateSubCategory>(_onUpdateSubCategory);
-    on<DeleteSubCategory>(_onDeleteSubCategory);
   }
 
   /// Load all categories
@@ -108,7 +94,9 @@ class CategoryCubit extends Bloc<CategoryEvent, CategoryState> {
           log(
             '✅ CategoryCubit: Category created successfully - ${createdCategory.name}',
           );
-          log('✅ CategoryCubit: Created category ID - ${createdCategory.id}');
+          log(
+            '✅ CategoryCubit: Created category ID - ${createdCategory.id}',
+          );
           emit(CategoryCreated(createdCategory));
         },
       );
@@ -144,7 +132,9 @@ class CategoryCubit extends Bloc<CategoryEvent, CategoryState> {
           log(
             '✅ CategoryCubit: Category updated successfully - ${updatedCategory.name}',
           );
-          log('✅ CategoryCubit: Updated category ID - ${updatedCategory.id}');
+          log(
+            '✅ CategoryCubit: Updated category ID - ${updatedCategory.id}',
+          );
           emit(CategoryUpdated(updatedCategory));
         },
       );
@@ -216,8 +206,8 @@ class CategoryCubit extends Bloc<CategoryEvent, CategoryState> {
             );
             emit(CategoryLoaded(category));
           } else {
-            log('❌ CategoryCubit: Category not found - ${event.categoryId}');
-            emit(const CategoryError('الفئة غير موجودة'));
+            log('❌ CategoryCubit: Category not found');
+            emit(const CategoryError('Category not found'));
           }
         },
       );
@@ -250,7 +240,7 @@ class CategoryCubit extends Bloc<CategoryEvent, CategoryState> {
         },
         (categories) {
           log(
-            '✅ CategoryCubit: Categories searched successfully - ${categories.length} results',
+            '✅ CategoryCubit: Categories searched successfully - ${categories.length} categories',
           );
           emit(CategoriesSearched(categories));
         },
@@ -291,208 +281,6 @@ class CategoryCubit extends Bloc<CategoryEvent, CategoryState> {
       );
     } catch (e) {
       log('❌ CategoryCubit: Failed to get active categories - $e');
-      emit(CategoryError(e.toString()));
-    }
-  }
-
-  /// Get categories with subcategories
-  Future<void> _onGetCategoriesWithSubCategories(
-    GetCategoriesWithSubCategories event,
-    Emitter<CategoryState> emit,
-  ) async {
-    emit(const CategoryLoading());
-    try {
-      log('🔄 CategoryCubit: Getting categories with subcategories...');
-
-      final result = await categoryRepository.getCategoriesWithSubCategories();
-
-      result.fold(
-        (failure) {
-          log(
-            '❌ CategoryCubit: Failed to get categories with subcategories - $failure',
-          );
-          if (failure.message.contains('تسجيل الدخول') ||
-              failure.message.contains('مصادقة')) {
-            emit(CategoryAuthError(failure.message));
-          } else {
-            emit(CategoryError(failure.message));
-          }
-        },
-        (categories) {
-          log(
-            '✅ CategoryCubit: Categories with subcategories loaded successfully - ${categories.length} categories',
-          );
-          emit(CategoriesWithSubCategoriesLoaded(categories));
-        },
-      );
-    } catch (e) {
-      log('❌ CategoryCubit: Failed to get categories with subcategories - $e');
-      emit(CategoryError(e.toString()));
-    }
-  }
-
-  // ==================== SUB-CATEGORIES HANDLERS ====================
-
-  /// Load sub-categories for a specific category
-  Future<void> _onLoadSubCategories(
-    LoadSubCategories event,
-    Emitter<CategoryState> emit,
-  ) async {
-    emit(const CategoryLoading());
-    try {
-      log(
-        '🔄 CategoryCubit: Loading sub-categories for category ${event.categoryId}',
-      );
-
-      final result = await getSubCategoriesUseCase(event.categoryId);
-
-      result.fold(
-        (failure) {
-          log('❌ CategoryCubit: Failed to load sub-categories - $failure');
-          if (failure.message.contains('تسجيل الدخول') ||
-              failure.message.contains('مصادقة')) {
-            emit(CategoryAuthError(failure.message));
-          } else {
-            emit(CategoryError(failure.message));
-          }
-        },
-        (subCategories) {
-          log(
-            '✅ CategoryCubit: Sub-categories loaded successfully - ${subCategories.length} sub-categories',
-          );
-          emit(SubCategoriesLoaded(subCategories));
-        },
-      );
-    } catch (e) {
-      log('❌ CategoryCubit: Failed to load sub-categories - $e');
-      emit(CategoryError(e.toString()));
-    }
-  }
-
-  /// Create new sub-category
-  Future<void> _onCreateSubCategory(
-    CreateSubCategory event,
-    Emitter<CategoryState> emit,
-  ) async {
-    emit(const CategoryLoading());
-    try {
-      log(
-        '🔄 CategoryCubit: Creating sub-category - ${event.subCategory.name}',
-      );
-      log(
-        '🔄 CategoryCubit: Sub-category data - ${event.subCategory.toString()}',
-      );
-
-      final result = await createSubCategoryUseCase(
-        categoryId: event.categoryId,
-        subCategory: event.subCategory,
-      );
-
-      result.fold(
-        (failure) {
-          log('❌ CategoryCubit: Failed to create sub-category - $failure');
-          if (failure.message.contains('تسجيل الدخول') ||
-              failure.message.contains('مصادقة')) {
-            emit(CategoryAuthError(failure.message));
-          } else {
-            emit(CategoryError(failure.message));
-          }
-        },
-        (createdSubCategory) {
-          log(
-            '✅ CategoryCubit: Sub-category created successfully - ${createdSubCategory.name}',
-          );
-          log(
-            '✅ CategoryCubit: Created sub-category ID - ${createdSubCategory.id}',
-          );
-          emit(SubCategoryCreated(createdSubCategory));
-        },
-      );
-    } catch (e) {
-      log('❌ CategoryCubit: Failed to create sub-category - $e');
-      emit(CategoryError(e.toString()));
-    }
-  }
-
-  /// Update existing sub-category
-  Future<void> _onUpdateSubCategory(
-    UpdateSubCategory event,
-    Emitter<CategoryState> emit,
-  ) async {
-    emit(const CategoryLoading());
-    try {
-      log(
-        '🔄 CategoryCubit: Updating sub-category - ${event.subCategory.name}',
-      );
-      log(
-        '🔄 CategoryCubit: Sub-category data - ${event.subCategory.toString()}',
-      );
-
-      final result = await categoryRepository.updateSubCategory(
-        event.categoryId,
-        event.subCategoryId,
-        event.subCategory,
-      );
-
-      result.fold(
-        (failure) {
-          log('❌ CategoryCubit: Failed to update sub-category - $failure');
-          if (failure.message.contains('تسجيل الدخول') ||
-              failure.message.contains('مصادقة')) {
-            emit(CategoryAuthError(failure.message));
-          } else {
-            emit(CategoryError(failure.message));
-          }
-        },
-        (updatedSubCategory) {
-          log(
-            '✅ CategoryCubit: Sub-category updated successfully - ${updatedSubCategory.name}',
-          );
-          log(
-            '✅ CategoryCubit: Updated sub-category ID - ${updatedSubCategory.id}',
-          );
-          emit(SubCategoryUpdated(updatedSubCategory));
-        },
-      );
-    } catch (e) {
-      log('❌ CategoryCubit: Failed to update sub-category - $e');
-      emit(CategoryError(e.toString()));
-    }
-  }
-
-  /// Delete sub-category
-  Future<void> _onDeleteSubCategory(
-    DeleteSubCategory event,
-    Emitter<CategoryState> emit,
-  ) async {
-    emit(const CategoryLoading());
-    try {
-      log('🔄 CategoryCubit: Deleting sub-category - ${event.subCategoryId}');
-
-      final result = await categoryRepository.deleteSubCategory(
-        event.categoryId,
-        event.subCategoryId,
-      );
-
-      result.fold(
-        (failure) {
-          log('❌ CategoryCubit: Failed to delete sub-category - $failure');
-          if (failure.message.contains('تسجيل الدخول') ||
-              failure.message.contains('مصادقة')) {
-            emit(CategoryAuthError(failure.message));
-          } else {
-            emit(CategoryError(failure.message));
-          }
-        },
-        (success) {
-          log(
-            '✅ CategoryCubit: Sub-category deleted successfully - ${event.subCategoryId}',
-          );
-          emit(SubCategoryDeleted(event.categoryId, event.subCategoryId));
-        },
-      );
-    } catch (e) {
-      log('❌ CategoryCubit: Failed to delete sub-category - $e');
       emit(CategoryError(e.toString()));
     }
   }

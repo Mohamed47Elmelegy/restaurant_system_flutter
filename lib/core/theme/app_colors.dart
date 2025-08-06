@@ -13,12 +13,12 @@ class AppColors {
   // Dark Theme Colors
   static const Color darkPrimary = Color(0xFFBB86FC);
   static const Color darkSecondary = Color(0xFF03DAC6);
-  static const Color darkBackground = Color(0xFF121212);
+  static const Color darkBackground = Color(0xFF121223);
   static const Color darkSurface = Color(0xFF1F1F1F);
   static const Color darkTextPrimary = Color(0xFFFFFFFF);
   static const Color darkTextSecondary = Color(0xFFB0B0B0);
   static const Color darkError = Color(0xFFCF6679);
-  static const Color darkSplash = Color(0xFF121212);
+  static const Color darkSplash = Color(0xFF121223);
 
   // Common Colors
   static const Color error = Color(0xFFCF6679);

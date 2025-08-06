@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import '../../../../core/routes/app_routes.dart';
+import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_helper.dart';
 
 class SplashPage extends StatefulWidget {
@@ -33,18 +34,18 @@ class _SplashPageState extends State<SplashPage> {
               width: 150,
               height: 150,
               decoration: ThemeHelper.getLogoDecoration(),
-              child: const Icon(
+              child: Icon(
                 Icons.restaurant,
                 size: 80,
-                color: Colors.white,
+                color: ThemeHelper.getPrimaryTextColor(context),
               ),
             ),
             const SizedBox(height: 24),
-            Text('نظام المطعم', style: ThemeHelper.getTitleStyle(context)),
+            Text('نظام المطعم', style: AppTextStyles.senBold22(context)),
             const SizedBox(height: 8),
             Text(
               'Food Delivery App',
-              style: ThemeHelper.getSubtitleStyle(context),
+              style: AppTextStyles.senRegular14(context),
             ),
             const SizedBox(height: 40),
             CircularProgressIndicator(

@@ -1,7 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/main_category_model.dart';
-import '../models/sub_category_model.dart';
 import 'dart:developer';
 import 'dart:convert';
 
@@ -42,32 +41,11 @@ abstract class CategoryLocalDataSource {
 
   /// تحديث حالة نشاط الفئة
   Future<void> updateCategoryActivity(String id, bool isActive);
-
-  /// حفظ الفئات الفرعية محلياً
-  Future<void> saveSubCategories(List<SubCategoryModel> subCategories);
-
-  /// جلب الفئات الفرعية من التخزين المحلي
-  Future<List<SubCategoryModel>> getSubCategories();
-
-  /// جلب الفئات الفرعية لفئة رئيسية محددة
-  Future<List<SubCategoryModel>> getSubCategoriesByMainCategory(
-    int mainCategoryId,
-  );
-
-  /// جلب فئة فرعية بواسطة المعرف
-  Future<SubCategoryModel?> getSubCategoryById(String id);
-
-  /// حفظ فئة فرعية واحدة
-  Future<void> saveSubCategory(SubCategoryModel subCategory);
-
-  /// حذف فئة فرعية واحدة
-  Future<void> deleteSubCategory(String id);
 }
 
 class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
   static const String _boxName = 'admin_cache';
   static const String _mainCategoriesKey = 'main_categories';
-  static const String _subCategoriesKey = 'sub_categories';
   static const Duration _cacheDuration = Duration(
     hours: 3,
   ); // فئات تحتاج cache أطول
@@ -186,7 +164,6 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
     try {
       final box = await Hive.openBox(_boxName);
       await box.delete(_mainCategoriesKey);
-      await box.delete(_subCategoriesKey);
       log(
         '🗑️ CategoryLocalDataSource: Cleared all categories from local storage',
       );
@@ -278,8 +255,6 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
           createdAt: categories[categoryIndex].createdAt,
           updatedAt: DateTime.now(),
           productsCount: categories[categoryIndex].productsCount,
-          subCategoriesCount: categories[categoryIndex].subCategoriesCount,
-          subCategories: categories[categoryIndex].subCategories,
         );
 
         categories[categoryIndex] = updatedCategory;
@@ -292,130 +267,6 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
       log(
         '❌ CategoryLocalDataSource: Error updating main category activity: $e',
       );
-      rethrow;
-    }
-  }
-
-  // Sub Categories Methods
-  @override
-  Future<void> saveSubCategories(List<SubCategoryModel> subCategories) async {
-    try {
-      final box = await Hive.openBox(_boxName);
-      final data = {
-        'items': subCategories.map((item) => item.toJson()).toList(),
-        'timestamp': DateTime.now().millisecondsSinceEpoch,
-      };
-      await box.put(_subCategoriesKey, jsonEncode(data));
-      log(
-        '💾 CategoryLocalDataSource: Saved ${subCategories.length} sub categories locally',
-      );
-    } catch (e) {
-      log('❌ CategoryLocalDataSource: Error saving sub categories: $e');
-      rethrow;
-    }
-  }
-
-  @override
-  Future<List<SubCategoryModel>> getSubCategories() async {
-    try {
-      final box = await Hive.openBox(_boxName);
-      final data = box.get(_subCategoriesKey);
-
-      if (data == null) {
-        log(
-          '📭 CategoryLocalDataSource: No sub categories found in local storage',
-        );
-        return [];
-      }
-
-      final jsonData = jsonDecode(data);
-      final items = (jsonData['items'] as List)
-          .map((item) => SubCategoryModel.fromJson(item))
-          .toList();
-
-      log(
-        '📥 CategoryLocalDataSource: Retrieved ${items.length} sub categories from local storage',
-      );
-      return items;
-    } catch (e) {
-      log('❌ CategoryLocalDataSource: Error retrieving sub categories: $e');
-      return [];
-    }
-  }
-
-  @override
-  Future<List<SubCategoryModel>> getSubCategoriesByMainCategory(
-    int mainCategoryId,
-  ) async {
-    try {
-      final subCategories = await getSubCategories();
-      final filteredSubCategories = subCategories.where((subCategory) {
-        return subCategory.mainCategoryId == mainCategoryId;
-      }).toList();
-
-      log(
-        '📂 CategoryLocalDataSource: Found ${filteredSubCategories.length} sub categories for main category $mainCategoryId',
-      );
-      return filteredSubCategories;
-    } catch (e) {
-      log(
-        '❌ CategoryLocalDataSource: Error getting sub categories by main category: $e',
-      );
-      return [];
-    }
-  }
-
-  @override
-  Future<SubCategoryModel?> getSubCategoryById(String id) async {
-    try {
-      final subCategories = await getSubCategories();
-      final subCategory = subCategories.firstWhere(
-        (subCategory) => subCategory.id == id,
-        orElse: () => throw Exception('Sub category not found'),
-      );
-      log('📥 CategoryLocalDataSource: Retrieved sub category with ID: $id');
-      return subCategory;
-    } catch (e) {
-      log(
-        '❌ CategoryLocalDataSource: Error retrieving sub category by ID $id: $e',
-      );
-      return null;
-    }
-  }
-
-  @override
-  Future<void> saveSubCategory(SubCategoryModel subCategory) async {
-    try {
-      final subCategories = await getSubCategories();
-      final existingIndex = subCategories.indexWhere(
-        (sc) => sc.id == subCategory.id,
-      );
-
-      if (existingIndex != -1) {
-        subCategories[existingIndex] = subCategory;
-      } else {
-        subCategories.add(subCategory);
-      }
-
-      await saveSubCategories(subCategories);
-      log(
-        '💾 CategoryLocalDataSource: Saved/Updated sub category with ID: ${subCategory.id}',
-      );
-    } catch (e) {
-      log('❌ CategoryLocalDataSource: Error saving single sub category: $e');
-      rethrow;
-    }
-  }
-
-  @override
-  Future<void> deleteSubCategory(String id) async {
-    try {
-      final subCategories = await getSubCategories();
-      subCategories.removeWhere((subCategory) => subCategory.id == id);
-      await saveSubCategories(subCategories);
-      log('🗑️ CategoryLocalDataSource: Deleted sub category with ID: $id');
-    } catch (e) {
-      log('❌ CategoryLocalDataSource: Error deleting sub category: $e');
       rethrow;
     }
   }

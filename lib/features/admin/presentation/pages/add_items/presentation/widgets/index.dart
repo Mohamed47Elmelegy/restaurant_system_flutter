@@ -8,7 +8,6 @@ export 'form_section_widget.dart';
 export 'add_item_form_widget.dart';
 export 'meal_category_widget.dart';
 export 'main_category_widget.dart';
-export 'sub_category_widget.dart';
 export 'product_settings_widget.dart';
 export 'ingredients_widget.dart';
 export 'allergens_widget.dart';

@@ -10,7 +10,6 @@ class Product extends BaseEntity {
   final String? descriptionAr;
   final double price;
   final int mainCategoryId;
-  final int? subCategoryId;
   final String? imageUrl;
   final bool isAvailable;
   final double? rating;
@@ -29,7 +28,6 @@ class Product extends BaseEntity {
     this.descriptionAr,
     required this.price,
     required this.mainCategoryId,
-    this.subCategoryId,
     this.imageUrl,
     this.isAvailable = true,
     this.rating,
@@ -52,7 +50,6 @@ class Product extends BaseEntity {
     String? descriptionAr,
     required double price,
     required int mainCategoryId,
-    int? subCategoryId,
     String? imageUrl,
     bool isAvailable = true,
     double? rating,
@@ -73,7 +70,6 @@ class Product extends BaseEntity {
       descriptionAr: descriptionAr,
       price: price,
       mainCategoryId: mainCategoryId,
-      subCategoryId: subCategoryId,
       imageUrl: imageUrl,
       isAvailable: isAvailable,
       rating: rating,
@@ -102,7 +98,6 @@ class Product extends BaseEntity {
     descriptionAr,
     price,
     mainCategoryId,
-    subCategoryId,
     imageUrl,
     isAvailable,
     rating,
@@ -125,7 +120,6 @@ class Product extends BaseEntity {
     String? descriptionAr,
     double? price,
     int? mainCategoryId,
-    int? subCategoryId,
     String? imageUrl,
     bool? isAvailable,
     double? rating,
@@ -146,7 +140,6 @@ class Product extends BaseEntity {
       descriptionAr: descriptionAr ?? this.descriptionAr,
       price: price ?? this.price,
       mainCategoryId: mainCategoryId ?? this.mainCategoryId,
-      subCategoryId: subCategoryId ?? this.subCategoryId,
       imageUrl: imageUrl ?? this.imageUrl,
       isAvailable: isAvailable ?? this.isAvailable,
       rating: rating ?? this.rating,
@@ -171,7 +164,6 @@ class Product extends BaseEntity {
       'description_ar': descriptionAr,
       'price': price,
       'main_category_id': mainCategoryId,
-      'sub_category_id': subCategoryId,
       'image_url': imageUrl,
       'is_available': isAvailable,
       'rating': rating,

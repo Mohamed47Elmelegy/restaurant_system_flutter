@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theme/theme_helper.dart';
+import '../../../../core/widgets/custom_indicator.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
 import '../bloc/home_state.dart';
@@ -17,7 +18,10 @@ class HomeBody extends StatelessWidget {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         if (state is HomeLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return CustomLoadingIndicator(
+            isLoading: true,
+            child: const SizedBox.shrink(),
+          );
         } else if (state is HomeError) {
           return Center(child: Text(state.message));
         } else if (state is HomeLoaded) {
@@ -29,7 +33,7 @@ class HomeBody extends StatelessWidget {
   }
 
   Widget _buildHomeContent(BuildContext context, HomeLoaded state) {
-   // final isDark = Theme.of(context).brightness == Brightness.dark;
+    // final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return RefreshIndicator(
       onRefresh: () async {
@@ -219,7 +223,7 @@ class HomeBody extends StatelessWidget {
 
   // Popular Items
   Widget _buildPopularItemsSection(BuildContext context, HomeLoaded state) {
-  //  final isDark = Theme.of(context).brightness == Brightness.dark;
+    //  final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -265,7 +269,7 @@ class HomeBody extends StatelessWidget {
 
   // Recommended Items
   Widget _buildRecommendedItemsSection(BuildContext context, HomeLoaded state) {
-   // final isDark = Theme.of(context).brightness == Brightness.dark;
+    // final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

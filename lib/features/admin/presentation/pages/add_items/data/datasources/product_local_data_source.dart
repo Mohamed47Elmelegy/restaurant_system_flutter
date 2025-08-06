@@ -140,8 +140,7 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
     try {
       final products = await getProducts();
       final categoryProducts = products.where((product) {
-        return product.mainCategoryId == categoryId ||
-            product.subCategoryId == categoryId;
+        return product.mainCategoryId == categoryId;
       }).toList();
 
       log(
@@ -259,7 +258,6 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
           descriptionAr: products[productIndex].descriptionAr,
           price: products[productIndex].price,
           mainCategoryId: products[productIndex].mainCategoryId,
-          subCategoryId: products[productIndex].subCategoryId,
           imageUrl: products[productIndex].imageUrl,
           isAvailable: isAvailable,
           rating: products[productIndex].rating,

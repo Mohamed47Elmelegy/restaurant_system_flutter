@@ -34,7 +34,6 @@ class _AdminAddItemPageState extends State<AdminAddItemPage> {
 
   // ✅ Category selection
   String? _selectedMainCategory;
-  String? _selectedSubCategory;
 
   // ✅ Lists for ingredients and allergens
   List<String> _selectedIngredients = [];
@@ -126,9 +125,7 @@ class _AdminAddItemPageState extends State<AdminAddItemPage> {
                         nameController: _nameController,
                         priceController: _priceController,
                         detailsController: _detailsController,
-                        // Arabic fields
-                        nameArController: _nameArController,
-                        detailsArController: _detailsArController,
+                      
                         // Additional fields
                         preparationTimeController: _preparationTimeController,
                         sortOrderController: _sortOrderController,
@@ -147,16 +144,9 @@ class _AdminAddItemPageState extends State<AdminAddItemPage> {
                         },
                         // Category selection
                         selectedMainCategory: _selectedMainCategory,
-                        selectedSubCategory: _selectedSubCategory,
                         onMainCategoryChanged: (category) {
                           setState(() {
                             _selectedMainCategory = category;
-                            _selectedSubCategory = null;
-                          });
-                        },
-                        onSubCategoryChanged: (category) {
-                          setState(() {
-                            _selectedSubCategory = category;
                           });
                         },
                         // Ingredients and allergens
@@ -266,7 +256,6 @@ class _AdminAddItemPageState extends State<AdminAddItemPage> {
 
       // Reset categories
       _selectedMainCategory = null;
-      _selectedSubCategory = null;
 
       // Reset ingredients and allergens
       _selectedIngredients.clear();
@@ -294,10 +283,6 @@ class _AdminAddItemPageState extends State<AdminAddItemPage> {
         descriptionAr: _detailsArController.text.trim(),
         price: double.tryParse(_priceController.text) ?? 0.0,
         mainCategoryId: int.tryParse(_selectedMainCategory ?? '1') ?? 1,
-        subCategoryId:
-            _selectedSubCategory != null && _selectedSubCategory!.isNotEmpty
-            ? int.tryParse(_selectedSubCategory!)
-            : null,
         imageUrl: _uploadedImages.isNotEmpty ? _uploadedImages.first : null,
         isAvailable: _isAvailable,
         isFeatured: _isFeatured,

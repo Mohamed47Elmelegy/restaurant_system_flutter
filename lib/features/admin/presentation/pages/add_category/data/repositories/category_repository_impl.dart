@@ -2,10 +2,8 @@ import 'package:dartz/dartz.dart';
 import '../../../../../../../core/error/failures.dart';
 import '../../../../../../../core/error/simple_error.dart';
 import '../../domain/entities/main_category.dart';
-import '../../domain/entities/sub_category.dart';
 import '../repositories/category_repository.dart';
 import '../models/main_category_model.dart';
-import '../models/sub_category_model.dart';
 import '../datasources/category_remote_data_source.dart';
 import '../datasources/category_local_data_source.dart';
 
@@ -104,7 +102,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
               .toList();
           await localDataSource.saveMainCategories(categoryModels);
           print(
-            '💾 CategoryRepository: Saved categories by meal time to local storage',
+            '💾 CategoryRepository: Saved ${categories.length} categories to local storage',
           );
         }
 
@@ -114,36 +112,33 @@ class CategoryRepositoryImpl implements CategoryRepository {
       }
     } catch (e) {
       print('❌ CategoryRepository: Error getting categories by meal time - $e');
-      return Left(
-        ServerFailure(message: 'Failed to get categories by meal time: $e'),
-      );
+      return Left(ServerFailure(message: 'Failed to get categories by meal time: $e'));
     }
   }
 
   @override
   Future<Either<Failure, List<MainCategory>>> getActiveCategories() async {
     try {
-      // 1. محاولة جلب البيانات النشطة من الـ local أولاً
-      final localActiveCategories = await localDataSource
-          .getActiveMainCategories();
-      if (localActiveCategories.isNotEmpty) {
+      // 1. محاولة جلب الفئات النشطة من الـ local أولاً
+      final localCategories = await localDataSource.getActiveMainCategories();
+      if (localCategories.isNotEmpty) {
         print(
-          '📱 CategoryRepository: Using local active categories - ${localActiveCategories.length} categories',
+          '📱 CategoryRepository: Using local active categories - ${localCategories.length} categories',
         );
-        final categories = localActiveCategories
+        final categories = localCategories
             .map((model) => model.toEntity())
             .toList();
         return Right(categories);
       }
 
-      // 2. جلب البيانات من الـ API
+      // 2. جلب الفئات النشطة من الـ API
       print('🌐 CategoryRepository: Fetching active categories from API...');
       final response = await remoteDataSource.getActiveCategories();
       if (response.status) {
         final categories =
             response.data?.map((model) => model.toEntity()).toList() ?? [];
 
-        // 3. حفظ البيانات محلياً
+        // 3. حفظ الفئات النشطة محلياً
         if (categories.isNotEmpty) {
           final categoryModels = categories
               .map((entity) => MainCategoryModel.fromEntity(entity))
@@ -160,37 +155,28 @@ class CategoryRepositoryImpl implements CategoryRepository {
       }
     } catch (e) {
       print('❌ CategoryRepository: Error getting active categories - $e');
-      return Left(
-        ServerFailure(message: 'Failed to get active categories: $e'),
-      );
+      return Left(ServerFailure(message: 'Failed to get active categories: $e'));
     }
   }
 
   @override
   Future<Either<Failure, MainCategory?>> getCategoryByName(String name) async {
     try {
-      // 1. محاولة البحث في البيانات المحلية أولاً
-      final localSearchResults = await localDataSource.searchMainCategories(
-        name,
-      );
-      if (localSearchResults.isNotEmpty) {
+      // 1. محاولة البحث في الـ local أولاً
+      final localCategories = await localDataSource.searchMainCategories(name);
+      if (localCategories.isNotEmpty) {
         print(
-          '📱 CategoryRepository: Using local search for category name - ${localSearchResults.length} results',
+          '📱 CategoryRepository: Found category by name in local storage',
         );
-        final category = localSearchResults.first.toEntity();
+        final category = localCategories.first.toEntity();
         return Right(category);
       }
 
       // 2. البحث في الـ API
-      print('🌐 CategoryRepository: Searching for category name in API...');
+      print('🌐 CategoryRepository: Searching category by name in API...');
       final response = await remoteDataSource.getCategoryByName(name);
-      if (response.status && response.data != null) {
-        final category = response.data!.toEntity();
-
-        // 3. حفظ الفئة محلياً
-        await localDataSource.saveMainCategory(response.data!);
-        print('💾 CategoryRepository: Saved category by name to local storage');
-
+      if (response.status) {
+        final category = response.data?.toEntity();
         return Right(category);
       } else {
         return Left(ServerFailure(message: response.message));
@@ -202,116 +188,9 @@ class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   @override
-  Future<Either<Failure, List<MainCategory>>>
-  getCategoriesWithSubCategories() async {
+  Future<Either<Failure, MainCategory>> create(MainCategory entity) async {
     try {
-      // 1. محاولة جلب الفئات مع الفئات الفرعية من الـ local أولاً
-      final localCategories = await localDataSource.getMainCategories();
-      final localSubCategories = await localDataSource.getSubCategories();
-
-      if (localCategories.isNotEmpty) {
-        print(
-          '📱 CategoryRepository: Using local categories with sub-categories - ${localCategories.length} categories',
-        );
-        final categories = localCategories
-            .map((model) => model.toEntity())
-            .toList();
-        return Right(categories);
-      }
-
-      // 2. جلب الفئات مع الفئات الفرعية من الـ API
-      print(
-        '🌐 CategoryRepository: Fetching categories with sub-categories from API...',
-      );
-      final response = await remoteDataSource.getCategoriesWithSubCategories();
-      if (response.status) {
-        final categories =
-            response.data?.map((model) => model.toEntity()).toList() ?? [];
-
-        // 3. حفظ الفئات والفئات الفرعية محلياً
-        if (categories.isNotEmpty) {
-          final categoryModels = categories
-              .map((entity) => MainCategoryModel.fromEntity(entity))
-              .toList();
-          await localDataSource.saveMainCategories(categoryModels);
-
-          // حفظ الفئات الفرعية أيضاً
-          for (final category in categories) {
-            if (category.subCategories?.isNotEmpty == true) {
-              final subCategoryModels = category.subCategories!
-                  .map((entity) => SubCategoryModel.fromEntity(entity))
-                  .toList();
-              await localDataSource.saveSubCategories(subCategoryModels);
-            }
-          }
-
-          print(
-            '💾 CategoryRepository: Saved categories with sub-categories to local storage',
-          );
-        }
-
-        return Right(categories);
-      } else {
-        return Left(ServerFailure(message: response.message));
-      }
-    } catch (e) {
-      print(
-        '❌ CategoryRepository: Error getting categories with sub-categories - $e',
-      );
-      return Left(
-        ServerFailure(
-          message: 'Failed to get categories with subcategories: $e',
-        ),
-      );
-    }
-  }
-
-  // BaseRepository inherited methods
-  @override
-  Future<Either<Failure, List<MainCategory>>> getAll() async {
-    return getCategories();
-  }
-
-  @override
-  Future<Either<Failure, MainCategory?>> getById(String id) async {
-    try {
-      // 1. محاولة جلب الفئة من الـ local أولاً
-      final localCategory = await localDataSource.getMainCategoryById(id);
-      if (localCategory != null) {
-        print(
-          '📱 CategoryRepository: Using local category - ${localCategory.name}',
-        );
-        return Right(localCategory.toEntity());
-      }
-
-      // 2. جلب الفئة من الـ API
-      print('🌐 CategoryRepository: Fetching category from API...');
-      final intId = int.tryParse(id);
-      if (intId == null) {
-        return Left(ServerFailure(message: 'Invalid category ID: $id'));
-      }
-      final response = await remoteDataSource.getCategoryById(intId);
-      if (response.status && response.data != null) {
-        final category = response.data!.toEntity();
-
-        // 3. حفظ الفئة محلياً
-        await localDataSource.saveMainCategory(response.data!);
-        print('💾 CategoryRepository: Saved category to local storage');
-
-        return Right(category);
-      } else {
-        return Left(ServerFailure(message: response.message));
-      }
-    } catch (e) {
-      print('❌ CategoryRepository: Error getting category by ID - $e');
-      return Left(ServerFailure(message: 'Failed to get category by ID: $e'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, MainCategory>> add(MainCategory item) async {
-    try {
-      final categoryModel = MainCategoryModel.fromEntity(item);
+      final categoryModel = MainCategoryModel.fromEntity(entity);
       final response = await remoteDataSource.createCategory(categoryModel);
       if (response.status && response.data != null) {
         final createdCategory = response.data!.toEntity();
@@ -331,22 +210,19 @@ class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   @override
-  Future<Either<Failure, MainCategory>> update(
-    String id,
-    MainCategory item,
-  ) async {
+  Future<Either<Failure, MainCategory>> update(String id, MainCategory entity) async {
     try {
-      final updatedCategory = item.copyWith(id: id);
-      final categoryModel = MainCategoryModel.fromEntity(updatedCategory);
+      final updatedEntity = entity.copyWith(id: id);
+      final categoryModel = MainCategoryModel.fromEntity(updatedEntity);
       final response = await remoteDataSource.updateCategory(categoryModel);
       if (response.status && response.data != null) {
-        final updatedCategoryEntity = response.data!.toEntity();
+        final updatedCategory = response.data!.toEntity();
 
         // تحديث الفئة محلياً
         await localDataSource.saveMainCategory(response.data!);
         print('💾 CategoryRepository: Updated category in local storage');
 
-        return Right(updatedCategoryEntity);
+        return Right(updatedCategory);
       } else {
         return Left(ServerFailure(message: response.message));
       }
@@ -359,11 +235,12 @@ class CategoryRepositoryImpl implements CategoryRepository {
   @override
   Future<Either<Failure, bool>> delete(String id) async {
     try {
-      final intId = int.tryParse(id);
-      if (intId == null) {
-        return Left(ServerFailure(message: 'Invalid category ID: $id'));
+      final categoryId = int.tryParse(id);
+      if (categoryId == null) {
+        return Left(ServerFailure(message: 'Invalid category ID'));
       }
-      final response = await remoteDataSource.deleteCategory(intId);
+
+      final response = await remoteDataSource.deleteCategory(categoryId);
       if (response.status && response.data != null) {
         // حذف الفئة من التخزين المحلي
         await localDataSource.deleteMainCategory(id);
@@ -380,17 +257,56 @@ class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   @override
+  Future<Either<Failure, List<MainCategory>>> getAll() async {
+    return getCategories();
+  }
+
+  @override
+  Future<Either<Failure, MainCategory?>> getById(String id) async {
+    try {
+      // 1. محاولة جلب الفئة من الـ local أولاً
+      final localCategory = await localDataSource.getMainCategoryById(id);
+      if (localCategory != null) {
+        print('📱 CategoryRepository: Found category in local storage');
+        final category = localCategory.toEntity();
+        return Right(category);
+      }
+
+      // 2. جلب الفئة من الـ API
+      print('🌐 CategoryRepository: Fetching category from API...');
+      final categoryId = int.tryParse(id);
+      if (categoryId == null) {
+        return Left(ServerFailure(message: 'Invalid category ID'));
+      }
+
+      final response = await remoteDataSource.getCategoryById(categoryId);
+      if (response.status) {
+        final category = response.data?.toEntity();
+        return Right(category);
+      } else {
+        return Left(ServerFailure(message: response.message));
+      }
+    } catch (e) {
+      print('❌ CategoryRepository: Error getting category by ID - $e');
+      return Left(ServerFailure(message: 'Failed to get category by ID: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, MainCategory>> add(MainCategory item) async {
+    return create(item);
+  }
+
+  @override
   Future<Either<Failure, List<MainCategory>>> search(String query) async {
     try {
-      // 1. محاولة البحث في البيانات المحلية أولاً
-      final localSearchResults = await localDataSource.searchMainCategories(
-        query,
-      );
-      if (localSearchResults.isNotEmpty) {
+      // 1. محاولة البحث في الـ local أولاً
+      final localCategories = await localDataSource.searchMainCategories(query);
+      if (localCategories.isNotEmpty) {
         print(
-          '📱 CategoryRepository: Using local search results - ${localSearchResults.length} categories',
+          '📱 CategoryRepository: Using local search results - ${localCategories.length} categories',
         );
-        final categories = localSearchResults
+        final categories = localCategories
             .map((model) => model.toEntity())
             .toList();
         return Right(categories);
@@ -483,139 +399,6 @@ class CategoryRepositoryImpl implements CategoryRepository {
       return Left(
         ServerFailure(message: 'Failed to get paginated categories: $e'),
       );
-    }
-  }
-
-  // ==================== SUB-CATEGORIES IMPLEMENTATION ====================
-
-  @override
-  Future<Either<Failure, List<SubCategory>>> getSubCategories(
-    int categoryId,
-  ) async {
-    try {
-      // 1. محاولة جلب الفئات الفرعية من الـ local أولاً
-      final localSubCategories = await localDataSource
-          .getSubCategoriesByMainCategory(categoryId);
-      if (localSubCategories.isNotEmpty) {
-        print(
-          '📱 CategoryRepository: Using local sub-categories - ${localSubCategories.length} sub-categories',
-        );
-        final subCategories = localSubCategories
-            .map((model) => model.toEntity())
-            .toList();
-        return Right(subCategories);
-      }
-
-      // 2. جلب الفئات الفرعية من الـ API
-      print('🌐 CategoryRepository: Fetching sub-categories from API...');
-      final response = await remoteDataSource.getSubCategories(categoryId);
-      if (response.status) {
-        final subCategories =
-            response.data?.map((model) => model.toEntity()).toList() ?? [];
-
-        // 3. حفظ الفئات الفرعية محلياً
-        if (subCategories.isNotEmpty) {
-          final subCategoryModels = subCategories
-              .map((entity) => SubCategoryModel.fromEntity(entity))
-              .toList();
-          await localDataSource.saveSubCategories(subCategoryModels);
-          print(
-            '💾 CategoryRepository: Saved ${subCategories.length} sub-categories to local storage',
-          );
-        }
-
-        return Right(subCategories);
-      } else {
-        return Left(ServerFailure(message: response.message));
-      }
-    } catch (e) {
-      print('❌ CategoryRepository: Error getting sub-categories - $e');
-      return Left(ServerFailure(message: 'Failed to get sub-categories: $e'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, SubCategory>> createSubCategory(
-    int categoryId,
-    SubCategory subCategory,
-  ) async {
-    try {
-      final subCategoryModel = SubCategoryModel.fromEntity(subCategory);
-      final response = await remoteDataSource.createSubCategory(
-        categoryId,
-        subCategoryModel,
-      );
-      if (response.status && response.data != null) {
-        final createdSubCategory = response.data!.toEntity();
-
-        // حفظ الفئة الفرعية الجديدة محلياً
-        await localDataSource.saveSubCategory(response.data!);
-        print('💾 CategoryRepository: Saved new sub-category to local storage');
-
-        return Right(createdSubCategory);
-      } else {
-        return Left(ServerFailure(message: response.message));
-      }
-    } catch (e) {
-      print('❌ CategoryRepository: Error creating sub-category - $e');
-      return Left(ServerFailure(message: 'Failed to create sub-category: $e'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, SubCategory>> updateSubCategory(
-    int categoryId,
-    int subCategoryId,
-    SubCategory subCategory,
-  ) async {
-    try {
-      final subCategoryModel = SubCategoryModel.fromEntity(subCategory);
-      final response = await remoteDataSource.updateSubCategory(
-        categoryId,
-        subCategoryId,
-        subCategoryModel,
-      );
-      if (response.status && response.data != null) {
-        final updatedSubCategory = response.data!.toEntity();
-
-        // تحديث الفئة الفرعية محلياً
-        await localDataSource.saveSubCategory(response.data!);
-        print('💾 CategoryRepository: Updated sub-category in local storage');
-
-        return Right(updatedSubCategory);
-      } else {
-        return Left(ServerFailure(message: response.message));
-      }
-    } catch (e) {
-      print('❌ CategoryRepository: Error updating sub-category - $e');
-      return Left(ServerFailure(message: 'Failed to update sub-category: $e'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, bool>> deleteSubCategory(
-    int categoryId,
-    int subCategoryId,
-  ) async {
-    try {
-      final response = await remoteDataSource.deleteSubCategory(
-        categoryId,
-        subCategoryId,
-      );
-      if (response.status && response.data != null) {
-        // حذف الفئة الفرعية من التخزين المحلي
-        await localDataSource.deleteSubCategory(subCategoryId.toString());
-        print(
-          '🗑️ CategoryRepository: Deleted sub-category from local storage',
-        );
-
-        return Right(response.data!);
-      } else {
-        return Left(ServerFailure(message: response.message));
-      }
-    } catch (e) {
-      print('❌ CategoryRepository: Error deleting sub-category - $e');
-      return Left(ServerFailure(message: 'Failed to delete sub-category: $e'));
     }
   }
 }

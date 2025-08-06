@@ -11,7 +11,6 @@ class ProductModel extends BaseModel<Product> {
   final String? descriptionAr;
   final double price;
   final int mainCategoryId;
-  final int? subCategoryId;
   final String? imageUrl;
   final bool isAvailable;
   final double? rating;
@@ -32,7 +31,6 @@ class ProductModel extends BaseModel<Product> {
     this.descriptionAr,
     required this.price,
     required this.mainCategoryId,
-    this.subCategoryId,
     this.imageUrl,
     this.isAvailable = true,
     this.rating,
@@ -55,7 +53,6 @@ class ProductModel extends BaseModel<Product> {
     String? descriptionAr,
     required double price,
     required int mainCategoryId,
-    int? subCategoryId,
     String? imageUrl,
     bool isAvailable = true,
     double? rating,
@@ -76,7 +73,6 @@ class ProductModel extends BaseModel<Product> {
       descriptionAr: descriptionAr,
       price: price,
       mainCategoryId: mainCategoryId,
-      subCategoryId: subCategoryId,
       imageUrl: imageUrl,
       isAvailable: isAvailable,
       rating: rating,
@@ -105,7 +101,6 @@ class ProductModel extends BaseModel<Product> {
       descriptionAr: json['description_ar'],
       price: _parsePrice(json['price']),
       mainCategoryId: json['main_category_id'] ?? 0,
-      subCategoryId: json['sub_category_id'],
       imageUrl: json['image_url'],
       isAvailable: json['is_available'] ?? true,
       rating: json['rating'] != null
@@ -140,7 +135,6 @@ class ProductModel extends BaseModel<Product> {
       descriptionAr: entity.descriptionAr,
       price: entity.price,
       mainCategoryId: entity.mainCategoryId,
-      subCategoryId: entity.subCategoryId,
       imageUrl: entity.imageUrl,
       isAvailable: entity.isAvailable,
       rating: entity.rating,
@@ -187,7 +181,6 @@ class ProductModel extends BaseModel<Product> {
       if (descriptionAr != null) 'description_ar': descriptionAr,
       'price': price,
       'main_category_id': mainCategoryId,
-      if (subCategoryId != null) 'sub_category_id': subCategoryId,
       if (imageUrl != null) 'image_url': imageUrl,
       'is_available': isAvailable,
       if (rating != null) 'rating': rating,
@@ -211,7 +204,6 @@ class ProductModel extends BaseModel<Product> {
       descriptionAr: descriptionAr,
       price: price,
       mainCategoryId: mainCategoryId,
-      subCategoryId: subCategoryId,
       imageUrl: imageUrl,
       isAvailable: isAvailable,
       rating: rating,
@@ -236,7 +228,6 @@ class ProductModel extends BaseModel<Product> {
       descriptionAr: changes['descriptionAr'] ?? descriptionAr,
       price: changes['price'] ?? price,
       mainCategoryId: changes['mainCategoryId'] ?? mainCategoryId,
-      subCategoryId: changes['subCategoryId'] ?? subCategoryId,
       imageUrl: changes['imageUrl'] ?? imageUrl,
       isAvailable: changes['isAvailable'] ?? isAvailable,
       rating: changes['rating'] ?? rating,

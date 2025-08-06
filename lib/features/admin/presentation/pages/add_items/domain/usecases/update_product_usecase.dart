@@ -18,4 +18,4 @@ class UpdateProductUseCase extends BaseUseCase<Product, Product> {
   Future<Either<Failure, Product>> call(Product product) async {
     return await repository.updateProduct(product);
   }
-} 
+}
