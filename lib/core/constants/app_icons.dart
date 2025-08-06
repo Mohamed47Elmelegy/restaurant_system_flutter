@@ -34,4 +34,9 @@ class AppIcons {
   static const String orange = "assets/icons/fruit/Orange.png";
   static const String blueberry = "assets/icons/fruit/Blueberry.png";
   static const String apple = "assets/icons/fruit/Apple.png";
+
+
+  static const String menu = "assets/icons/menu.svg";
+  static const String shoppingBag = "assets/icons/shopping-bag.svg";
+  static const String search = "assets/icons/Search.svg";
 }

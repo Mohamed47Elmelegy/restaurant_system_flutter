@@ -119,101 +119,103 @@ class _AdminAddItemPageState extends State<AdminAddItemPage> {
                             ? 24.w
                             : 32.w,
                       ),
-                      child: AddItemFormWidget(
-                        formKey: _formKey,
-                        // English fields
-                        nameController: _nameController,
-                        priceController: _priceController,
-                        detailsController: _detailsController,
-                      
-                        // Additional fields
-                        preparationTimeController: _preparationTimeController,
-                        sortOrderController: _sortOrderController,
-                        // Product settings
-                        isAvailable: _isAvailable,
-                        isFeatured: _isFeatured,
-                        onAvailableChanged: (value) {
-                          setState(() {
-                            _isAvailable = value;
-                          });
-                        },
-                        onFeaturedChanged: (value) {
-                          setState(() {
-                            _isFeatured = value;
-                          });
-                        },
-                        // Category selection
-                        selectedMainCategory: _selectedMainCategory,
-                        onMainCategoryChanged: (category) {
-                          setState(() {
-                            _selectedMainCategory = category;
-                          });
-                        },
-                        // Ingredients and allergens
-                        selectedIngredients: _selectedIngredients,
-                        selectedAllergens: _selectedAllergens,
-                        onIngredientsChanged: (ingredients) {
-                          setState(() {
-                            _selectedIngredients = ingredients;
-                          });
-                        },
-                        onAllergensChanged: (allergens) {
-                          setState(() {
-                            _selectedAllergens = allergens;
-                          });
-                        },
-                        // Existing fields
-                        uploadedImages: _uploadedImages,
-                        isPickupSelected: _isPickupSelected,
-                        isDeliverySelected: _isDeliverySelected,
-                        selectedBasicIngredients: _selectedBasicIngredients,
-                        selectedFruitIngredients: _selectedFruitIngredients,
-                        selectedMealCategory: _selectedMealCategory,
-                        onAddMediaPressed: _onAddMediaPressed,
-                        onPickupChanged: (value) {
-                          setState(() {
-                            _isPickupSelected = value;
-                          });
-                        },
-                        onDeliveryChanged: (value) {
-                          setState(() {
-                            _isDeliverySelected = value;
-                          });
-                        },
-                        onBasicIngredientToggled: (ingredientId) {
-                          setState(() {
-                            if (_selectedBasicIngredients.contains(
-                              ingredientId,
-                            )) {
-                              _selectedBasicIngredients.remove(ingredientId);
-                            } else {
-                              _selectedBasicIngredients.add(ingredientId);
-                            }
-                          });
-                        },
-                        onFruitIngredientToggled: (ingredientId) {
-                          setState(() {
-                            if (_selectedFruitIngredients.contains(
-                              ingredientId,
-                            )) {
-                              _selectedFruitIngredients.remove(ingredientId);
-                            } else {
-                              _selectedFruitIngredients.add(ingredientId);
-                            }
-                          });
-                        },
-                        onBasicSeeAllPressed: () {
-                          // TODO: Navigate to see all basic ingredients
-                        },
-                        onFruitSeeAllPressed: () {
-                          // TODO: Navigate to see all fruit ingredients
-                        },
-                        onMealCategoryChanged: (category) {
-                          setState(() {
-                            _selectedMealCategory = category;
-                          });
-                        },
-                        onSavePressed: () => _onSaveChanges(context),
+                      child: SingleChildScrollView(
+                        child: AddItemFormWidget(
+                          formKey: _formKey,
+                          // English fields
+                          nameController: _nameController,
+                          priceController: _priceController,
+                          detailsController: _detailsController,
+
+                          // Additional fields
+                          preparationTimeController: _preparationTimeController,
+                          sortOrderController: _sortOrderController,
+                          // Product settings
+                          isAvailable: _isAvailable,
+                          isFeatured: _isFeatured,
+                          onAvailableChanged: (value) {
+                            setState(() {
+                              _isAvailable = value;
+                            });
+                          },
+                          onFeaturedChanged: (value) {
+                            setState(() {
+                              _isFeatured = value;
+                            });
+                          },
+                          // Category selection
+                          selectedMainCategory: _selectedMainCategory,
+                          onMainCategoryChanged: (category) {
+                            setState(() {
+                              _selectedMainCategory = category;
+                            });
+                          },
+                          // Ingredients and allergens
+                          selectedIngredients: _selectedIngredients,
+                          selectedAllergens: _selectedAllergens,
+                          onIngredientsChanged: (ingredients) {
+                            setState(() {
+                              _selectedIngredients = ingredients;
+                            });
+                          },
+                          onAllergensChanged: (allergens) {
+                            setState(() {
+                              _selectedAllergens = allergens;
+                            });
+                          },
+                          // Existing fields
+                          uploadedImages: _uploadedImages,
+                          isPickupSelected: _isPickupSelected,
+                          isDeliverySelected: _isDeliverySelected,
+                          selectedBasicIngredients: _selectedBasicIngredients,
+                          selectedFruitIngredients: _selectedFruitIngredients,
+                          selectedMealCategory: _selectedMealCategory,
+                          onAddMediaPressed: _onAddMediaPressed,
+                          onPickupChanged: (value) {
+                            setState(() {
+                              _isPickupSelected = value;
+                            });
+                          },
+                          onDeliveryChanged: (value) {
+                            setState(() {
+                              _isDeliverySelected = value;
+                            });
+                          },
+                          onBasicIngredientToggled: (ingredientId) {
+                            setState(() {
+                              if (_selectedBasicIngredients.contains(
+                                ingredientId,
+                              )) {
+                                _selectedBasicIngredients.remove(ingredientId);
+                              } else {
+                                _selectedBasicIngredients.add(ingredientId);
+                              }
+                            });
+                          },
+                          onFruitIngredientToggled: (ingredientId) {
+                            setState(() {
+                              if (_selectedFruitIngredients.contains(
+                                ingredientId,
+                              )) {
+                                _selectedFruitIngredients.remove(ingredientId);
+                              } else {
+                                _selectedFruitIngredients.add(ingredientId);
+                              }
+                            });
+                          },
+                          onBasicSeeAllPressed: () {
+                            // TODO: Navigate to see all basic ingredients
+                          },
+                          onFruitSeeAllPressed: () {
+                            // TODO: Navigate to see all fruit ingredients
+                          },
+                          onMealCategoryChanged: (category) {
+                            setState(() {
+                              _selectedMealCategory = category;
+                            });
+                          },
+                          onSavePressed: () => _onSaveChanges(context),
+                        ),
                       ),
                     );
                   },

@@ -1,3 +1,5 @@
+import '../../../../core/constants/app_images.dart';
+
 abstract class HomeDataSource {
   Future<List<Map<String, dynamic>>> getCategories();
   Future<List<Map<String, dynamic>>> getPopularItems();
@@ -30,7 +32,7 @@ class HomeDataSourceImpl implements HomeDataSource {
         'description': 'Classic tomato sauce with mozzarella',
         'price': 12.99,
         'rating': 4.5,
-        'image': 'assets/images/pizza_margherita.jpg',
+        'image': AppImages.pizza,
         'category': 'Pizza',
       },
       {
@@ -39,7 +41,7 @@ class HomeDataSourceImpl implements HomeDataSource {
         'description': 'Grilled chicken with fresh vegetables',
         'price': 8.99,
         'rating': 4.3,
-        'image': 'assets/images/burger_chicken.jpg',
+        'image': AppImages.burger,
         'category': 'Burger',
       },
       {
@@ -48,7 +50,7 @@ class HomeDataSourceImpl implements HomeDataSource {
         'description': 'Avocado, cucumber, and crab',
         'price': 15.99,
         'rating': 4.7,
-        'image': 'assets/images/sushi_california.jpg',
+        'image': AppImages.californiaRoll,
         'category': 'Sushi',
       },
     ];
@@ -64,7 +66,7 @@ class HomeDataSourceImpl implements HomeDataSource {
         'description': 'Rich chocolate with cream filling',
         'price': 6.99,
         'rating': 4.8,
-        'image': 'assets/images/cake_chocolate.jpg',
+        'image': AppImages.burger,
         'category': 'Dessert',
       },
       {
@@ -73,7 +75,34 @@ class HomeDataSourceImpl implements HomeDataSource {
         'description': 'Mixed berries with yogurt',
         'price': 4.99,
         'rating': 4.4,
-        'image': 'assets/images/smoothie_berries.jpg',
+        'image': AppImages.pizza,
+        'category': 'Drinks',
+      },
+      {
+        'id':6,
+        'name': 'Fresh Smoothie',
+        'description': 'Mixed berries with yogurt',
+        'price': 4.99,
+        'rating': 4.4,
+        'image': AppImages.pizza,
+        'category': 'Drinks',
+      },
+      {
+        'id': 7,
+        'name': 'Fresh Smoothie',
+        'description': 'Mixed berries with yogurt',
+        'price': 4.99,
+        'rating': 4.4,
+        'image': AppImages.pizza,
+        'category': 'Drinks',
+      },
+      {
+        'id': 8,
+        'name': 'Fresh Smoothie',
+        'description': 'Mixed berries with yogurt',
+        'price': 4.99,
+        'rating': 4.4,
+        'image': AppImages.pizza,
         'category': 'Drinks',
       },
     ];

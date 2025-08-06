@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/custom_app_bar/custom_app_bar.dart';
 
 class AppBarHelper {
   /// إنشاء AppBar بدون زر رجوع
@@ -78,6 +79,25 @@ class AppBarHelper {
       actions: actions,
       centerTitle: centerTitle,
       elevation: elevation,
+    );
+  }
+
+  /// إنشاء Custom App Bar Widget مع ثلاثة أقسام: Menu, Address, Shopping Cart
+  static Widget createCustomAppBar({
+    required VoidCallback onMenuPressed,
+    required VoidCallback onAddressPressed,
+    required VoidCallback onCartPressed,
+    required String deliveryAddress,
+    int cartItemCount = 0,
+    Color? backgroundColor,
+  }) {
+    return CustomAppBar(
+      onMenuPressed: onMenuPressed,
+      onAddressPressed: onAddressPressed,
+      onCartPressed: onCartPressed,
+      deliveryAddress: deliveryAddress,
+      cartItemCount: cartItemCount,
+      backgroundColor: backgroundColor,
     );
   }
 }

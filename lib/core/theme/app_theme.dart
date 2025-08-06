@@ -6,6 +6,7 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
+      fontFamily: 'Sen',
       colorScheme: const ColorScheme.light(
         primary: AppColors.lightPrimary,
         secondary: AppColors.lightSecondary,
@@ -25,7 +26,8 @@ class AppTheme {
         titleTextStyle: TextStyle(
           color: AppColors.lightTextLight,
           fontSize: 20,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w700,
+          fontFamily: 'Sen',
         ),
       ),
       cardTheme: CardThemeData(
@@ -79,77 +81,16 @@ class AppTheme {
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(color: AppColors.error),
         ),
-        labelStyle: const TextStyle(color: AppColors.lightTextMain),
+        labelStyle: const TextStyle(
+          color: AppColors.lightTextMain,
+          fontFamily: 'Sen',
+        ),
         hintStyle: TextStyle(
           color: AppColors.lightTextMain.withValues(alpha: 0.6),
+          fontFamily: 'Sen',
         ),
       ),
-      textTheme: const TextTheme(
-        displayLarge: TextStyle(
-          color: AppColors.lightTextMain,
-          fontSize: 32,
-          fontWeight: FontWeight.bold,
-        ),
-        displayMedium: TextStyle(
-          color: AppColors.lightTextMain,
-          fontSize: 28,
-          fontWeight: FontWeight.bold,
-        ),
-        displaySmall: TextStyle(
-          color: AppColors.lightTextMain,
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-        ),
-        headlineLarge: TextStyle(
-          color: AppColors.lightTextMain,
-          fontSize: 22,
-          fontWeight: FontWeight.w600,
-        ),
-        headlineMedium: TextStyle(
-          color: AppColors.lightTextMain,
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-        ),
-        headlineSmall: TextStyle(
-          color: AppColors.lightTextMain,
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-        ),
-        titleLarge: TextStyle(
-          color: AppColors.lightTextMain,
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        ),
-        titleMedium: TextStyle(
-          color: AppColors.lightTextMain,
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        ),
-        titleSmall: TextStyle(
-          color: AppColors.lightTextMain,
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-        ),
-        bodyLarge: TextStyle(color: AppColors.lightTextMain, fontSize: 16),
-        bodyMedium: TextStyle(color: AppColors.lightTextMain, fontSize: 14),
-        bodySmall: TextStyle(color: AppColors.lightTextMain, fontSize: 12),
-        labelLarge: TextStyle(
-          color: AppColors.lightTextMain,
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        ),
-        labelMedium: TextStyle(
-          color: AppColors.lightTextMain,
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-        ),
-        labelSmall: TextStyle(
-          color: AppColors.lightTextMain,
-          fontSize: 10,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      iconTheme: const IconThemeData(color: AppColors.lightPrimary, size: 24),
+     iconTheme: const IconThemeData(color: AppColors.lightPrimary, size: 24),
       dividerTheme: const DividerThemeData(
         color: AppColors.lightBorder,
         thickness: 1,
@@ -161,6 +102,7 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
+      fontFamily: 'Sen',
       colorScheme: const ColorScheme.dark(
         primary: AppColors.darkPrimary,
         secondary: AppColors.darkSecondary,
@@ -180,7 +122,8 @@ class AppTheme {
         titleTextStyle: TextStyle(
           color: AppColors.darkTextPrimary,
           fontSize: 20,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w700,
+          fontFamily: 'Sen',
         ),
       ),
       cardTheme: CardThemeData(
@@ -235,75 +178,16 @@ class AppTheme {
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(color: AppColors.darkError),
         ),
-        labelStyle: const TextStyle(color: AppColors.darkTextPrimary),
-        hintStyle: TextStyle(color: AppColors.darkTextSecondary),
-      ),
-      textTheme: const TextTheme(
-        displayLarge: TextStyle(
+        labelStyle: const TextStyle(
           color: AppColors.darkTextPrimary,
-          fontSize: 32,
-          fontWeight: FontWeight.bold,
+          fontFamily: 'Sen',
         ),
-        displayMedium: TextStyle(
-          color: AppColors.darkTextPrimary,
-          fontSize: 28,
-          fontWeight: FontWeight.bold,
-        ),
-        displaySmall: TextStyle(
-          color: AppColors.darkTextPrimary,
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-        ),
-        headlineLarge: TextStyle(
-          color: AppColors.darkTextPrimary,
-          fontSize: 22,
-          fontWeight: FontWeight.w600,
-        ),
-        headlineMedium: TextStyle(
-          color: AppColors.darkTextPrimary,
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-        ),
-        headlineSmall: TextStyle(
-          color: AppColors.darkTextPrimary,
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-        ),
-        titleLarge: TextStyle(
-          color: AppColors.darkTextPrimary,
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        ),
-        titleMedium: TextStyle(
-          color: AppColors.darkTextPrimary,
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        ),
-        titleSmall: TextStyle(
-          color: AppColors.darkTextPrimary,
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-        ),
-        bodyLarge: TextStyle(color: AppColors.darkTextPrimary, fontSize: 16),
-        bodyMedium: TextStyle(color: AppColors.darkTextPrimary, fontSize: 14),
-        bodySmall: TextStyle(color: AppColors.darkTextSecondary, fontSize: 12),
-        labelLarge: TextStyle(
-          color: AppColors.darkTextPrimary,
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        ),
-        labelMedium: TextStyle(
-          color: AppColors.darkTextPrimary,
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-        ),
-        labelSmall: TextStyle(
+        hintStyle: TextStyle(
           color: AppColors.darkTextSecondary,
-          fontSize: 10,
-          fontWeight: FontWeight.w500,
+          fontFamily: 'Sen',
         ),
       ),
-      iconTheme: const IconThemeData(color: AppColors.darkPrimary, size: 24),
+     iconTheme: const IconThemeData(color: AppColors.darkPrimary, size: 24),
       dividerTheme: DividerThemeData(
         color: AppColors.darkTextSecondary.withValues(alpha: 0.3),
         thickness: 1,

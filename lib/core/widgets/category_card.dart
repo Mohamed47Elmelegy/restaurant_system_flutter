@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../../core/theme/app_colors.dart';
-import '../../../../../core/theme/theme_helper.dart';
-import '../../../domain/entities/category_entity.dart';
+import '../theme/app_colors.dart';
+import '../theme/theme_helper.dart';
+import '../theme/text_styles.dart';
+import '../../features/Home/domain/entities/category_entity.dart';
 
 class CategoryCard extends StatelessWidget {
   final CategoryEntity category;
   final bool isSelected;
   final VoidCallback onTap;
+  final Function(bool) setSelected;
 
   const CategoryCard({
     super.key,
     required this.category,
     required this.isSelected,
     required this.onTap,
+    required this.setSelected,
   });
 
   @override
@@ -49,9 +52,7 @@ class CategoryCard extends StatelessWidget {
             SizedBox(height: 8.h),
             Text(
               category.name,
-              style: TextStyle(
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w600,
+              style: AppTextStyles.senBold14(context).copyWith(
                 color: isSelected
                     ? Colors.white
                     : ThemeHelper.getPrimaryTextColor(context),

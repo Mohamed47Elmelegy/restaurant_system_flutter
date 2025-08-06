@@ -212,20 +212,27 @@ class ThemeHelper {
   static TextStyle getTitleStyle(BuildContext context) {
     return TextStyle(
       fontSize: 28,
-      fontWeight: FontWeight.bold,
+      fontWeight: FontWeight.w400,
+      fontFamily: 'Sen',
       color: getPrimaryTextColor(context),
     );
   }
 
   static TextStyle getSubtitleStyle(BuildContext context) {
-    return TextStyle(fontSize: 16, color: getSecondaryTextColor(context));
+    return TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.w400,
+      fontFamily: 'Sen',
+      color: getSecondaryTextColor(context),
+    );
   }
 
   static TextStyle getButtonTextStyle(BuildContext context, bool isActive) {
     return TextStyle(
       color: isActive ? Colors.white : Colors.grey[600],
-      fontSize: 18,
-      fontWeight: FontWeight.bold,
+      fontSize: 14,
+      fontWeight: FontWeight.w400,
+      fontFamily: 'Sen',
     );
   }
 }

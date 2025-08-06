@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/service_locator.dart';
+import '../../../../core/theme/theme_helper.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
-import '../widgets/home_body.dart';
+import '../widgets/home_view_body_consumer.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -12,7 +13,12 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => getIt<HomeBloc>()..add(const LoadHomeData()),
-      child: const Scaffold(body: HomeBody()),
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: ThemeHelper.getBackgroundColor(context),
+          body: const HomeViewBodyBuilder(),
+        ),
+      ),
     );
   }
 }

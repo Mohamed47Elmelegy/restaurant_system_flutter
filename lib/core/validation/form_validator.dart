@@ -50,6 +50,14 @@ class FormValidator {
     return null;
   }
 
+  /// Validate terms and conditions acceptance
+  static String? validateTermsAcceptance(bool? isAccepted) {
+    if (isAccepted == null || !isAccepted) {
+      return 'يجب الموافقة على الشروط والأحكام';
+    }
+    return null;
+  }
+
   /// Validate number
   static String? validateNumber(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) {

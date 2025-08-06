@@ -7,6 +7,7 @@ import '../../../../core/routes/app_routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/custom_text_field.dart';
+import '../../../../core/services/snack_bar_service.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import 'auth_header_widget.dart';
@@ -101,7 +102,15 @@ class _SignupViewBodyState extends State<SignupViewBody> {
                 height: 62.h,
                 text: 'Create Account',
                 onPressed: () {
-                  if (formKey.currentState!.validate()) {
+                  // Validate form fields
+                  final isFormValid = formKey.currentState!.validate();
+
+                  // Validate terms acceptance
+                  final termsError = FormValidator.validateTermsAcceptance(
+                    isTermsAccept,
+                  );
+
+                  if (isFormValid && termsError == null) {
                     formKey.currentState!.save();
                     context.read<AuthBloc>().add(
                       RegisterRequested(
@@ -111,6 +120,12 @@ class _SignupViewBodyState extends State<SignupViewBody> {
                       ),
                     );
                   } else {
+                    // Show terms error if not accepted
+                    if (termsError != null) {
+                      SnackBarService.showErrorMessage(context, termsError);
+                    }
+
+                    // Enable form validation
                     setState(() {
                       autovalidateMode = AutovalidateMode.always;
                     });
