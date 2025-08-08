@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../theme/theme_helper.dart';
 import 'menu_button.dart';
 import 'address_section.dart';
 import 'cart_button.dart';
@@ -28,7 +29,7 @@ class CustomAppBar extends StatelessWidget {
       height: 60.h,
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       decoration: BoxDecoration(
-        color: backgroundColor ?? Colors.white,
+        color: ThemeHelper.getAppBarColor(context),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withValues(alpha: 0.1),

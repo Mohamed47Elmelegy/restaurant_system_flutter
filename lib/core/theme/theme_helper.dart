@@ -6,6 +6,12 @@ class ThemeHelper {
     return Theme.of(context).brightness == Brightness.dark;
   }
 
+  static Color getAppBarColor(BuildContext context) {
+    return isDarkMode(context)
+        ? AppColors.darkBackground
+        : AppColors.lightBackground;
+  }
+
   static Color getBackgroundColor(BuildContext context) {
     return isDarkMode(context)
         ? AppColors.darkBackground
