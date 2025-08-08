@@ -14,17 +14,12 @@ class MenuButton extends StatelessWidget {
       width: 40.w,
       height: 40.h,
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        color: Colors.transparent,
         shape: BoxShape.circle,
       ),
       child: IconButton(
         onPressed: onPressed,
-        icon: SvgPicture.asset(
-          AppIcons.menu,
-          width: 20.w,
-          height: 20.h,
-          
-        ),
+        icon: SvgPicture.asset(AppIcons.menu, width: 20.w, height: 20.h),
         padding: EdgeInsets.zero,
       ),
     );
