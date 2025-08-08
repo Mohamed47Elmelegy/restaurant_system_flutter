@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:restaurant_system_flutter/core/theme/text_styles.dart';
 import '../theme/app_colors.dart';
 import '../theme/theme_helper.dart';
@@ -106,19 +107,21 @@ class FoodItemCard extends StatelessWidget {
           Positioned(
             bottom: 8.h,
             right: 8.w,
-            child: GestureDetector(
-              onTap: onAddPressed,
-              child: Container(
-                width: 32.w,
-                height: 32.h,
-                decoration: BoxDecoration(
-                  color: ThemeHelper.getPrimaryColorForTheme(
-                    context,
-                  ), // Orange color from image
-                  shape: BoxShape.circle,
-                  boxShadow: ThemeHelper.getCardShadow(context),
+            child: Skeleton.ignore(
+              child: GestureDetector(
+                onTap: onAddPressed,
+                child: Container(
+                  width: 32.w,
+                  height: 32.h,
+                  decoration: BoxDecoration(
+                    color: ThemeHelper.getPrimaryColorForTheme(
+                      context,
+                    ), // Orange color from image
+                    shape: BoxShape.circle,
+                    boxShadow: ThemeHelper.getCardShadow(context),
+                  ),
+                  child: Icon(Icons.add, color: Colors.white, size: 18.sp),
                 ),
-                child: Icon(Icons.add, color: Colors.white, size: 18.sp),
               ),
             ),
           ),

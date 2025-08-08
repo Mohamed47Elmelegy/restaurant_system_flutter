@@ -22,6 +22,12 @@ class ThemeHelper {
         : AppColors.lightTextMain;
   }
 
+  static Color getTextPrimaryColorForTheme(BuildContext context) {
+    return isDarkMode(context)
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextMain;
+  }
+
   static Color getSecondaryTextColor(BuildContext context) {
     return isDarkMode(context)
         ? AppColors.darkTextSecondary

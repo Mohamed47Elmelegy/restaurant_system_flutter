@@ -34,56 +34,44 @@ class CategoriesListWidget extends StatelessWidget {
   }
 
   Widget _buildCategoriesList(BuildContext context, HomeState state) {
-    if (state is HomeLoaded) {
-      return ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: state.categories.length,
-        itemBuilder: (context, index) {
-          final category = state.categories[index];
-          final isSelected = state.selectedCategoryId == category.id;
+    final categories = state is HomeLoaded
+        ? state.categories
+        : _generatePlaceholderCategories();
 
-          return Padding(
-            padding: EdgeInsets.only(right: 16.w),
-            child: CategoryCard(
-              category: category,
-              isSelected: isSelected,
-              onTap: () {
-                context.read<HomeBloc>().add(SelectCategory(category.id));
-              },
-              setSelected: (bool selected) {
-                context.read<HomeBloc>().add(SelectCategory(category.id));
-              },
-            ),
-          );
-        },
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount: categories.length,
+      itemBuilder: (context, index) {
+        final category = categories[index];
+        final isSelected = state is HomeLoaded
+            ? state.selectedCategoryId == category.id
+            : false;
+
+        return Padding(
+          padding: EdgeInsets.only(right: 16.w),
+          child: CategoryCard(
+            category: category,
+            isSelected: isSelected,
+            onTap: () {
+              context.read<HomeBloc>().add(SelectCategory(category.id));
+            },
+            setSelected: (bool selected) {
+              context.read<HomeBloc>().add(SelectCategory(category.id));
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  List<CategoryEntity> _generatePlaceholderCategories() {
+    return List.generate(5, (index) {
+      return CategoryEntity(
+        id: index + 1,
+        name: 'Category ${index + 1}',
+        icon: '🍕',
+        color: 0xFF4CAF50,
       );
-    } else {
-      // Placeholder categories for loading/initial state
-      return ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: 5,
-        itemBuilder: (context, index) {
-          final categoryId = index + 1;
-          return Padding(
-            padding: EdgeInsets.only(right: 16.w),
-            child: CategoryCard(
-              category: CategoryEntity(
-                id: categoryId,
-                name: 'Category ${categoryId}',
-                icon: '🍕',
-                color: 0xFF4CAF50,
-              ),
-              isSelected: false,
-              onTap: () {
-                context.read<HomeBloc>().add(SelectCategory(categoryId));
-              },
-              setSelected: (bool selected) {
-                context.read<HomeBloc>().add(SelectCategory(categoryId));
-              },
-            ),
-          );
-        },
-      );
-    }
+    });
   }
 }

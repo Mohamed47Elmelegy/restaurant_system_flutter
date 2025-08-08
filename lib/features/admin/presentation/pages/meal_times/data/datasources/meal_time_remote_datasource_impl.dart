@@ -43,7 +43,7 @@ class MealTimeRemoteDataSourceImpl implements MealTimeRemoteDataSource {
       log('🔴 MealTimes DioException: ${e.message}');
       log('🔴 MealTimes DioException Response: ${e.response?.data}');
 
-      final apiError = ApiError.fromDioException(e);
+      final apiError = AppError.fromDioException(e);
       return ApiResponse<List<MealTimeModel>>(
         status: false,
         message: apiError.userMessage,
@@ -76,7 +76,7 @@ class MealTimeRemoteDataSourceImpl implements MealTimeRemoteDataSource {
       log('🔴 CurrentMealTime DioException: ${e.message}');
       log('🔴 CurrentMealTime DioException Response: ${e.response?.data}');
 
-      final apiError = ApiError.fromDioException(e);
+      final apiError = AppError.fromDioException(e);
       return ApiResponse<MealTimeModel?>(
         status: false,
         message: apiError.userMessage,
@@ -115,7 +115,7 @@ class MealTimeRemoteDataSourceImpl implements MealTimeRemoteDataSource {
       log('🔴 CreateMealTime DioException: ${e.message}');
       log('🔴 CreateMealTime DioException Response: ${e.response?.data}');
 
-      final apiError = ApiError.fromDioException(e);
+      final apiError = AppError.fromDioException(e);
       return ApiResponse<MealTimeModel>(
         status: false,
         message: apiError.userMessage,
@@ -156,7 +156,7 @@ class MealTimeRemoteDataSourceImpl implements MealTimeRemoteDataSource {
       log('🔴 UpdateMealTime DioException: ${e.message}');
       log('🔴 UpdateMealTime DioException Response: ${e.response?.data}');
 
-      final apiError = ApiError.fromDioException(e);
+      final apiError = AppError.fromDioException(e);
       return ApiResponse<MealTimeModel>(
         status: false,
         message: apiError.userMessage,
@@ -190,7 +190,7 @@ class MealTimeRemoteDataSourceImpl implements MealTimeRemoteDataSource {
       log('🔴 DeleteMealTime DioException: ${e.message}');
       log('🔴 DeleteMealTime DioException Response: ${e.response?.data}');
 
-      final apiError = ApiError.fromDioException(e);
+      final apiError = AppError.fromDioException(e);
       return ApiResponse<bool>(
         status: false,
         message: apiError.userMessage,
@@ -232,7 +232,7 @@ class MealTimeRemoteDataSourceImpl implements MealTimeRemoteDataSource {
       log('🔴 ToggleMealTimeStatus DioException: ${e.message}');
       log('🔴 ToggleMealTimeStatus DioException Response: ${e.response?.data}');
 
-      final apiError = ApiError.fromDioException(e);
+      final apiError = AppError.fromDioException(e);
       return ApiResponse<MealTimeModel>(
         status: false,
         message: apiError.userMessage,
@@ -280,7 +280,7 @@ class MealTimeRemoteDataSourceImpl implements MealTimeRemoteDataSource {
       log('🔴 UpdateMealTimesOrder DioException: ${e.message}');
       log('🔴 UpdateMealTimesOrder DioException Response: ${e.response?.data}');
 
-      final apiError = ApiError.fromDioException(e);
+      final apiError = AppError.fromDioException(e);
       return ApiResponse<List<MealTimeModel>>(
         status: false,
         message: apiError.userMessage,

@@ -39,7 +39,7 @@ class SimpleInterceptor extends Interceptor {
     log('🔴 SimpleInterceptor: Error message: ${err.message}');
 
     // تحويل الخطأ إلى ApiError مبسط
-    final apiError = ApiError.fromDioException(err);
+    final apiError = AppError.fromDioException(err);
 
     handler.reject(
       DioException(

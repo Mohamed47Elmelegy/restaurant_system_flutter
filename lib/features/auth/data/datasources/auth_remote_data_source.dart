@@ -40,7 +40,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       log('🔴 Login DioException Status: ${e.response?.statusCode}');
 
       // تحويل الخطأ إلى رسالة مفهومة
-      final apiError = ApiError.fromDioException(e);
+      final apiError = AppError.fromDioException(e);
       throw Exception(apiError.userMessage);
     } catch (e) {
       log('🔴 Login Unexpected Error: $e');
@@ -76,7 +76,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       log('🔴 Register DioException Status: ${e.response?.statusCode}');
 
       // تحويل الخطأ إلى رسالة مفهومة
-      final apiError = ApiError.fromDioException(e);
+      final apiError = AppError.fromDioException(e);
       throw Exception(apiError.userMessage);
     } catch (e) {
       log('🔴 Register Unexpected Error: $e');
@@ -106,7 +106,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       log('🔴 GetUser DioException Status: ${e.response?.statusCode}');
 
       // تحويل الخطأ إلى رسالة مفهومة
-      final apiError = ApiError.fromDioException(e);
+      final apiError = AppError.fromDioException(e);
       throw Exception(apiError.userMessage);
     } catch (e) {
       log('🔴 GetUser Unexpected Error: $e');

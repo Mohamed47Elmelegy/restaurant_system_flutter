@@ -90,11 +90,14 @@ class AppTheme {
           fontFamily: 'Sen',
         ),
       ),
-     iconTheme: const IconThemeData(color: AppColors.lightPrimary, size: 24),
+      iconTheme: const IconThemeData(color: AppColors.lightPrimary, size: 24),
       dividerTheme: const DividerThemeData(
         color: AppColors.lightBorder,
         thickness: 1,
       ),
+      extensions: const [
+        // Default Skeletonizer config for light theme
+      ],
     );
   }
 
@@ -187,11 +190,14 @@ class AppTheme {
           fontFamily: 'Sen',
         ),
       ),
-     iconTheme: const IconThemeData(color: AppColors.darkPrimary, size: 24),
+      iconTheme: const IconThemeData(color: AppColors.darkPrimary, size: 24),
       dividerTheme: DividerThemeData(
         color: AppColors.darkTextSecondary.withValues(alpha: 0.3),
         thickness: 1,
       ),
+      extensions: const [
+        // Default Skeletonizer config for dark theme
+      ],
     );
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:toastification/toastification.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'core/di/service_locator.dart';
 import 'core/routes/app_router.dart';
@@ -12,8 +11,7 @@ import 'core/theme/theme_provider.dart';
 import 'core/theme/app_theme.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
-import 'core/services/snack_bar_service.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -47,8 +45,12 @@ class MyApp extends StatelessWidget {
                 builder: EasyLoading.init(builder: BotToastInit()),
                 initialRoute: AppRoutes.splash,
                 onGenerateRoute: appRouter,
-                theme: AppTheme.lightTheme,
-                darkTheme: AppTheme.darkTheme,
+                theme: AppTheme.lightTheme.copyWith(
+                  extensions: const [SkeletonizerConfigData()],
+                ),
+                darkTheme: AppTheme.darkTheme.copyWith(
+                  extensions: const [SkeletonizerConfigData.dark()],
+                ),
                 themeMode: themeProvider.themeMode,
                 debugShowCheckedModeBanner: false,
                 navigatorKey: navigatorKey,

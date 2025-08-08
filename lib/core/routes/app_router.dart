@@ -43,9 +43,9 @@ Route<dynamic>? appRouter(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => const MealTimeManagementPage());
 
     default:
-      return MaterialPageRoute(
-        builder: (_) =>
-            const Scaffold(body: Center(child: Text('Page not found'))),
+        return MaterialPageRoute(
+          builder: (_) =>
+              const Scaffold(body: Center(child: Text('Page not  found'))),
       );
   }
 }
