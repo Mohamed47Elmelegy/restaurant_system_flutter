@@ -1,10 +1,9 @@
-import '../../domain/entities/product.dart';
+import '../../../../../../../core/entities/product.dart';
 import '../../domain/repositories/product_repository.dart';
-import '../models/product_model.dart';
+import '../../../../../../../core/models/product_model.dart';
 import '../datasources/remoteDataSource/product_remote_data_source.dart';
 import '../datasources/product_local_data_source.dart';
 import '../../../../../../../core/error/failures.dart';
-import '../../../../../../../core/error/api_response.dart';
 import 'package:dartz/dartz.dart';
 
 /// 🟦 ProductRepositoryImpl - مبدأ المسؤولية الواحدة (SRP)
@@ -25,7 +24,7 @@ class ProductRepositoryImpl implements ProductRepository {
   });
 
   @override
-  Future<Either<Failure, List<Product>>> getProducts() async {
+  Future<Either<Failure, List<ProductEntity>>> getProducts() async {
     try {
       // 1. محاولة جلب البيانات من الـ local أولاً
       final localProducts = await localDataSource.getProducts();
@@ -70,7 +69,9 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<Either<Failure, Product>> createProduct(Product product) async {
+  Future<Either<Failure, ProductEntity>> createProduct(
+    ProductEntity product,
+  ) async {
     try {
       final productModel = ProductModel.fromEntity(product);
       final response = await remoteDataSource.createProduct(productModel);
@@ -93,7 +94,9 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<Either<Failure, Product>> updateProduct(Product product) async {
+  Future<Either<Failure, ProductEntity>> updateProduct(
+    ProductEntity product,
+  ) async {
     try {
       final productModel = ProductModel.fromEntity(product);
       final response = await remoteDataSource.updateProduct(productModel);
@@ -116,7 +119,7 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<Either<Failure, Product?>> getProductById(int id) async {
+  Future<Either<Failure, ProductEntity?>> getProductById(int id) async {
     try {
       // 1. محاولة جلب المنتج من الـ local أولاً
       final localProduct = await localDataSource.getProductById(id.toString());
@@ -217,7 +220,7 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<Either<Failure, List<Product>>> getProductsByCategory(
+  Future<Either<Failure, List<ProductEntity>>> getProductsByCategory(
     int categoryId,
   ) async {
     try {
@@ -270,12 +273,12 @@ class ProductRepositoryImpl implements ProductRepository {
   // 🟦 Implementation of BaseRepository methods
 
   @override
-  Future<Either<Failure, List<Product>>> getAll() async {
+  Future<Either<Failure, List<ProductEntity>>> getAll() async {
     return getProducts();
   }
 
   @override
-  Future<Either<Failure, Product?>> getById(String id) async {
+  Future<Either<Failure, ProductEntity?>> getById(String id) async {
     final intId = int.tryParse(id);
     if (intId == null) {
       return Left(ServerFailure(message: 'Invalid product ID: $id'));
@@ -284,12 +287,15 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<Either<Failure, Product>> add(Product item) async {
+  Future<Either<Failure, ProductEntity>> add(ProductEntity item) async {
     return createProduct(item);
   }
 
   @override
-  Future<Either<Failure, Product>> update(String id, Product item) async {
+  Future<Either<Failure, ProductEntity>> update(
+    String id,
+    ProductEntity item,
+  ) async {
     // Ensure the item has the correct ID
     final updatedProduct = item.copyWith(id: id);
     return updateProduct(updatedProduct);
@@ -310,7 +316,7 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<Either<Failure, List<Product>>> search(String query) async {
+  Future<Either<Failure, List<ProductEntity>>> search(String query) async {
     try {
       // 1. محاولة البحث في البيانات المحلية أولاً
       final localSearchResults = await localDataSource.searchProducts(query);
@@ -337,7 +343,7 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<Either<Failure, List<Product>>> getPaginated({
+  Future<Either<Failure, List<ProductEntity>>> getPaginated({
     int page = 1,
     int limit = 10,
     String? sortBy,
@@ -362,7 +368,7 @@ class ProductRepositoryImpl implements ProductRepository {
                 startIndex,
                 endIndex > products.length ? products.length : endIndex,
               )
-            : <Product>[];
+            : <ProductEntity>[];
 
         return Right(paginatedProducts);
       }

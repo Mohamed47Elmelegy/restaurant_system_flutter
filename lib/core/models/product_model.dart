@@ -1,14 +1,12 @@
-import '../../domain/entities/product.dart';
-import '../../../../../../../core/base/base_model.dart';
+import '../entities/product.dart';
+import '../base/base_model.dart';
 
 /// 🟦 ProductModel - مبدأ المسؤولية الواحدة (SRP)
 /// مسؤول عن تحويل البيانات من/إلى JSON والـ Entity
-class ProductModel extends BaseModel<Product> {
+class ProductModel extends BaseModel<ProductEntity> {
   final String id;
   final String name;
-  final String nameAr;
   final String? description;
-  final String? descriptionAr;
   final double price;
   final int mainCategoryId;
   final String? imageUrl;
@@ -26,9 +24,7 @@ class ProductModel extends BaseModel<Product> {
   ProductModel({
     required this.id,
     required this.name,
-    required this.nameAr,
     this.description,
-    this.descriptionAr,
     required this.price,
     required this.mainCategoryId,
     this.imageUrl,
@@ -48,9 +44,7 @@ class ProductModel extends BaseModel<Product> {
   factory ProductModel.fromIntId({
     int? id,
     required String name,
-    required String nameAr,
     String? description,
-    String? descriptionAr,
     required double price,
     required int mainCategoryId,
     String? imageUrl,
@@ -68,9 +62,7 @@ class ProductModel extends BaseModel<Product> {
     return ProductModel(
       id: id?.toString() ?? '',
       name: name,
-      nameAr: nameAr,
       description: description,
-      descriptionAr: descriptionAr,
       price: price,
       mainCategoryId: mainCategoryId,
       imageUrl: imageUrl,
@@ -96,16 +88,12 @@ class ProductModel extends BaseModel<Product> {
     return ProductModel(
       id: json['id']?.toString() ?? '',
       name: json['name'] ?? '',
-      nameAr: json['name_ar'] ?? '',
       description: json['description'],
-      descriptionAr: json['description_ar'],
       price: _parsePrice(json['price']),
       mainCategoryId: json['main_category_id'] ?? 0,
       imageUrl: json['image_url'],
       isAvailable: json['is_available'] ?? true,
-      rating: json['rating'] != null
-          ? (json['rating'] as num).toDouble()
-          : null,
+      rating: _parseRating(json['rating']),
       reviewCount: json['review_count'],
       preparationTime: json['preparation_time'],
       ingredients: json['ingredients'] != null
@@ -126,13 +114,11 @@ class ProductModel extends BaseModel<Product> {
   }
 
   /// Create ProductModel from Product entity
-  factory ProductModel.fromEntity(Product entity) {
+  factory ProductModel.fromEntity(ProductEntity entity) {
     return ProductModel(
       id: entity.id,
       name: entity.name,
-      nameAr: entity.nameAr,
       description: entity.description,
-      descriptionAr: entity.descriptionAr,
       price: entity.price,
       mainCategoryId: entity.mainCategoryId,
       imageUrl: entity.imageUrl,
@@ -172,13 +158,35 @@ class ProductModel extends BaseModel<Product> {
     return 0.0;
   }
 
+  /// Parse rating from various data types (string, num, double)
+  /// Fixes the TypeError when API returns rating as string "0.00"
+  ///
+  /// Problem: Laravel API returns rating as string "0.00" but Flutter expects num
+  /// Solution: Handle both string and numeric types safely, return null for invalid values
+  ///
+  /// Example error:
+  /// TypeError: "0.00": type 'String' is not a subtype of type 'num'
+  static double? _parseRating(dynamic rating) {
+    if (rating == null) return null;
+
+    if (rating is num) {
+      return rating.toDouble();
+    }
+
+    if (rating is String) {
+      final parsed = double.tryParse(rating);
+      return parsed == 0.0 ? null : parsed; // Return null for 0.0 ratings
+    }
+
+    return null;
+  }
+
+  @override
   Map<String, dynamic> toJson() {
     return {
-      if (id != null) 'id': id,
+      'id': id,
       'name': name,
-      'name_ar': nameAr,
       if (description != null) 'description': description,
-      if (descriptionAr != null) 'description_ar': descriptionAr,
       'price': price,
       'main_category_id': mainCategoryId,
       if (imageUrl != null) 'image_url': imageUrl,
@@ -195,13 +203,12 @@ class ProductModel extends BaseModel<Product> {
     };
   }
 
-  Product toEntity() {
-    return Product(
+  @override
+  ProductEntity toEntity() {
+    return ProductEntity(
       id: id,
       name: name,
-      nameAr: nameAr,
       description: description,
-      descriptionAr: descriptionAr,
       price: price,
       mainCategoryId: mainCategoryId,
       imageUrl: imageUrl,
@@ -223,9 +230,7 @@ class ProductModel extends BaseModel<Product> {
     return ProductModel(
       id: changes['id'] ?? id,
       name: changes['name'] ?? name,
-      nameAr: changes['nameAr'] ?? nameAr,
       description: changes['description'] ?? description,
-      descriptionAr: changes['descriptionAr'] ?? descriptionAr,
       price: changes['price'] ?? price,
       mainCategoryId: changes['mainCategoryId'] ?? mainCategoryId,
       imageUrl: changes['imageUrl'] ?? imageUrl,

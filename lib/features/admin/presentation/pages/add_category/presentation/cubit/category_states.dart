@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../domain/entities/main_category.dart';
+import '../../../../../../../core/entities/main_category.dart';
 
 /// 🟦 CategoryStates - مبدأ المسؤولية الواحدة (SRP)
 /// مسؤول عن حالات إدارة الفئات فقط
@@ -22,7 +22,7 @@ class CategoryLoading extends CategoryState {
 
 /// Categories loaded successfully
 class CategoriesLoaded extends CategoryState {
-  final List<MainCategory> categories;
+  final List<CategoryEntity> categories;
 
   const CategoriesLoaded(this.categories);
 
@@ -32,7 +32,7 @@ class CategoriesLoaded extends CategoryState {
 
 /// Category created successfully
 class CategoryCreated extends CategoryState {
-  final MainCategory category;
+  final CategoryEntity category;
 
   const CategoryCreated(this.category);
 
@@ -42,7 +42,7 @@ class CategoryCreated extends CategoryState {
 
 /// Category updated successfully
 class CategoryUpdated extends CategoryState {
-  final MainCategory category;
+  final CategoryEntity category;
 
   const CategoryUpdated(this.category);
 
@@ -62,7 +62,7 @@ class CategoryDeleted extends CategoryState {
 
 /// Category loaded successfully
 class CategoryLoaded extends CategoryState {
-  final MainCategory category;
+  final CategoryEntity category;
 
   const CategoryLoaded(this.category);
 
@@ -72,7 +72,7 @@ class CategoryLoaded extends CategoryState {
 
 /// Categories searched successfully
 class CategoriesSearched extends CategoryState {
-  final List<MainCategory> categories;
+  final List<CategoryEntity> categories;
 
   const CategoriesSearched(this.categories);
 
@@ -82,7 +82,7 @@ class CategoriesSearched extends CategoryState {
 
 /// Active categories loaded
 class ActiveCategoriesLoaded extends CategoryState {
-  final List<MainCategory> categories;
+  final List<CategoryEntity> categories;
 
   const ActiveCategoriesLoaded(this.categories);
 

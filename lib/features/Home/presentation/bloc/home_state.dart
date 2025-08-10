@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
-import '../../domain/entities/category_entity.dart';
-import '../../domain/entities/food_item_entity.dart';
-import '../../domain/entities/banner_entity.dart';
+import '../../../../core/entities/main_category.dart';
+import '../../../../core/entities/product.dart';
+
 
 abstract class HomeState extends Equatable {
   const HomeState();
@@ -16,16 +16,14 @@ class HomeLoading extends HomeState {}
 
 class HomeLoaded extends HomeState {
   final List<CategoryEntity> categories;
-  final List<FoodItemEntity> popularItems;
-  final List<FoodItemEntity> recommendedItems;
-  final List<BannerEntity> banners;
+  final List<ProductEntity> popularItems;
+  final List<ProductEntity> recommendedItems;
   final int? selectedCategoryId;
 
   const HomeLoaded({
     required this.categories,
     required this.popularItems,
     required this.recommendedItems,
-    required this.banners,
     this.selectedCategoryId,
   });
 
@@ -34,22 +32,19 @@ class HomeLoaded extends HomeState {
     categories,
     popularItems,
     recommendedItems,
-    banners,
     selectedCategoryId,
   ];
 
   HomeLoaded copyWith({
     List<CategoryEntity>? categories,
-    List<FoodItemEntity>? popularItems,
-    List<FoodItemEntity>? recommendedItems,
-    List<BannerEntity>? banners,
+    List<ProductEntity>? popularItems,
+    List<ProductEntity>? recommendedItems,
     int? selectedCategoryId,
   }) {
     return HomeLoaded(
       categories: categories ?? this.categories,
       popularItems: popularItems ?? this.popularItems,
       recommendedItems: recommendedItems ?? this.recommendedItems,
-      banners: banners ?? this.banners,
       selectedCategoryId: selectedCategoryId ?? this.selectedCategoryId,
     );
   }

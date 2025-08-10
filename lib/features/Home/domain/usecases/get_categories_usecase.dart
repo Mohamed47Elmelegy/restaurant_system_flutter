@@ -1,4 +1,7 @@
-import '../entities/category_entity.dart';
+import 'package:dartz/dartz.dart';
+
+import '../../../../core/entities/main_category.dart';
+import '../../../../core/error/failures.dart';
 import '../repositories/home_repository.dart';
 
 class GetCategoriesUseCase {
@@ -6,7 +9,7 @@ class GetCategoriesUseCase {
 
   GetCategoriesUseCase(this._repository);
 
-  Future<List<CategoryEntity>> call() async {
+  Future<Either<Failure, List<CategoryEntity>>> call() async {
     return await _repository.getCategories();
   }
 }

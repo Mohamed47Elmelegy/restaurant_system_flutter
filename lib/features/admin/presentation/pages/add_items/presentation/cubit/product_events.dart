@@ -1,23 +1,23 @@
 import 'package:equatable/equatable.dart';
-import '../../domain/entities/product.dart';
+import '../../../../../../../core/entities/product.dart';
 
 abstract class ProductEvent {}
 
 class LoadProducts extends ProductEvent {}
 
 class CreateProduct extends ProductEvent {
-  final Product product;
+  final ProductEntity product;
   CreateProduct(this.product);
 }
 
 class UpdateProduct extends ProductEvent {
-  final Product product;
+  final ProductEntity product;
   UpdateProduct(this.product);
 }
 
 class ResetProductForm extends ProductEvent {}
 
 class ValidateProduct extends ProductEvent {
-  final Product product;
+  final ProductEntity product;
   ValidateProduct(this.product);
 }

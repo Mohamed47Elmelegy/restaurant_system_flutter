@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:restaurant_system_flutter/core/entities/product.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/widgets/food_item_card.dart';
-import '../../domain/entities/food_item_entity.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_state.dart';
 
-
 class FoodItemsSection extends StatelessWidget {
   final String title;
-  final List<FoodItemEntity> Function(HomeLoaded state) getItems;
+  final List<ProductEntity> Function(HomeLoaded state) getItems;
   final bool isHorizontal;
 
   const FoodItemsSection({
@@ -79,17 +78,18 @@ class FoodItemsSection extends StatelessWidget {
       },
     );
   }
-  // Fale Data Placeholder for Skeleton Wrapper  This Data will come from the API
-  List<FoodItemEntity> _generatePlaceholderItems() {
+
+  // Fake Data Placeholder for Skeleton Wrapper  This Data will come from the API
+  List<ProductEntity> _generatePlaceholderItems() {
     return List.generate(6, (index) {
-      return FoodItemEntity(
-        id: index + 1,
+      return ProductEntity(
+        id: '${index + 1}',
         name: 'Item ${index + 1}',
         description: 'Delicious item',
         price: 25.0 + (index * 5),
         rating: 4.5 + (index * 0.1),
-        image: 'assets/icons/basic/Chicken.png',
-        category: 'Fast Food',
+        imageUrl: 'assets/icons/basic/Chicken.png',
+        mainCategoryId: 1,
       );
     });
   }

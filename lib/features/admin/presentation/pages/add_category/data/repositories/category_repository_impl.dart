@@ -1,9 +1,8 @@
 import 'package:dartz/dartz.dart';
 import '../../../../../../../core/error/failures.dart';
-import '../../../../../../../core/error/simple_error.dart';
-import '../../domain/entities/main_category.dart';
-import '../repositories/category_repository.dart';
-import '../models/main_category_model.dart';
+import '../../../../../../../core/entities/main_category.dart';
+import '../../domain/repositories/category_repository.dart';
+import '../../../../../../../core/models/main_category_model.dart';
 import '../datasources/category_remote_data_source.dart';
 import '../datasources/category_local_data_source.dart';
 
@@ -19,7 +18,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
   });
 
   @override
-  Future<Either<Failure, List<MainCategory>>> getCategories({
+  Future<Either<Failure, List<CategoryEntity>>> getCategories({
     int? mealTimeId,
   }) async {
     try {
@@ -68,7 +67,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   @override
-  Future<Either<Failure, List<MainCategory>>> getCategoriesByMealTime(
+  Future<Either<Failure, List<CategoryEntity>>> getCategoriesByMealTime(
     int mealTimeId,
   ) async {
     try {
@@ -112,12 +111,14 @@ class CategoryRepositoryImpl implements CategoryRepository {
       }
     } catch (e) {
       print('❌ CategoryRepository: Error getting categories by meal time - $e');
-      return Left(ServerFailure(message: 'Failed to get categories by meal time: $e'));
+      return Left(
+        ServerFailure(message: 'Failed to get categories by meal time: $e'),
+      );
     }
   }
 
   @override
-  Future<Either<Failure, List<MainCategory>>> getActiveCategories() async {
+  Future<Either<Failure, List<CategoryEntity>>> getActiveCategories() async {
     try {
       // 1. محاولة جلب الفئات النشطة من الـ local أولاً
       final localCategories = await localDataSource.getActiveMainCategories();
@@ -155,19 +156,21 @@ class CategoryRepositoryImpl implements CategoryRepository {
       }
     } catch (e) {
       print('❌ CategoryRepository: Error getting active categories - $e');
-      return Left(ServerFailure(message: 'Failed to get active categories: $e'));
+      return Left(
+        ServerFailure(message: 'Failed to get active categories: $e'),
+      );
     }
   }
 
   @override
-  Future<Either<Failure, MainCategory?>> getCategoryByName(String name) async {
+  Future<Either<Failure, CategoryEntity?>> getCategoryByName(
+    String name,
+  ) async {
     try {
       // 1. محاولة البحث في الـ local أولاً
       final localCategories = await localDataSource.searchMainCategories(name);
       if (localCategories.isNotEmpty) {
-        print(
-          '📱 CategoryRepository: Found category by name in local storage',
-        );
+        print('📱 CategoryRepository: Found category by name in local storage');
         final category = localCategories.first.toEntity();
         return Right(category);
       }
@@ -188,7 +191,9 @@ class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   @override
-  Future<Either<Failure, MainCategory>> create(MainCategory entity) async {
+  Future<Either<Failure, CategoryEntity>> addCategory(
+    CategoryEntity entity,
+  ) async {
     try {
       final categoryModel = MainCategoryModel.fromEntity(entity);
       final response = await remoteDataSource.createCategory(categoryModel);
@@ -210,7 +215,10 @@ class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   @override
-  Future<Either<Failure, MainCategory>> update(String id, MainCategory entity) async {
+  Future<Either<Failure, CategoryEntity>> update(
+    String id,
+    CategoryEntity entity,
+  ) async {
     try {
       final updatedEntity = entity.copyWith(id: id);
       final categoryModel = MainCategoryModel.fromEntity(updatedEntity);
@@ -257,12 +265,12 @@ class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   @override
-  Future<Either<Failure, List<MainCategory>>> getAll() async {
+  Future<Either<Failure, List<CategoryEntity>>> getAll() async {
     return getCategories();
   }
 
   @override
-  Future<Either<Failure, MainCategory?>> getById(String id) async {
+  Future<Either<Failure, CategoryEntity?>> getById(String id) async {
     try {
       // 1. محاولة جلب الفئة من الـ local أولاً
       final localCategory = await localDataSource.getMainCategoryById(id);
@@ -293,12 +301,12 @@ class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   @override
-  Future<Either<Failure, MainCategory>> add(MainCategory item) async {
-    return create(item);
+  Future<Either<Failure, CategoryEntity>> add(CategoryEntity item) async {
+    return addCategory(item);
   }
 
   @override
-  Future<Either<Failure, List<MainCategory>>> search(String query) async {
+  Future<Either<Failure, List<CategoryEntity>>> search(String query) async {
     try {
       // 1. محاولة البحث في الـ local أولاً
       final localCategories = await localDataSource.searchMainCategories(query);
@@ -339,7 +347,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   @override
-  Future<Either<Failure, List<MainCategory>>> getPaginated({
+  Future<Either<Failure, List<CategoryEntity>>> getPaginated({
     int page = 1,
     int limit = 10,
     String? sortBy,
@@ -364,7 +372,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
                 startIndex,
                 endIndex > categories.length ? categories.length : endIndex,
               )
-            : <MainCategory>[];
+            : <CategoryEntity>[];
 
         return Right(paginatedCategories);
       }

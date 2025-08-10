@@ -1,5 +1,5 @@
 import '../../../../../../../core/error/api_response.dart';
-import '../models/main_category_model.dart';
+import '../../../../../../../core/models/main_category_model.dart';
 
 /// 🟦 CategoryRemoteDataSource - مبدأ المسؤولية الواحدة (SRP)
 /// مسؤول عن استدعاء API الفئات فقط

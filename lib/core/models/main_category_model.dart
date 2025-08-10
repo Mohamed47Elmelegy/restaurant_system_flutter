@@ -1,16 +1,14 @@
-import '../../domain/entities/main_category.dart';
-import '../../../../../../../core/base/base_model.dart';
+import '../entities/main_category.dart';
+import '../base/base_model.dart';
 
 /// 🟦 MainCategoryModel - مبدأ المسؤولية الواحدة (SRP)
 /// مسؤول عن تحويل البيانات فقط
-class MainCategoryModel extends BaseModel<MainCategory> {
+class MainCategoryModel extends BaseModel<CategoryEntity> {
   final String id;
   final String name;
-  final String nameAr;
   final String? icon;
   final String? color;
   final String? description;
-  final String? descriptionAr;
   final bool isActive;
   final int sortOrder;
   final DateTime? createdAt;
@@ -20,11 +18,9 @@ class MainCategoryModel extends BaseModel<MainCategory> {
   MainCategoryModel({
     required this.id,
     required this.name,
-    required this.nameAr,
     this.icon,
     this.color,
     this.description,
-    this.descriptionAr,
     required this.isActive,
     required this.sortOrder,
     this.createdAt,
@@ -36,11 +32,9 @@ class MainCategoryModel extends BaseModel<MainCategory> {
   factory MainCategoryModel.fromIntId({
     int? id,
     required String name,
-    required String nameAr,
     String? icon,
     String? color,
     String? description,
-    String? descriptionAr,
     required bool isActive,
     required int sortOrder,
     DateTime? createdAt,
@@ -50,11 +44,9 @@ class MainCategoryModel extends BaseModel<MainCategory> {
     return MainCategoryModel(
       id: id?.toString() ?? '',
       name: name,
-      nameAr: nameAr,
       icon: icon,
       color: color,
       description: description,
-      descriptionAr: descriptionAr,
       isActive: isActive,
       sortOrder: sortOrder,
       createdAt: createdAt,
@@ -69,15 +61,15 @@ class MainCategoryModel extends BaseModel<MainCategory> {
   }
 
   /// Factory method to create MainCategoryModel from MainCategory entity
-  factory MainCategoryModel.fromEntity(MainCategory entity) {
+  factory MainCategoryModel.fromEntity(CategoryEntity entity) {
     return MainCategoryModel(
       id: entity.id,
       name: entity.name,
-      nameAr: entity.nameAr,
+
       icon: entity.icon,
       color: entity.color,
       description: entity.description,
-      descriptionAr: entity.descriptionAr,
+
       isActive: entity.isActive,
       sortOrder: entity.sortOrder,
       createdAt: entity.createdAt,
@@ -90,11 +82,11 @@ class MainCategoryModel extends BaseModel<MainCategory> {
     return MainCategoryModel(
       id: json['id']?.toString() ?? '',
       name: json['name'],
-      nameAr: json['name_ar'],
+
       icon: json['icon'],
       color: json['color'],
       description: json['description'],
-      descriptionAr: json['description_ar'],
+
       isActive: json['is_active'],
       sortOrder: json['sort_order'],
       createdAt: json['created_at'] != null
@@ -111,7 +103,7 @@ class MainCategoryModel extends BaseModel<MainCategory> {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {
       'name': name,
-      'name_ar': nameAr,
+
       'is_active': isActive,
       'sort_order': sortOrder,
     };
@@ -121,8 +113,6 @@ class MainCategoryModel extends BaseModel<MainCategory> {
     if (color != null) data['color'] = color;
     if (description != null && description!.isNotEmpty)
       data['description'] = description;
-    if (descriptionAr != null && descriptionAr!.isNotEmpty)
-      data['description_ar'] = descriptionAr;
 
     // Only add ID if it's not empty (for updates)
     if (id.isNotEmpty) data['id'] = id;
@@ -138,15 +128,13 @@ class MainCategoryModel extends BaseModel<MainCategory> {
   }
 
   @override
-  MainCategory toEntity() {
-    return MainCategory(
+  CategoryEntity toEntity() {
+    return CategoryEntity(
       id: id,
       name: name,
-      nameAr: nameAr,
       icon: icon,
       color: color,
       description: description,
-      descriptionAr: descriptionAr,
       isActive: isActive,
       sortOrder: sortOrder,
       createdAt: createdAt,
@@ -160,11 +148,11 @@ class MainCategoryModel extends BaseModel<MainCategory> {
     return MainCategoryModel(
       id: changes['id'] ?? id,
       name: changes['name'] ?? name,
-      nameAr: changes['nameAr'] ?? nameAr,
+
       icon: changes['icon'] ?? icon,
       color: changes['color'] ?? color,
       description: changes['description'] ?? description,
-      descriptionAr: changes['descriptionAr'] ?? descriptionAr,
+
       isActive: changes['isActive'] ?? isActive,
       sortOrder: changes['sortOrder'] ?? sortOrder,
       createdAt: changes['createdAt'] ?? createdAt,
@@ -184,6 +172,6 @@ class MainCategoryModel extends BaseModel<MainCategory> {
 
   @override
   String toString() {
-    return 'MainCategoryModel(id: $id, name: $name, nameAr: $nameAr, isActive: $isActive)';
+    return 'MainCategoryModel(id: $id, name: $name, isActive: $isActive)';
   }
 }

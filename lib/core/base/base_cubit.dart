@@ -29,7 +29,8 @@ abstract class BaseEvent extends Equatable {
 /// يعتمد على abstraction وليس implementation
 abstract class BaseCubit<Event extends BaseEvent, State extends BaseState>
     extends Bloc<Event, State> {
-  BaseCubit(State initialState) : super(initialState);
+  BaseCubit(super.initialState);
+
 
   /// إرسال event
   void emitEvent(Event event) {
@@ -38,7 +39,7 @@ abstract class BaseCubit<Event extends BaseEvent, State extends BaseState>
 
   /// إرسال state
   void emitState(State state) {
-    emit(state);
+    add(state as Event);
   }
 
   /// إرسال error state

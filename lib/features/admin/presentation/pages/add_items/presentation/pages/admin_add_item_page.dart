@@ -6,7 +6,7 @@ import '../cubit/product_events.dart';
 import '../cubit/product_states.dart';
 import '../widgets/index.dart';
 import '../cubit/product_cubit.dart';
-import '../../domain/entities/product.dart';
+import '../../../../../../../core/entities/product.dart';
 import '../../../../../../../core/di/service_locator.dart';
 import '../../../add_category/presentation/cubit/category_cubit.dart';
 import '../../../add_category/presentation/cubit/category_events.dart';
@@ -277,12 +277,11 @@ class _AdminAddItemPageState extends State<AdminAddItemPage> {
   void _onSaveChanges(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       // ✅ إنشاء Product مباشرة
-      final product = Product(
+      final product = ProductEntity(
         id: '', // Will be set by the server
         name: _nameController.text.trim(),
-        nameAr: _nameArController.text.trim(),
+
         description: _detailsController.text.trim(),
-        descriptionAr: _detailsArController.text.trim(),
         price: double.tryParse(_priceController.text) ?? 0.0,
         mainCategoryId: int.tryParse(_selectedMainCategory ?? '1') ?? 1,
         imageUrl: _uploadedImages.isNotEmpty ? _uploadedImages.first : null,

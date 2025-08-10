@@ -18,7 +18,6 @@ class ProductCubit extends Bloc<ProductEvent, ProductState> {
     on<CreateProduct>(_onCreateProduct);
     on<UpdateProduct>(_onUpdateProduct);
     on<ResetProductForm>(_onResetProductForm);
-    on<ValidateProduct>(_onValidateProduct);
   }
 
   Future<void> _onLoadProducts(
@@ -118,47 +117,4 @@ class ProductCubit extends Bloc<ProductEvent, ProductState> {
     emit(ProductFormReset());
   }
 
-  void _onValidateProduct(ValidateProduct event, Emitter<ProductState> emit) {
-    log('🔄 ProductCubit: Validating product - ${event.product.name}');
-
-    final errors = <String>[];
-
-    // ✅ Basic validation
-    if (event.product.name.isEmpty) {
-      errors.add('اسم المنتج مطلوب');
-    }
-
-    if (event.product.nameAr.isEmpty) {
-      errors.add('اسم المنتج بالعربية مطلوب');
-    }
-
-    if (event.product.price <= 0) {
-      errors.add('السعر يجب أن يكون أكبر من صفر');
-    }
-
-    if (event.product.mainCategoryId <= 0) {
-      errors.add('يجب اختيار فئة رئيسية');
-    }
-
-    // ✅ Additional validations
-    if (event.product.name.length < 2) {
-      errors.add('اسم المنتج يجب أن يكون أكثر من حرفين');
-    }
-
-    if (event.product.nameAr.length < 2) {
-      errors.add('اسم المنتج بالعربية يجب أن يكون أكثر من حرفين');
-    }
-
-    if (event.product.price > 1000) {
-      errors.add('السعر يجب أن يكون أقل من 1000');
-    }
-
-    final isValid = errors.isEmpty;
-
-    log(
-      '✅ ProductCubit: Product validation completed - Valid: $isValid, Errors: ${errors.length}',
-    );
-
-    emit(ProductFormValidated(isValid: isValid, errors: errors));
-  }
 }

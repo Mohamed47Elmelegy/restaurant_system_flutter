@@ -1,29 +1,25 @@
-import 'package:equatable/equatable.dart';
-import '../../../../../../../core/base/base_entity.dart';
-import '../../../meal_times/domain/entities/meal_time.dart';
+import '../base/base_entity.dart';
+import '../../features/admin/presentation/pages/meal_times/domain/entities/meal_time.dart';
 
 /// 🟦 MainCategory Entity - مبدأ المسؤولية الواحدة (SRP)
 /// مسؤول عن تمثيل فئة رئيسية في الأعمال فقط
-class MainCategory extends BaseEntity {
+class CategoryEntity extends BaseEntity {
   final String name;
-  final String nameAr;
   final String? icon;
   final String? color;
   final String? description;
-  final String? descriptionAr;
   final bool isActive;
   final int sortOrder;
   final int? productsCount;
   final List<MealTime>? mealTimes;
 
-  const MainCategory({
+  const CategoryEntity({
     required super.id,
     required this.name,
-    required this.nameAr,
+
     this.icon,
     this.color,
     this.description,
-    this.descriptionAr,
     required this.isActive,
     required this.sortOrder,
     super.createdAt,
@@ -33,14 +29,12 @@ class MainCategory extends BaseEntity {
   });
 
   /// Constructor for creating MainCategory from existing data with int id
-  factory MainCategory.fromIntId({
+  factory CategoryEntity.fromIntId({
     int? id,
     required String name,
-    required String nameAr,
     String? icon,
     String? color,
     String? description,
-    String? descriptionAr,
     required bool isActive,
     required int sortOrder,
     DateTime? createdAt,
@@ -48,14 +42,12 @@ class MainCategory extends BaseEntity {
     int? productsCount,
     List<MealTime>? mealTimes,
   }) {
-    return MainCategory(
+    return CategoryEntity(
       id: id?.toString() ?? '',
       name: name,
-      nameAr: nameAr,
       icon: icon,
       color: color,
       description: description,
-      descriptionAr: descriptionAr,
       isActive: isActive,
       sortOrder: sortOrder,
       createdAt: createdAt,
@@ -70,25 +62,13 @@ class MainCategory extends BaseEntity {
     return int.tryParse(id);
   }
 
-  /// Get display name based on current locale
-  String getDisplayName({bool isArabic = true}) {
-    return isArabic ? nameAr : name;
-  }
-
-  /// Get description based on current locale
-  String? getDescription({bool isArabic = true}) {
-    return isArabic ? descriptionAr : description;
-  }
-
   @override
   List<Object?> get props => [
     id,
     name,
-    nameAr,
     icon,
     color,
     description,
-    descriptionAr,
     isActive,
     sortOrder,
     createdAt,
@@ -98,14 +78,12 @@ class MainCategory extends BaseEntity {
   ];
 
   @override
-  MainCategory copyWith({
+  CategoryEntity copyWith({
     String? id,
     String? name,
-    String? nameAr,
     String? icon,
     String? color,
     String? description,
-    String? descriptionAr,
     bool? isActive,
     int? sortOrder,
     DateTime? createdAt,
@@ -113,14 +91,13 @@ class MainCategory extends BaseEntity {
     int? productsCount,
     List<MealTime>? mealTimes,
   }) {
-    return MainCategory(
+    return CategoryEntity(
       id: id ?? this.id,
       name: name ?? this.name,
-      nameAr: nameAr ?? this.nameAr,
+
       icon: icon ?? this.icon,
       color: color ?? this.color,
       description: description ?? this.description,
-      descriptionAr: descriptionAr ?? this.descriptionAr,
       isActive: isActive ?? this.isActive,
       sortOrder: sortOrder ?? this.sortOrder,
       createdAt: createdAt ?? this.createdAt,
@@ -135,11 +112,10 @@ class MainCategory extends BaseEntity {
     return {
       'id': id,
       'name': name,
-      'name_ar': nameAr,
+
       'icon': icon,
       'color': color,
       'description': description,
-      'description_ar': descriptionAr,
       'is_active': isActive,
       'sort_order': sortOrder,
       'created_at': createdAt?.toIso8601String(),
@@ -166,6 +142,6 @@ class MainCategory extends BaseEntity {
 
   @override
   bool get isValid {
-    return name.isNotEmpty && nameAr.isNotEmpty && sortOrder >= 0;
+    return name.isNotEmpty && sortOrder >= 0;
   }
 }

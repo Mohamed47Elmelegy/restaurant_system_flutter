@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/entities/main_category.dart';
+import 'package:restaurant_system_flutter/core/widgets/custom_text_field.dart';
+import 'package:restaurant_system_flutter/core/validation/form_validator.dart';
+import '../../../../../../../core/entities/main_category.dart';
 import '../cubit/category_cubit.dart';
 import '../cubit/category_events.dart';
 import '../cubit/category_states.dart';
-import '../../../../../../../core/validation/index.dart';
 import '../../../menu/presentation/bloc/menu_cubit.dart';
 import '../../../menu/presentation/bloc/menu_events.dart';
 import '../../../../../../../core/di/service_locator.dart';
@@ -22,14 +23,12 @@ class _AdminAddCategoryPageState extends State<AdminAddCategoryPage> {
   // Main Category Form Controllers
   final _mainCategoryFormKey = GlobalKey<FormState>();
   final _mainCategoryNameController = TextEditingController();
-  final _mainCategoryNameArController = TextEditingController();
   final _mainCategoryDescriptionController = TextEditingController();
-  final _mainCategoryDescriptionArController = TextEditingController();
   final _mainCategorySortOrderController = TextEditingController();
   bool _mainCategoryIsActive = true;
 
   // Categories list for dropdown
-  List<MainCategory> _mainCategories = [];
+  List<CategoryEntity> _mainCategories = [];
 
   @override
   void initState() {
@@ -57,9 +56,7 @@ class _AdminAddCategoryPageState extends State<AdminAddCategoryPage> {
   @override
   void dispose() {
     _mainCategoryNameController.dispose();
-    _mainCategoryNameArController.dispose();
     _mainCategoryDescriptionController.dispose();
-    _mainCategoryDescriptionArController.dispose();
     _mainCategorySortOrderController.dispose();
     super.dispose();
   }
@@ -158,78 +155,32 @@ class _AdminAddCategoryPageState extends State<AdminAddCategoryPage> {
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               const SizedBox(height: 16),
-              
-              // Main Category Name (English)
-              TextFormField(
-                controller: _mainCategoryNameController,
-                decoration: const InputDecoration(
-                  labelText: 'اسم الفئة (إنجليزي)',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'يرجى إدخال اسم الفئة';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
 
-              // Main Category Name (Arabic)
-              TextFormField(
-                controller: _mainCategoryNameArController,
-                decoration: const InputDecoration(
-                  labelText: 'اسم الفئة (عربي)',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'يرجى إدخال اسم الفئة بالعربية';
-                  }
-                  return null;
-                },
+              // Main Category Name (English)
+              CustomTextField(
+                controller: _mainCategoryNameController,
+                hint: 'اسم الفئة (إنجليزي)',
+                keyboardType: TextInputType.name,
+                maxLines: 1,
+                onValidate: (value) =>
+                    FormValidator.validateMinLength(value, 2, 'اسم الفئة'),
               ),
               const SizedBox(height: 16),
 
               // Main Category Description (English)
-              TextFormField(
+              CustomTextField(
                 controller: _mainCategoryDescriptionController,
-                decoration: const InputDecoration(
-                  labelText: 'وصف الفئة (إنجليزي)',
-                  border: OutlineInputBorder(),
-                ),
-                maxLines: 3,
-              ),
-              const SizedBox(height: 16),
-
-              // Main Category Description (Arabic)
-              TextFormField(
-                controller: _mainCategoryDescriptionArController,
-                decoration: const InputDecoration(
-                  labelText: 'وصف الفئة (عربي)',
-                  border: OutlineInputBorder(),
-                ),
-                maxLines: 3,
+                hint: 'وصف الفئة',
+                keyboardType: TextInputType.name,
+                maxLines: 1,
               ),
               const SizedBox(height: 16),
 
               // Sort Order
-              TextFormField(
+              CustomTextField(
                 controller: _mainCategorySortOrderController,
-                decoration: const InputDecoration(
-                  labelText: 'ترتيب الفئة',
-                  border: OutlineInputBorder(),
-                ),
+                hint: '',
                 keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'يرجى إدخال ترتيب الفئة';
-                  }
-                  if (int.tryParse(value) == null) {
-                    return 'يرجى إدخال رقم صحيح';
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 16),
 
@@ -239,7 +190,7 @@ class _AdminAddCategoryPageState extends State<AdminAddCategoryPage> {
                 value: _mainCategoryIsActive,
                 onChanged: (value) {
                   setState(() {
-                    _mainCategoryIsActive = value ?? true;
+                    _mainCategoryIsActive = value;
                   });
                 },
               ),
@@ -267,25 +218,13 @@ class _AdminAddCategoryPageState extends State<AdminAddCategoryPage> {
 
   void _onSaveMainCategory() {
     if (_mainCategoryFormKey.currentState!.validate()) {
-      final category = MainCategory.fromIntId(
+      final category = CategoryEntity.fromIntId(
         name: _mainCategoryNameController.text.trim(),
-        nameAr: _mainCategoryNameArController.text.trim(),
         description: _mainCategoryDescriptionController.text.trim(),
-        descriptionAr: _mainCategoryDescriptionArController.text.trim(),
+
         sortOrder: int.tryParse(_mainCategorySortOrderController.text) ?? 0,
         isActive: _mainCategoryIsActive,
       );
-
-      final errors = CategoryValidator.validateMainCategory(category);
-      if (errors.isNotEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('خطأ في التحقق: ${errors.join(', ')}'),
-            backgroundColor: Colors.red,
-          ),
-        );
-        return;
-      }
 
       final categoryCubit = getIt<CategoryCubit>();
       categoryCubit.add(CreateCategory(category));
@@ -294,9 +233,8 @@ class _AdminAddCategoryPageState extends State<AdminAddCategoryPage> {
 
   void _clearMainCategoryForm() {
     _mainCategoryNameController.clear();
-    _mainCategoryNameArController.clear();
     _mainCategoryDescriptionController.clear();
-    _mainCategoryDescriptionArController.clear();
+
     _mainCategorySortOrderController.text = '0';
     setState(() {
       _mainCategoryIsActive = true;
@@ -330,13 +268,17 @@ class _AdminAddCategoryPageState extends State<AdminAddCategoryPage> {
                       final category = _mainCategories[index];
                       return ListTile(
                         title: Text(category.name),
-                        subtitle: Text(category.nameAr),
+
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(
-                              category.isActive ? Icons.check_circle : Icons.cancel,
-                              color: category.isActive ? Colors.green : Colors.red,
+                              category.isActive
+                                  ? Icons.check_circle
+                                  : Icons.cancel,
+                              color: category.isActive
+                                  ? Colors.green
+                                  : Colors.red,
                             ),
                             const SizedBox(width: 8),
                             IconButton(
@@ -353,13 +295,9 @@ class _AdminAddCategoryPageState extends State<AdminAddCategoryPage> {
             ),
           );
         } else if (state is CategoryError) {
-          return Center(
-            child: Text('خطأ: ${state.message}'),
-          );
+          return Center(child: Text('خطأ: ${state.message}'));
         } else {
-          return const Center(
-            child: Text('لا توجد فئات'),
-          );
+          return const Center(child: Text('لا توجد فئات'));
         }
       },
     );

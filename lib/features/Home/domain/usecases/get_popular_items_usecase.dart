@@ -1,4 +1,7 @@
-import '../entities/food_item_entity.dart';
+import 'package:dartz/dartz.dart';
+
+import '../../../../core/entities/product.dart';
+import '../../../../core/error/failures.dart';
 import '../repositories/home_repository.dart';
 
 class GetPopularItemsUseCase {
@@ -6,7 +9,7 @@ class GetPopularItemsUseCase {
 
   GetPopularItemsUseCase(this._repository);
 
-  Future<List<FoodItemEntity>> call() async {
+  Future<Either<Failure, List<ProductEntity>>> call() async {
     return await _repository.getPopularItems();
   }
 }

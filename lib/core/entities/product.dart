@@ -1,13 +1,11 @@
-import 'package:equatable/equatable.dart';
-import '../../../../../../../core/base/base_entity.dart';
+import '../base/base_entity.dart';
 
 /// 🟦 Product Entity - مبدأ المسؤولية الواحدة (SRP)
 /// مسؤول عن تمثيل منتج في الأعمال فقط
-class Product extends BaseEntity {
+class ProductEntity extends BaseEntity {
   final String name;
-  final String nameAr;
   final String? description;
-  final String? descriptionAr;
+
   final double price;
   final int mainCategoryId;
   final String? imageUrl;
@@ -20,12 +18,11 @@ class Product extends BaseEntity {
   final bool isFeatured;
   final int? sortOrder;
 
-  const Product({
+  const ProductEntity({
     required super.id,
     required this.name,
-    required this.nameAr,
     this.description,
-    this.descriptionAr,
+    
     required this.price,
     required this.mainCategoryId,
     this.imageUrl,
@@ -42,12 +39,10 @@ class Product extends BaseEntity {
   });
 
   /// Constructor for creating Product from existing data with int id
-  factory Product.fromIntId({
+  factory ProductEntity.fromIntId({
     int? id,
     required String name,
-    required String nameAr,
     String? description,
-    String? descriptionAr,
     required double price,
     required int mainCategoryId,
     String? imageUrl,
@@ -62,12 +57,10 @@ class Product extends BaseEntity {
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
-    return Product(
+    return ProductEntity(
       id: id?.toString() ?? '',
       name: name,
-      nameAr: nameAr,
       description: description,
-      descriptionAr: descriptionAr,
       price: price,
       mainCategoryId: mainCategoryId,
       imageUrl: imageUrl,
@@ -93,9 +86,8 @@ class Product extends BaseEntity {
   List<Object?> get props => [
     id,
     name,
-    nameAr,
     description,
-    descriptionAr,
+    
     price,
     mainCategoryId,
     imageUrl,
@@ -112,7 +104,7 @@ class Product extends BaseEntity {
   ];
 
   @override
-  Product copyWith({
+  ProductEntity copyWith({
     String? id,
     String? name,
     String? nameAr,
@@ -132,12 +124,10 @@ class Product extends BaseEntity {
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
-    return Product(
+    return ProductEntity(
       id: id ?? this.id,
       name: name ?? this.name,
-      nameAr: nameAr ?? this.nameAr,
       description: description ?? this.description,
-      descriptionAr: descriptionAr ?? this.descriptionAr,
       price: price ?? this.price,
       mainCategoryId: mainCategoryId ?? this.mainCategoryId,
       imageUrl: imageUrl ?? this.imageUrl,
@@ -159,9 +149,7 @@ class Product extends BaseEntity {
     return {
       'id': id,
       'name': name,
-      'name_ar': nameAr,
       'description': description,
-      'description_ar': descriptionAr,
       'price': price,
       'main_category_id': mainCategoryId,
       'image_url': imageUrl,
@@ -180,21 +168,10 @@ class Product extends BaseEntity {
 
   @override
   bool get isValid {
-    return name.isNotEmpty &&
-        nameAr.isNotEmpty &&
-        price > 0 &&
-        mainCategoryId > 0;
+    return name.isNotEmpty && price > 0 && mainCategoryId > 0;
   }
 
-  /// Get display name based on current locale
-  String getDisplayName({bool isArabic = true}) {
-    return isArabic ? nameAr : name;
-  }
-
-  /// Get description based on current locale
-  String? getDescription({bool isArabic = true}) {
-    return isArabic ? descriptionAr : description;
-  }
+  
 
   /// Get formatted price with currency
   String getFormattedPrice() {

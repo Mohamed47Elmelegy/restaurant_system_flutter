@@ -1,4 +1,4 @@
-import '../entities/product.dart';
+import '../../../../../../../core/entities/product.dart';
 import '../repositories/product_repository.dart';
 import '../../../../../../../core/base/base_usecase.dart';
 import '../../../../../../../core/error/failures.dart';
@@ -9,13 +9,13 @@ import 'package:dartz/dartz.dart';
 ///
 /// 🟦 مبدأ قلب الاعتماديات (DIP)
 /// يعتمد على abstractions وليس implementations
-class UpdateProductUseCase extends BaseUseCase<Product, Product> {
+class UpdateProductUseCase extends BaseUseCase<ProductEntity, ProductEntity> {
   final ProductRepository repository;
 
   UpdateProductUseCase({required this.repository});
 
   @override
-  Future<Either<Failure, Product>> call(Product product) async {
+  Future<Either<Failure, ProductEntity>> call(ProductEntity product) async {
     return await repository.updateProduct(product);
   }
 }

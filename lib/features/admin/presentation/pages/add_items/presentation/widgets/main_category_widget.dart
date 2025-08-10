@@ -134,7 +134,7 @@ class _MainCategoryWidgetState extends State<MainCategoryWidget> {
                     items: categories.map((category) {
                       return DropdownMenuItem(
                         value: category.id.toString(),
-                        child: Text('${category.name} (${category.nameAr})'),
+                        child: Text('${category.name} '),
                       );
                     }).toList(),
                     onChanged: (value) {

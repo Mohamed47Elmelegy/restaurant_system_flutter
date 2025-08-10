@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import '../models/product_model.dart';
+import '../../../../../../../core/models/product_model.dart';
 import 'dart:developer';
 import 'dart:convert';
 
@@ -118,11 +118,7 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
       final filteredProducts = products.where((product) {
         final searchQuery = query.toLowerCase();
         return product.name.toLowerCase().contains(searchQuery) ||
-            product.nameAr.toLowerCase().contains(searchQuery) ||
-            (product.description?.toLowerCase().contains(searchQuery) ??
-                false) ||
-            (product.descriptionAr?.toLowerCase().contains(searchQuery) ??
-                false);
+            (product.description?.toLowerCase().contains(searchQuery) ?? false);
       }).toList();
 
       log(
@@ -253,9 +249,9 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
         final updatedProduct = ProductModel.fromIntId(
           id: int.tryParse(id),
           name: products[productIndex].name,
-          nameAr: products[productIndex].nameAr,
+         
           description: products[productIndex].description,
-          descriptionAr: products[productIndex].descriptionAr,
+          
           price: products[productIndex].price,
           mainCategoryId: products[productIndex].mainCategoryId,
           imageUrl: products[productIndex].imageUrl,

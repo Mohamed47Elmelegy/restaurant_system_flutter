@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import '../models/main_category_model.dart';
+import '../../../../../../../core/models/main_category_model.dart';
 import 'dart:developer';
 import 'dart:convert';
 
@@ -122,11 +122,9 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
       final filteredCategories = categories.where((category) {
         final searchQuery = query.toLowerCase();
         return category.name.toLowerCase().contains(searchQuery) ||
-            category.nameAr.toLowerCase().contains(searchQuery) ||
             (category.description?.toLowerCase().contains(searchQuery) ??
-                false) ||
-            (category.descriptionAr?.toLowerCase().contains(searchQuery) ??
                 false);
+
       }).toList();
 
       log(
@@ -245,11 +243,11 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
         final updatedCategory = MainCategoryModel.fromIntId(
           id: int.tryParse(id),
           name: categories[categoryIndex].name,
-          nameAr: categories[categoryIndex].nameAr,
+          
           icon: categories[categoryIndex].icon,
-          color: categories[categoryIndex].color,
+          color: categories[categoryIndex].color, 
           description: categories[categoryIndex].description,
-          descriptionAr: categories[categoryIndex].descriptionAr,
+          
           isActive: isActive,
           sortOrder: categories[categoryIndex].sortOrder,
           createdAt: categories[categoryIndex].createdAt,

@@ -1,11 +1,10 @@
 import 'dart:developer';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/entities/main_category.dart';
 import '../../domain/usecases/create_category_usecase.dart';
 import '../../domain/usecases/get_categories_usecase.dart';
 import '../../domain/usecases/update_category_usecase.dart';
 import '../../domain/usecases/get_category_by_id_usecase.dart';
-import '../../data/repositories/category_repository.dart';
+import '../../domain/repositories/category_repository.dart';
 import 'category_events.dart';
 import 'category_states.dart';
 

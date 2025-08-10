@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../core/entities/main_category.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/widgets/category_card.dart';
-import '../../domain/entities/category_entity.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
 import '../bloc/home_state.dart';
@@ -44,7 +44,7 @@ class CategoriesListWidget extends StatelessWidget {
       itemBuilder: (context, index) {
         final category = categories[index];
         final isSelected = state is HomeLoaded
-            ? state.selectedCategoryId == category.id
+            ? state.selectedCategoryId ==   category.id
             : false;
 
         return Padding(
@@ -53,10 +53,14 @@ class CategoriesListWidget extends StatelessWidget {
             category: category,
             isSelected: isSelected,
             onTap: () {
-              context.read<HomeBloc>().add(SelectCategory(category.id));
+              context.read<HomeBloc>().add(
+                SelectCategory(int.parse(category.id)),
+              );
             },
             setSelected: (bool selected) {
-              context.read<HomeBloc>().add(SelectCategory(category.id));
+              context.read<HomeBloc>().add(
+                SelectCategory(int.parse(category.id)),
+              );
             },
           ),
         );
@@ -66,11 +70,14 @@ class CategoriesListWidget extends StatelessWidget {
 
   List<CategoryEntity> _generatePlaceholderCategories() {
     return List.generate(5, (index) {
-      return CategoryEntity(
+      return CategoryEntity.fromIntId(
         id: index + 1,
         name: 'Category ${index + 1}',
-        icon: '🍕',
-        color: 0xFF4CAF50,
+        icon: 'assets/icons/category_icon.png',
+        color: '#FF5733',
+        description: 'Description for category ${index + 1}',
+        isActive: true,
+        sortOrder: index + 1,
       );
     });
   }

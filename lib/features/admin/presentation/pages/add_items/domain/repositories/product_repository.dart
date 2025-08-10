@@ -1,4 +1,4 @@
-import '../entities/product.dart';
+import '../../../../../../../core/entities/product.dart';
 import '../../../../../../../core/base/base_repository.dart';
 import '../../../../../../../core/error/failures.dart';
 import 'package:dartz/dartz.dart';
@@ -11,18 +11,18 @@ import 'package:dartz/dartz.dart';
 ///
 /// 🟦 مبدأ الاستبدال (LSP)
 /// يمكن استخدام ProductRepository كـ BaseRepository<Product>
-abstract class ProductRepository extends BaseRepository<Product> {
+abstract class ProductRepository extends BaseRepository<ProductEntity> {
   /// Get products with backward compatibility
-  Future<Either<Failure, List<Product>>> getProducts();
+  Future<Either<Failure, List<ProductEntity>>> getProducts();
 
   /// Create product with backward compatibility
-  Future<Either<Failure, Product>> createProduct(Product product);
+  Future<Either<Failure, ProductEntity>> createProduct(ProductEntity product);
 
   /// Update product with backward compatibility
-  Future<Either<Failure, Product>> updateProduct(Product product);
+  Future<Either<Failure, ProductEntity>> updateProduct(ProductEntity product);
 
   /// Get product by int id for backward compatibility
-  Future<Either<Failure, Product?>> getProductById(int id);
+  Future<Either<Failure, ProductEntity?>> getProductById(int id);
 
   /// Delete product by int id
   Future<Either<Failure, bool>> deleteProduct(int id);
@@ -34,5 +34,7 @@ abstract class ProductRepository extends BaseRepository<Product> {
   Future<Either<Failure, bool>> toggleProductFeatured(int id);
 
   /// Get products by category
-  Future<Either<Failure, List<Product>>> getProductsByCategory(int categoryId);
+  Future<Either<Failure, List<ProductEntity>>> getProductsByCategory(
+    int categoryId,
+  );
 }

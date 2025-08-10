@@ -1,5 +1,5 @@
 import '../../../../../../../../core/error/api_response.dart';
-import '../../models/product_model.dart';
+import '../../../../../../../../core/models/product_model.dart';
 
 abstract class ProductRemoteDataSource {
   Future<ApiResponse<List<ProductModel>>> getProducts();

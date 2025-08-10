@@ -14,7 +14,6 @@ import '../../features/Home/domain/repositories/home_repository.dart';
 import '../../features/Home/domain/usecases/get_categories_usecase.dart';
 import '../../features/Home/domain/usecases/get_popular_items_usecase.dart';
 import '../../features/Home/domain/usecases/get_recommended_items_usecase.dart';
-import '../../features/Home/domain/usecases/get_banners_usecase.dart';
 import '../../features/Home/presentation/bloc/home_bloc.dart';
 import '../../features/orders/data/repositories/order_repository_impl.dart';
 import '../../features/orders/domain/repositories/order_repository.dart';
@@ -48,7 +47,7 @@ import '../../features/admin/presentation/pages/menu/domain/repositories/menu_re
 import '../../features/admin/presentation/pages/menu/presentation/bloc/menu_cubit.dart';
 import '../../features/admin/presentation/pages/add_category/data/datasources/category_remote_data_source.dart';
 import '../../features/admin/presentation/pages/add_category/data/datasources/category_remote_data_source_impl.dart';
-import '../../features/admin/presentation/pages/add_category/data/repositories/category_repository.dart';
+import '../../features/admin/presentation/pages/add_category/domain/repositories/category_repository.dart';
 import '../../features/admin/presentation/pages/add_category/data/repositories/category_repository_impl.dart';
 import '../../features/admin/presentation/pages/add_category/presentation/cubit/category_cubit.dart';
 import '../../features/admin/presentation/pages/add_category/domain/usecases/create_category_usecase.dart';
@@ -59,9 +58,6 @@ import '../../features/admin/presentation/pages/add_category/domain/usecases/get
 import '../../features/admin/presentation/pages/add_category/data/datasources/category_local_data_source.dart';
 import '../../features/admin/presentation/pages/menu/data/datasources/menu_local_data_source.dart';
 import '../../features/admin/presentation/pages/add_items/data/datasources/product_local_data_source.dart';
-import '../../features/admin/presentation/pages/add_items/domain/usecases/get_products_usecase.dart';
-import '../../features/admin/presentation/pages/add_items/domain/usecases/create_product_usecase.dart';
-
 final getIt = GetIt.instance;
 
 Future<void> setup() async {
@@ -83,7 +79,7 @@ Future<void> setup() async {
   getIt.registerLazySingleton<AuthRemoteDataSource>(
     () => AuthRemoteDataSourceImpl(getIt<Dio>()),
   );
-  getIt.registerLazySingleton<HomeDataSource>(() => HomeDataSourceImpl());
+  getIt.registerLazySingleton<HomeDataSource>(() => HomeDataSourceImpl( getIt<Dio>()));
   getIt.registerLazySingleton<MealTimeRemoteDataSource>(
     () => MealTimeRemoteDataSourceImpl(dioClient: getIt<DioClient>()),
   );
@@ -162,9 +158,7 @@ Future<void> setup() async {
   getIt.registerLazySingleton<GetRecommendedItemsUseCase>(
     () => GetRecommendedItemsUseCase(getIt<HomeRepository>()),
   );
-  getIt.registerLazySingleton<GetBannersUseCase>(
-    () => GetBannersUseCase(getIt<HomeRepository>()),
-  );
+  
   getIt.registerLazySingleton<GetRunningOrdersUseCase>(
     () => GetRunningOrdersUseCase(getIt<OrderRepository>()),
   );
@@ -232,7 +226,6 @@ Future<void> setup() async {
       getCategoriesUseCase: getIt<GetCategoriesUseCase>(),
       getPopularItemsUseCase: getIt<GetPopularItemsUseCase>(),
       getRecommendedItemsUseCase: getIt<GetRecommendedItemsUseCase>(),
-      getBannersUseCase: getIt<GetBannersUseCase>(),
     ),
   );
   getIt.registerFactory<OrderBloc>(

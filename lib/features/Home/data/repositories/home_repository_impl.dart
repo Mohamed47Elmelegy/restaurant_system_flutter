@@ -1,101 +1,146 @@
+import 'dart:developer';
+
+import 'package:dartz/dartz.dart';
+
+import 'package:restaurant_system_flutter/core/entities/product.dart';
+import 'package:restaurant_system_flutter/core/error/failures.dart';
+
+import '../../../../core/entities/main_category.dart';
 import '../datasources/home_datasource.dart';
-import '../models/category_model.dart';
-import '../models/food_item_model.dart';
-import '../models/banner_model.dart';
 import '../../domain/repositories/home_repository.dart';
-import '../../domain/entities/category_entity.dart';
-import '../../domain/entities/food_item_entity.dart';
-import '../../domain/entities/banner_entity.dart';
 
 class HomeRepositoryImpl implements HomeRepository {
-  final HomeDataSource _dataSource;
+  final HomeDataSource remoteDataSource;
 
-  HomeRepositoryImpl(this._dataSource);
+  HomeRepositoryImpl(this.remoteDataSource);
 
   @override
-  Future<List<CategoryEntity>> getCategories() async {
+  Future<Either<Failure, List<CategoryEntity>>> getCategories() async {
     try {
-      final data = await _dataSource.getCategories();
-      final models = data.map((json) => CategoryModel.fromJson(json)).toList();
-      return models
-          .map(
-            (model) => CategoryEntity(
-              id: model.id,
-              name: model.name,
-              icon: model.icon,
-              color: model.color,
-            ),
-          )
-          .toList();
+      // جلب البيانات من الـ API مباشرةً
+      log('🌐 ProductRepository: Fetching from API...');
+      final response = await remoteDataSource.getCategories();
+
+      if (response.status) {
+        final categories = response.data!
+            .map((model) => model.toEntity())
+            .toList();
+        log(
+          '🌐 ProductRepository: Fetched ${categories.length} categories from API',
+        );
+
+        return Right(categories);
+      } else {
+        return Left(ServerFailure(message: response.message));
+      }
     } catch (e) {
-      throw Exception('Failed to load categories: $e');
+      log('❌ ProductRepository: Error getting products - $e');
+      return Left(ServerFailure(message: 'Failed to get products: $e'));
     }
   }
 
   @override
-  Future<List<FoodItemEntity>> getPopularItems() async {
+  Future<Either<Failure, List<ProductEntity>>> getPopularItems() async {
     try {
-      final data = await _dataSource.getPopularItems();
-      final models = data.map((json) => FoodItemModel.fromJson(json)).toList();
-      return models
-          .map(
-            (model) => FoodItemEntity(
-              id: model.id,
-              name: model.name,
-              description: model.description,
-              price: model.price,
-              rating: model.rating,
-              image: model.image,
-              category: model.category,
-            ),
-          )
-          .toList();
+      final response = await remoteDataSource.getPopularItems();
+      if (response.status) {
+        final products = response.data!
+            .map((model) => model.toEntity())
+            .toList();
+        return Right(products);
+      } else {
+        return Left(ServerFailure(message: response.message));
+      }
     } catch (e) {
-      throw Exception('Failed to load popular items: $e');
+      return Left(ServerFailure(message: 'Failed to get popular items: $e'));
     }
   }
 
   @override
-  Future<List<FoodItemEntity>> getRecommendedItems() async {
+  Future<Either<Failure, CategoryEntity?>> getCategoryById(String id) async {
     try {
-      final data = await _dataSource.getRecommendedItems();
-      final models = data.map((json) => FoodItemModel.fromJson(json)).toList();
-      return models
-          .map(
-            (model) => FoodItemEntity(
-              id: model.id,
-              name: model.name,
-              description: model.description,
-              price: model.price,
-              rating: model.rating,
-              image: model.image,
-              category: model.category,
-            ),
-          )
-          .toList();
+      // 1. محاولة جلب الفئة من الـ local أولاً
+      // final localCategory = await localDataSource.getMainCategoryById(id);
+      // if (localCategory != null) {
+      //   print('📱 CategoryRepository: Found category in local storage');
+      //   final category = localCategory.toEntity();
+      //   return Right(category);
+      // }
+
+      // 2. جلب الفئة من الـ API
+      print('🌐 CategoryRepository: Fetching category from API...');
+      final categoryId = int.tryParse(id);
+      if (categoryId == null) {
+        return Left(ServerFailure(message: 'Invalid category ID'));
+      }
+
+      final response = await remoteDataSource.getCategoryById(categoryId);
+      if (response.status) {
+        final category = response.data?.toEntity();
+        return Right(category);
+      } else {
+        return Left(ServerFailure(message: response.message));
+      }
     } catch (e) {
-      throw Exception('Failed to load recommended items: $e');
+      print('❌ CategoryRepository: Error getting category by ID - $e');
+      return Left(ServerFailure(message: 'Failed to get category by ID: $e'));
     }
   }
 
   @override
-  Future<List<BannerEntity>> getBanners() async {
+  Future<Either<Failure, List<ProductEntity>>> getProductsByCategory(
+    int categoryId,
+  ) async {
     try {
-      final data = await _dataSource.getBanners();
-      final models = data.map((json) => BannerModel.fromJson(json)).toList();
-      return models
-          .map(
-            (model) => BannerEntity(
-              id: model.id,
-              title: model.title,
-              subtitle: model.subtitle,
-              image: model.image,
-              action: model.action,
-            ),
-          )
-          .toList();
+      final response = await remoteDataSource.getProductsByCategory(categoryId);
+      if (response.status) {
+        final products = response.data!
+            .map((model) => model.toEntity())
+            .toList();
+        return Right(products);
+      } else {
+        return Left(ServerFailure(message: response.message));
+      }
     } catch (e) {
-      throw Exception('Failed to load banners: $e');
+      return Left(
+        ServerFailure(message: 'Failed to get products by category: $e'),
+      );
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<ProductEntity>>> getRecommendedItems() async {
+    try {
+      final response = await remoteDataSource.getRecommendedItems();
+      if (response.status) {
+        final products = response.data!
+            .map((model) => model.toEntity())
+            .toList();
+        return Right(products);
+      } else {
+        return Left(ServerFailure(message: response.message));
+      }
+    } catch (e) {
+      return Left(
+        ServerFailure(message: 'Failed to get recommended items: $e'),
+      );
+    }
+  }
+
+  @override
+  Future<Either<Failure, CategoryEntity?>> getCategoryByName(
+    String name,
+  ) async {
+    try {
+      final response = await remoteDataSource.getCategoryByName(name);
+      if (response.status) {
+        final category = response.data?.toEntity();
+        return Right(category);
+      } else {
+        return Left(ServerFailure(message: response.message));
+      }
+    } catch (e) {
+      return Left(ServerFailure(message: 'Failed to get category by name: $e'));
     }
   }
 }

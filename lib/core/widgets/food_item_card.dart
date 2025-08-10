@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:restaurant_system_flutter/core/entities/product.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:restaurant_system_flutter/core/theme/text_styles.dart';
 import '../theme/app_colors.dart';
 import '../theme/theme_helper.dart';
-import '../../features/Home/domain/entities/food_item_entity.dart';
 
 class FoodItemCard extends StatelessWidget {
-  final FoodItemEntity foodItem;
+  final ProductEntity foodItem;
   final VoidCallback? onAddPressed;
 
   const FoodItemCard({super.key, required this.foodItem, this.onAddPressed});
@@ -48,9 +48,9 @@ class FoodItemCard extends StatelessWidget {
                       topLeft: Radius.circular(12.r),
                       topRight: Radius.circular(12.r),
                     ),
-                    child: foodItem.image.isNotEmpty
+                    child: foodItem.imageUrl?.isNotEmpty == true
                         ? Image.asset(
-                            foodItem.image,
+                            foodItem.imageUrl ?? '',
                             fit: BoxFit.cover,
                             width: double.infinity,
                             height: double.infinity,
@@ -80,7 +80,7 @@ class FoodItemCard extends StatelessWidget {
                       SizedBox(height: 4.h),
                       // Location/Subtitle (using category as location)
                       Text(
-                        foodItem.category,
+                        foodItem.mainCategoryId.toString(),
                         style: AppTextStyles.senRegular14(context).copyWith(
                           fontSize: 13.sp,
                           color: ThemeHelper.getSecondaryTextColor(context),

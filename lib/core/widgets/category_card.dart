@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../entities/main_category.dart';
 import '../theme/app_colors.dart';
 import '../theme/theme_helper.dart';
 import '../theme/text_styles.dart';
-import '../../features/Home/domain/entities/category_entity.dart';
+import '../utils/hex_to_color.dart';
 
 class CategoryCard extends StatelessWidget {
   final CategoryEntity category;
@@ -42,11 +43,18 @@ class CategoryCard extends StatelessWidget {
               width: 40.w,
               height: 40.h,
               decoration: BoxDecoration(
-                color: Color(category.color).withValues(alpha: 0.1),
+                color: Utils.hexToColor(
+                  category.color ?? '#000000',
+                  opacity: 0.1,
+                ),
+
                 borderRadius: BorderRadius.circular(20.r),
               ),
               child: Center(
-                child: Text(category.icon, style: TextStyle(fontSize: 20.sp)),
+                child: Text(
+                  category.icon.toString(),
+                  style: TextStyle(fontSize: 20.sp),
+                ),
               ),
             ),
             SizedBox(height: 8.h),

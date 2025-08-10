@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../domain/entities/main_category.dart';
+import '../../../../../../../core/entities/main_category.dart';
 
 /// 🟦 CategoryEvents - مبدأ المسؤولية الواحدة (SRP)
 /// مسؤول عن أحداث إدارة الفئات فقط
@@ -22,7 +22,7 @@ class LoadCategories extends CategoryEvent {
 
 /// Create new category
 class CreateCategory extends CategoryEvent {
-  final MainCategory category;
+  final CategoryEntity category;
 
   const CreateCategory(this.category);
 
@@ -32,7 +32,7 @@ class CreateCategory extends CategoryEvent {
 
 /// Update existing category
 class UpdateCategory extends CategoryEvent {
-  final MainCategory category;
+  final CategoryEntity category;
 
   const UpdateCategory(this.category);
 

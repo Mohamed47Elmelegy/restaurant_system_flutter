@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../domain/entities/product.dart';
+import '../../../../../../../core/entities/product.dart';
 
 abstract class ProductState extends Equatable {
   const ProductState();
@@ -13,7 +13,7 @@ class ProductInitial extends ProductState {}
 class ProductLoading extends ProductState {}
 
 class ProductsLoaded extends ProductState {
-  final List<Product> products;
+  final List<ProductEntity> products;
 
   const ProductsLoaded(this.products);
 
@@ -22,7 +22,7 @@ class ProductsLoaded extends ProductState {
 }
 
 class ProductCreated extends ProductState {
-  final Product product;
+  final ProductEntity product;
 
   const ProductCreated(this.product);
 
@@ -31,7 +31,7 @@ class ProductCreated extends ProductState {
 }
 
 class ProductUpdated extends ProductState {
-  final Product product;
+  final ProductEntity product;
 
   const ProductUpdated(this.product);
 
