@@ -178,10 +178,10 @@ class OrdersBottomSheet extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(order.name, style: AppTextStyles.senBold14(context)),
+                    Text(order.orderNumber, style: AppTextStyles.senBold14(context)),
                     SizedBox(height: 4.h),
                     Text(
-                      order.category,
+                      order.totalAmount.toString(),
                       style: AppTextStyles.senRegular14(context).copyWith(
                         color: ThemeHelper.getSecondaryTextColor(context),
                       ),
@@ -190,7 +190,7 @@ class OrdersBottomSheet extends StatelessWidget {
                 ),
               ),
               Text(
-                '\$${order.price.toStringAsFixed(2)}',
+                '\$${order.totalAmount.toStringAsFixed(2)}',
                 style: AppTextStyles.senBold14(
                   context,
                 ).copyWith(color: AppColors.lightPrimary),

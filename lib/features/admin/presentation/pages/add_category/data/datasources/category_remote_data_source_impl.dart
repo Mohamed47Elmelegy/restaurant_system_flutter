@@ -15,7 +15,7 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
     int? mealTimeId,
   }) async {
     try {
-      log('🔵 Categories Request - URL: ${ApiPath.categories()}');
+      log('🔵 Categories Request - URL: ${ApiPath.menuCategories()}');
 
       final queryParameters = <String, dynamic>{};
       if (mealTimeId != null) {
@@ -23,7 +23,7 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
       }
 
       final response = await dio.get(
-        ApiPath.categories(),
+        ApiPath.menuCategories(),
         queryParameters: queryParameters.isNotEmpty ? queryParameters : null,
       );
 
@@ -102,10 +102,12 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
     int mealTimeId,
   ) async {
     try {
-      log('🔵 Categories by Meal Time Request - URL: ${ApiPath.categories()}');
+      log(
+        '🔵 Categories by Meal Time Request - URL: ${ApiPath.publicMealTimeCategories(mealTimeId)}',
+      );
 
       final response = await dio.get(
-        ApiPath.categories(),
+        ApiPath.publicMealTimeCategories(mealTimeId),
         queryParameters: {'meal_time_id': mealTimeId},
       );
 
@@ -132,10 +134,10 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
   @override
   Future<ApiResponse<List<MainCategoryModel>>> getActiveCategories() async {
     try {
-      log('🔵 Active Categories Request - URL: ${ApiPath.categories()}');
+      log('🔵 Active Categories Request - URL: ${ApiPath.publicCategories()}');
 
       final response = await dio.get(
-        ApiPath.categories(),
+        ApiPath.publicCategories(),
         queryParameters: {'is_active': true},
       );
 
@@ -162,10 +164,10 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
   @override
   Future<ApiResponse<MainCategoryModel?>> getCategoryByName(String name) async {
     try {
-      log('🔵 Category by Name Request - URL: ${ApiPath.categories()}');
+      log('🔵 Category by Name Request - URL: ${ApiPath.adminCategories()}');
 
       final response = await dio.get(
-        ApiPath.categories(),
+        ApiPath.adminCategories(),
         queryParameters: {'name': name},
       );
 
@@ -190,9 +192,9 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
   @override
   Future<ApiResponse<MainCategoryModel?>> getCategoryById(int id) async {
     try {
-      log('🔵 Category by ID Request - URL: ${ApiPath.categories()}/$id');
+      log('🔵 Category by ID Request - URL: ${ApiPath.adminCategory(id)}');
 
-      final response = await dio.get('${ApiPath.categories()}/$id');
+      final response = await dio.get(ApiPath.adminCategory(id));
 
       log('🟢 Category by ID Response Status: ${response.statusCode}');
 
@@ -217,10 +219,10 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
     String query,
   ) async {
     try {
-      log('🔵 Search Categories Request - URL: ${ApiPath.categories()}');
+      log('🔵 Search Categories Request - URL: ${ApiPath.adminCategories()}');
 
       final response = await dio.get(
-        ApiPath.categories(),
+        ApiPath.adminCategories(),
         queryParameters: {'search': query},
       );
 
@@ -252,7 +254,9 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
     bool ascending = true,
   }) async {
     try {
-      log('🔵 Paginated Categories Request - URL: ${ApiPath.categories()}');
+      log(
+        '🔵 Paginated Categories Request - URL: ${ApiPath.adminCategories()}',
+      );
 
       final queryParameters = <String, dynamic>{
         'page': page,
@@ -265,7 +269,7 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
       }
 
       final response = await dio.get(
-        ApiPath.categories(),
+        ApiPath.adminCategories(),
         queryParameters: queryParameters,
       );
 

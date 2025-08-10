@@ -14,6 +14,7 @@ abstract class HomeDataSource {
   Future<ApiResponse<List<ProductModel>>> getRecommendedItems();
   Future<ApiResponse<List<ProductModel>>> getAllProducts();
   Future<ApiResponse<List<ProductModel>>> getProductsByCategory(int categoryId);
+  Future<ApiResponse<List<ProductModel>>> getNewProducts();
 
   /// Get category by ID
   Future<ApiResponse<MainCategoryModel?>> getCategoryById(int id);
@@ -29,7 +30,7 @@ class HomeDataSourceImpl implements HomeDataSource {
     try {
       log('🌐 HomeDataSourceImpl: Fetching categories from API...');
 
-      final response = await dio.get(ApiPath.categories());
+      final response = await dio.get(ApiPath.publicCategories());
       log('Response data: ${response.data}');
       final List<dynamic> data = response.data['data'];
       final categories = data
@@ -51,69 +52,94 @@ class HomeDataSourceImpl implements HomeDataSource {
   @override
   Future<ApiResponse<List<ProductModel>>> getPopularItems() async {
     try {
-      log('🔄 HomeDataSourceImpl: Getting products');
+      log('🔄 HomeDataSourceImpl: Getting popular products');
 
-      final response = await dio.get(ApiPath.products());
+      final response = await dio.get(ApiPath.publicProductsPopular());
 
       // Fix: Access nested data structure - response.data['data']['data']
       final Map<String, dynamic> paginatedData = response.data['data'];
       final List<dynamic> data = paginatedData['data'];
       final products = data.map((json) => ProductModel.fromJson(json)).toList();
 
-      log('✅ HomeDataSourceImpl: Products loaded - ${products.length}');
+      log('✅ HomeDataSourceImpl: Popular products loaded - ${products.length}');
       return ApiResponse.success(products);
     } on DioException catch (e) {
-      log('❌ HomeDataSourceImpl: Failed to get products - $e');
+      log('❌ HomeDataSourceImpl: Failed to get popular products - $e');
       return ApiResponse.fromDioException(e);
     } catch (e) {
-      log('❌ HomeDataSourceImpl: Failed to get products - $e');
-      return ApiResponse.error('Failed to get products: $e');
+      log('❌ HomeDataSourceImpl: Failed to get popular products - $e');
+      return ApiResponse.error('Failed to get popular products: $e');
     }
   }
 
   @override
   Future<ApiResponse<List<ProductModel>>> getRecommendedItems() async {
     try {
-      log('🔄 HomeDataSourceImpl: Getting products');
+      log('🔄 HomeDataSourceImpl: Getting recommended products');
 
-      final response = await dio.get(ApiPath.products());
+      final response = await dio.get(ApiPath.publicProductsRecommended());
 
       // Fix: Access nested data structure - response.data['data']['data']
       final Map<String, dynamic> paginatedData = response.data['data'];
       final List<dynamic> data = paginatedData['data'];
       final products = data.map((json) => ProductModel.fromJson(json)).toList();
 
-      log('✅ HomeDataSourceImpl: Products loaded - ${products.length}');
+      log(
+        '✅ HomeDataSourceImpl: Recommended products loaded - ${products.length}',
+      );
       return ApiResponse.success(products);
     } on DioException catch (e) {
-      log('❌ HomeDataSourceImpl: Failed to get products - $e');
+      log('❌ HomeDataSourceImpl: Failed to get recommended products - $e');
       return ApiResponse.fromDioException(e);
     } catch (e) {
-      log('❌ HomeDataSourceImpl: Failed to get products - $e');
-      return ApiResponse.error('Failed to get products: $e');
+      log('❌ HomeDataSourceImpl: Failed to get recommended products - $e');
+      return ApiResponse.error('Failed to get recommended products: $e');
+    }
+  }
+
+  /// Get new products
+  Future<ApiResponse<List<ProductModel>>> getNewProducts() async {
+    try {
+      log('🔄 HomeDataSourceImpl: Getting new products');
+
+      final response = await dio.get(ApiPath.publicProductsNew());
+
+      // Fix: Access nested data structure - response.data['data']['data']
+      final Map<String, dynamic> paginatedData = response.data['data'];
+      final List<dynamic> data = paginatedData['data'];
+      final products = data.map((json) => ProductModel.fromJson(json)).toList();
+
+      log('✅ HomeDataSourceImpl: New products loaded - ${products.length}');
+      return ApiResponse.success(products);
+    } on DioException catch (e) {
+      log('❌ HomeDataSourceImpl: Failed to get new products - $e');
+      return ApiResponse.fromDioException(e);
+    } catch (e) {
+      log('❌ HomeDataSourceImpl: Failed to get new products - $e');
+      return ApiResponse.error('Failed to get new products: $e');
     }
   }
 
   @override
   Future<ApiResponse<List<ProductModel>>> getAllProducts() async {
     try {
-      log('🔄 HomeDataSourceImpl: Getting products');
+      log('🔄 HomeDataSourceImpl: Getting all products');
 
-      final response = await dio.get(ApiPath.products());
+      final response = await dio.get(ApiPath.publicProducts());
 
       // Fix: Access nested data structure - response.data['data']['data']
       final Map<String, dynamic> paginatedData = response.data['data'];
       final List<dynamic> data = paginatedData['data'];
       final products = data.map((json) => ProductModel.fromJson(json)).toList();
 
-      log('✅ HomeDataSourceImpl: Products loaded - ${products.length}');
+      log('✅ HomeDataSourceImpl: All products loaded - ${products.length}');
       return ApiResponse.success(products);
     } on DioException catch (e) {
-      log('❌ HomeDataSourceImpl: Failed to get products - $e');
+      log('❌ HomeDataSourceImpl: Failed to get all products - $e');
       return ApiResponse.fromDioException(e);
     } catch (e) {
-      log('❌ HomeDataSourceImpl: Failed to get products - $e');
-      return ApiResponse.error('Failed to get products: $e');
+      log('❌ HomeDataSourceImpl: Failed to get all products - $e');
+      return ApiResponse.error('Failed to get all products: $e');
     }
   }
 
@@ -122,7 +148,9 @@ class HomeDataSourceImpl implements HomeDataSource {
     int categoryId,
   ) async {
     try {
-      final response = await dio.get(ApiPath.categoryProducts(categoryId));
+      final response = await dio.get(
+        ApiPath.publicCategoryProducts(categoryId),
+      );
       log('Response data: ${response.data}');
 
       // Fix: Access nested data structure - response.data['data']['data']
@@ -146,9 +174,9 @@ class HomeDataSourceImpl implements HomeDataSource {
   @override
   Future<ApiResponse<MainCategoryModel?>> getCategoryById(int id) async {
     try {
-      log('🔵 Category by ID Request - URL: ${ApiPath.categories()}/$id');
+      log('🔵 Category by ID Request - URL: ${ApiPath.publicCategory(id)}');
 
-      final response = await dio.get('${ApiPath.categories()}/$id');
+      final response = await dio.get(ApiPath.publicCategory(id));
 
       log('🟢 Category by ID Response Status: ${response.statusCode}');
 
@@ -171,10 +199,10 @@ class HomeDataSourceImpl implements HomeDataSource {
   @override
   Future<ApiResponse<MainCategoryModel?>> getCategoryByName(String name) async {
     try {
-      log('🔵 Category by Name Request - URL: ${ApiPath.categories()}');
+      log('🔵 Category by Name Request - URL: ${ApiPath.publicCategories()}');
 
       final response = await dio.get(
-        ApiPath.categories(),
+        ApiPath.publicCategories(),
         queryParameters: {'name': name},
       );
 

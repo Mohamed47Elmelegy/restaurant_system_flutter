@@ -52,7 +52,13 @@ class FoodItemsSection extends StatelessWidget {
       itemBuilder: (context, index) {
         return Padding(
           padding: EdgeInsets.only(right: 16.w),
-          child: FoodItemCard(foodItem: items[index]),
+          child: FoodItemCard(
+            foodItem: items[index],
+            onAddPressed: () {
+              // TODO: Implement add to cart functionality
+            },
+            categories: state is HomeLoaded ? state.categories : null,
+          ),
         );
       },
     );
@@ -74,7 +80,13 @@ class FoodItemsSection extends StatelessWidget {
       ),
       itemCount: items.length,
       itemBuilder: (context, index) {
-        return FoodItemCard(foodItem: items[index]);
+        return FoodItemCard(
+          foodItem: items[index],
+          onAddPressed: () {
+            // TODO: Implement add to cart functionality
+          },
+          categories: state is HomeLoaded ? state.categories : null,
+        );
       },
     );
   }

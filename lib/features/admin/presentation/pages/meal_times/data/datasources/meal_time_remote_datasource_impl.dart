@@ -61,9 +61,9 @@ class MealTimeRemoteDataSourceImpl implements MealTimeRemoteDataSource {
   @override
   Future<ApiResponse<MealTimeModel?>> getCurrentMealTime() async {
     try {
-      log('🔵 CurrentMealTime Request - URL: ${ApiPath.currentMealTime()}');
+      log('🔵 CurrentMealTime Request - URL: ${ApiPath.publicCurrentMealTime()}');
 
-      final response = await _dioClient.dio.get(ApiPath.currentMealTime());
+      final response = await _dioClient.dio.get(ApiPath.publicCurrentMealTime());
 
       log('🟢 CurrentMealTime Response Status: ${response.statusCode}');
       log('🟢 CurrentMealTime Response Data: ${response.data}');
@@ -96,11 +96,11 @@ class MealTimeRemoteDataSourceImpl implements MealTimeRemoteDataSource {
     MealTimeModel mealTime,
   ) async {
     try {
-      log('🔵 CreateMealTime Request - URL: ${ApiPath.createMealTime()}');
+      log('🔵 CreateMealTime Request - URL: ${ApiPath.adminMealTimes()}');
       log('🔵 CreateMealTime Request Data: ${mealTime.toJson()}');
 
       final response = await _dioClient.dio.post(
-        ApiPath.createMealTime(),
+        ApiPath.adminMealTimes(),
         data: mealTime.toJson(),
       );
 
@@ -136,12 +136,12 @@ class MealTimeRemoteDataSourceImpl implements MealTimeRemoteDataSource {
   ) async {
     try {
       log(
-        '🔵 UpdateMealTime Request - URL: ${ApiPath.updateMealTime(int.parse(mealTime.id))}',
+        '🔵 UpdateMealTime Request - URL: ${ApiPath.adminMealTime(int.parse(mealTime.id))}',
       );
       log('🔵 UpdateMealTime Request Data: ${mealTime.toJson()}');
 
       final response = await _dioClient.dio.put(
-        ApiPath.updateMealTime(int.parse(mealTime.id)),
+        ApiPath.adminMealTime(int.parse(mealTime.id)),
         data: mealTime.toJson(),
       );
 
@@ -175,11 +175,11 @@ class MealTimeRemoteDataSourceImpl implements MealTimeRemoteDataSource {
   Future<ApiResponse<bool>> deleteMealTime(String id) async {
     try {
       log(
-        '🔵 DeleteMealTime Request - URL: ${ApiPath.deleteMealTime(int.parse(id))}',
+        '🔵 DeleteMealTime Request - URL: ${ApiPath.adminMealTime(int.parse(id))}',
       );
 
       final response = await _dioClient.dio.delete(
-        ApiPath.deleteMealTime(int.parse(id)),
+        ApiPath.adminMealTime(int.parse(id)),
       );
 
       log('🟢 DeleteMealTime Response Status: ${response.statusCode}');
@@ -212,12 +212,12 @@ class MealTimeRemoteDataSourceImpl implements MealTimeRemoteDataSource {
   ) async {
     try {
       log(
-        '🔵 ToggleMealTimeStatus Request - URL: ${ApiPath.toggleMealTimeStatus(int.parse(id))}',
+        '🔵 ToggleMealTimeStatus Request - URL: ${ApiPath.adminMealTimeToggle(int.parse(id))}',
       );
       log('🔵 ToggleMealTimeStatus Request Data: {"is_active": $isActive}');
 
       final response = await _dioClient.dio.patch(
-        ApiPath.toggleMealTimeStatus(int.parse(id)),
+        ApiPath.adminMealTimeToggle(int.parse(id)),
         data: {'is_active': isActive},
       );
 
@@ -253,7 +253,7 @@ class MealTimeRemoteDataSourceImpl implements MealTimeRemoteDataSource {
   ) async {
     try {
       log(
-        '🔵 UpdateMealTimesOrder Request - URL: ${ApiPath.reorderMealTimes()}',
+        '🔵 UpdateMealTimesOrder Request - URL: ${ApiPath.adminMealTimesReorder()}',
       );
       final data = {
         'meal_times': mealTimes
@@ -263,7 +263,7 @@ class MealTimeRemoteDataSourceImpl implements MealTimeRemoteDataSource {
       log('🔵 UpdateMealTimesOrder Request Data: $data');
 
       final response = await _dioClient.dio.post(
-        ApiPath.reorderMealTimes(),
+            ApiPath.adminMealTimesReorder(),
         data: data,
       );
 

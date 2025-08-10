@@ -79,7 +79,7 @@ class RevenueSection extends StatelessWidget {
 
     for (final order in orders) {
       if (order.status == 'completed' || order.status == 'done') {
-        total += order.price;
+        total += order.totalAmount;
       }
     }
 

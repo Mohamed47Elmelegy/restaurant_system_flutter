@@ -1,35 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:restaurant_system_flutter/core/entities/product.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:restaurant_system_flutter/core/theme/text_styles.dart';
-import '../theme/app_colors.dart';
+
+import '../entities/product.dart';
+import '../entities/main_category.dart';
 import '../theme/theme_helper.dart';
+import '../theme/text_styles.dart';
 
 class FoodItemCard extends StatelessWidget {
   final ProductEntity foodItem;
-  final VoidCallback? onAddPressed;
+  final VoidCallback onAddPressed;
+  final List<CategoryEntity>? categories; // Add categories parameter
 
-  const FoodItemCard({super.key, required this.foodItem, this.onAddPressed});
+  const FoodItemCard({
+    super.key,
+    required this.foodItem,
+    required this.onAddPressed,
+    this.categories, // Add categories parameter
+  });
+
+  /// Get category name from mainCategoryId
+  String getCategoryName() {
+    if (categories == null || categories!.isEmpty) {
+      return 'تصنيف ${foodItem.mainCategoryId}';
+    }
+
+    try {
+      final category = categories!.firstWhere(
+        (cat) => cat.id == foodItem.mainCategoryId.toString(),
+        orElse: () => CategoryEntity(
+          id: '',
+          name: 'تصنيف ${foodItem.mainCategoryId}',
+          isActive: true,
+          sortOrder: 0,
+        ),
+      );
+
+      return category.name;
+    } catch (e) {
+      return 'تصنيف ${foodItem.mainCategoryId}';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return Container(
       width: 160.w,
       height: 200.h,
       decoration: BoxDecoration(
-        color: isDark ? AppColors.darkSurface : Colors.white,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(12.r),
         boxShadow: ThemeHelper.getCardShadow(context),
       ),
       child: Stack(
         children: [
           Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Image placeholder - blue-gray color as shown in image
+              // Image section
               Expanded(
                 flex: 5,
                 child: Container(
@@ -49,13 +76,8 @@ class FoodItemCard extends StatelessWidget {
                       topRight: Radius.circular(12.r),
                     ),
                     child: foodItem.imageUrl?.isNotEmpty == true
-                        ? Image.asset(
-                            foodItem.imageUrl ?? '',
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            height: double.infinity,
-                          )
-                        : null,
+                        ? _buildImageWidget()
+                        : _buildPlaceholderImage(),
                   ),
                 ),
               ),
@@ -78,9 +100,9 @@ class FoodItemCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       SizedBox(height: 4.h),
-                      // Location/Subtitle (using category as location)
+                      // Location/Subtitle (using category name instead of ID)
                       Text(
-                        foodItem.mainCategoryId.toString(),
+                        getCategoryName(),
                         style: AppTextStyles.senRegular14(context).copyWith(
                           fontSize: 13.sp,
                           color: ThemeHelper.getSecondaryTextColor(context),
@@ -126,6 +148,59 @@ class FoodItemCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  /// Build image widget based on URL type
+  Widget _buildImageWidget() {
+    final imageUrl = foodItem.imageUrl!;
+
+    // Check if it's a network URL or local asset
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+      // Network image
+      return Image.network(
+        imageUrl,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Center(
+            child: CircularProgressIndicator(
+              value: loadingProgress.expectedTotalBytes != null
+                  ? loadingProgress.cumulativeBytesLoaded /
+                        loadingProgress.expectedTotalBytes!
+                  : null,
+            ),
+          );
+        },
+        errorBuilder: (context, error, stackTrace) {
+          return _buildPlaceholderImage();
+        },
+      );
+    } else {
+      // Local asset image
+      return Image.asset(
+        imageUrl,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+        errorBuilder: (context, error, stackTrace) {
+          return _buildPlaceholderImage();
+        },
+      );
+    }
+  }
+
+  /// Build placeholder image when no image is available
+  Widget _buildPlaceholderImage() {
+    return Container(
+      color: const Color(0xFF8DA0B3),
+      child: Icon(
+        Icons.fastfood,
+        size: 40.sp,
+        color: Colors.white.withOpacity(0.7),
       ),
     );
   }

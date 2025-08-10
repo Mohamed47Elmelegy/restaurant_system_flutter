@@ -13,66 +13,89 @@ class Endpoints {
   static const String register = '/auth/register';
   static const String user = '/user';
 
-  // ==================== MEAL TIMES ENDPOINTS ====================
-  static const String mealTimes = '/public/meal-times';
-  static const String currentMealTime = '/public/meal-times/current';
-  static const String adminMealTimes = '/public/meal-times';
+  // ==================== PUBLIC MENU ENDPOINTS (بدون توكن) ====================
+  static const String menuMealTimes = '/menu/meal-times';
+  static const String menuCategories = '/menu/categories';
+  static const String menuProducts = '/menu/products';
 
-  // Meal time management (admin only)
-  static const String createMealTime = '/public/meal-times';
-  static const String updateMealTime = '/public/meal-times'; // + /{id}
-  static const String deleteMealTime = '/public/meal-times'; // + /{id}
-  static const String toggleMealTimeStatus =
-      '/public/meal-times'; // + /{id}/toggle
-  static const String reorderMealTimes = '/public/meal-times/reorder';
-  static const String mealTimeCategories =
-      '/public/meal-times'; // + /{id}/categories
+  // ==================== PUBLIC BROWSING ENDPOINTS (بدون توكن) ====================
+  static const String publicMealTimes = '/public/meal-times';
+  static const String publicCurrentMealTime = '/public/meal-times/current';
+  static const String publicMealTimeCategories =
+      '/public/meal-times'; // + /{mealTime}/categories
+  static const String publicCategories = '/public/categories';
+  static const String publicCategory = '/public/categories'; // + /{category}
+  static const String publicCategorySubCategories =
+      '/public/categories'; // + /{category}/sub-categories
+  static const String publicProducts = '/public/products';
+  static const String publicProduct = '/public/products'; // + /{product}
+  static const String publicCategoryProducts =
+      '/public/categories'; // + /{category}/products
+  static const String publicProductsRecommended =
+      '/public/products/recommended';
+  static const String publicProductsPopular = '/public/products/popular';
+  static const String publicProductsNew = '/public/products/new';
 
-  // ==================== CATEGORIES ENDPOINTS ====================
-  static const String categories = '/public/categories';
-  static const String category = '/public/categories'; // + /{id}
-  static const String categorySubCategories =
-      '/public/categories'; // + /{id}/sub-categories
+  // ==================== CART ENDPOINTS (يتطلب توكن) ====================
+  static const String cart = '/cart';
+  static const String cartItems = '/cart/items'; // + /{cartItem}
+  static const String cartClear = '/cart/clear';
 
-  // Admin categories management
+  // ==================== ORDERS ENDPOINTS (يتطلب توكن) ====================
+  static const String orders = '/orders';
+  static const String order = '/orders'; // + /{order}
+  static const String placeOrder = '/orders/place';
+
+  // ==================== FAVORITES ENDPOINTS (يتطلب توكن) ====================
+  static const String favorites = '/favorites';
+  static const String toggleFavorite = '/favorites/toggle';
+
+  // ==================== ADDRESSES ENDPOINTS (يتطلب توكن) ====================
+  static const String addresses = '/addresses';
+  static const String address = '/addresses'; // + /{address}
+
+  // ==================== ADMIN CATEGORIES ENDPOINTS (يتطلب role:admin) ====================
   static const String adminCategories = '/admin/categories';
-  static const String adminCategory = '/admin/categories'; // + /{id}
+  static const String adminCategory = '/admin/categories'; // + /{category}
   static const String adminCategorySubCategories =
-      '/admin/categories'; // + /{id}/sub-categories
+      '/admin/categories'; // + /{category}/sub-categories
 
-  // ==================== PRODUCTS ENDPOINTS ====================
-  static const String products = '/public/products';
-  static const String product = '/public/products'; // + /{id}
-  static const String categoryProducts =
-      '/public/categories'; // + /{id}/products
+  // ==================== ADMIN MEAL TIMES ENDPOINTS (يتطلب role:admin) ====================
+  static const String adminMealTimes = '/admin/meal-times';
+  static const String adminMealTime = '/admin/meal-times'; // + /{mealTime}
+  static const String adminMealTimeToggle =
+      '/admin/meal-times'; // + /{mealTime}/toggle
+  static const String adminMealTimesReorder = '/admin/meal-times/reorder';
 
-  // Admin products management
+  // ==================== ADMIN PRODUCTS ENDPOINTS (يتطلب role:admin) ====================
   static const String adminProducts = '/admin/products';
-  static const String adminProduct = '/admin/products'; // + /{id}
+  static const String adminProduct = '/admin/products'; // + /{product}
   static const String adminProductToggleAvailability =
-      '/admin/products'; // + /{id}/toggle-availability
+      '/admin/products'; // + /{product}/toggle-availability
   static const String adminProductToggleFeatured =
-      '/admin/products'; // + /{id}/toggle-featured
+      '/admin/products'; // + /{product}/toggle-featured
   static const String adminProductsBulkAvailability =
       '/admin/products/bulk-availability';
   static const String adminProductsStatistics = '/admin/products/statistics';
-  static const String adminCategoryProducts =
-      '/admin/categories'; // + /{id}/products
 
-  // ==================== DASHBOARD ENDPOINTS ====================
-  static const String adminDashboardStatistics = '/admin/dashboard/statistics';
-
-  // ==================== ORDERS ENDPOINTS ====================
+  // ==================== ADMIN ORDERS ENDPOINTS (يتطلب role:admin) ====================
   static const String adminOrders = '/admin/orders';
-  static const String adminOrder = '/admin/orders'; // + /{id}
-  static const String adminOrderStatus = '/admin/orders'; // + /{id}/status
+  static const String adminOrder = '/admin/orders'; // + /{order}
+  static const String adminOrderStatus = '/admin/orders'; // + /{order}/status
   static const String adminOrdersStatistics = '/admin/orders/statistics';
 
-  // ==================== NOTIFICATIONS ENDPOINTS ====================
+  // ==================== ADMIN DASHBOARD ENDPOINTS (يتطلب role:admin) ====================
+  static const String adminDashboardStatistics = '/admin/dashboard/statistics';
+
+  // ==================== ADMIN NOTIFICATIONS ENDPOINTS (يتطلب role:admin) ====================
   static const String adminNotifications = '/admin/notifications';
-  static const String adminNotification = '/admin/notifications'; // + /{id}
+  static const String adminNotification =
+      '/admin/notifications'; // + /{notification}
   static const String adminNotificationRead =
-      '/admin/notifications'; // + /{id}/read
+      '/admin/notifications'; // + /{notification}/read
+
+  // ==================== HEALTH CHECK ENDPOINT ====================
+  static const String healthCheck = '/test';
 
   // ==================== HELPER METHODS ====================
 
@@ -89,4 +112,7 @@ class Endpoints {
     dynamic id,
     String action,
   ) => '$baseUrl$endpoint/$id/$action';
+
+  /// Get full URL for health check
+  static String getHealthCheckUrl() => 'http://127.0.0.1:8000/api/test';
 }

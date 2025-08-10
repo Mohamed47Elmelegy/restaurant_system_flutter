@@ -158,7 +158,7 @@ class RevenueLineChart extends StatelessWidget {
       if (order.status == 'completed' || order.status == 'done') {
         final orderHour = order.createdAt.hour;
         hourlyRevenue[orderHour] =
-            (hourlyRevenue[orderHour] ?? 0.0) + order.price;
+            (hourlyRevenue[orderHour] ?? 0.0) + order.totalAmount;
       }
     }
 

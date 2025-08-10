@@ -182,11 +182,11 @@ class OrdersBottomSheet extends StatelessWidget {
               color: Colors.grey[200],
               borderRadius: BorderRadius.circular(8),
             ),
-            child: order.image != null
+            child: order.items.isNotEmpty && order.items.first.productImage != null
                 ? ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: Image.network(
-                      order.image!,
+                      order.items.first.productImage!,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return Icon(
@@ -217,7 +217,7 @@ class OrdersBottomSheet extends StatelessWidget {
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
-                    '#${order.category}',
+                    '#${order.items.first.productName}',
                     style: AppTextStyles.senRegular14(context).copyWith(
                       color: ThemeHelper.getPrimaryColorForTheme(context),
                       fontWeight: FontWeight.w500,
@@ -230,7 +230,7 @@ class OrdersBottomSheet extends StatelessWidget {
 
                 // Order name
                 Text(
-                  order.name,
+                  order.orderNumber,
                   style: AppTextStyles.senBold14(context),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -253,7 +253,7 @@ class OrdersBottomSheet extends StatelessWidget {
 
                 // Price
                 Text(
-                  '\$${order.price.toStringAsFixed(0)}',
+                  '\$${order.totalAmount.toStringAsFixed(0)}',
                   style: AppTextStyles.senBold14(context).copyWith(
                     color: ThemeHelper.getPrimaryColorForTheme(context),
                   ),

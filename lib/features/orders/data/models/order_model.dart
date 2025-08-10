@@ -1,26 +1,40 @@
 import '../../domain/entities/order_entity.dart';
+import '../../domain/entities/order_item_entity.dart';
+import 'order_item_model.dart';
 
 class OrderModel extends OrderEntity {
   const OrderModel({
     required super.id,
-    required super.name,
-    required super.category,
-    required super.price,
-    super.image,
+    required super.userId,
+    required super.orderNumber,
     required super.status,
+    required super.totalAmount,
+    super.deliveryAddress,
+    super.notes,
+    required super.items,
     required super.createdAt,
+    required super.updatedAt,
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
     return OrderModel(
       id: json['id'] ?? 0,
-      name: json['name'] ?? '',
-      category: json['category'] ?? '',
-      price: _parseDouble(json['price']),
-      image: json['image'],
-      status: json['status'] ?? '',
+      userId: json['user_id'] ?? 0,
+      orderNumber: json['order_number'] ?? '',
+      status: json['status'] ?? 'pending',
+      totalAmount: _parseDouble(json['total_amount']),
+      deliveryAddress: json['delivery_address'],
+      notes: json['notes'],
+      items:
+          (json['items'] as List<dynamic>?)
+              ?.map((item) => OrderItemModel.fromJson(item))
+              .toList() ??
+          [],
       createdAt: DateTime.parse(
         json['created_at'] ?? DateTime.now().toIso8601String(),
+      ),
+      updatedAt: DateTime.parse(
+        json['updated_at'] ?? DateTime.now().toIso8601String(),
       ),
     );
   }
@@ -43,44 +57,58 @@ class OrderModel extends OrderEntity {
   factory OrderModel.fromEntity(OrderEntity entity) {
     return OrderModel(
       id: entity.id,
-      name: entity.name,
-      category: entity.category,
-      price: entity.price,
-      image: entity.image,
+      userId: entity.userId,
+      orderNumber: entity.orderNumber,
       status: entity.status,
+      totalAmount: entity.totalAmount,
+      deliveryAddress: entity.deliveryAddress,
+      notes: entity.notes,
+      items: entity.items
+          .map((item) => OrderItemModel.fromEntity(item))
+          .toList(),
       createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'name': name,
-      'category': category,
-      'price': price,
-      'image': image,
+      'user_id': userId,
+      'order_number': orderNumber,
       'status': status,
+      'total_amount': totalAmount,
+      'delivery_address': deliveryAddress,
+      'notes': notes,
+      'items': items.map((item) => (item as OrderItemModel).toJson()).toList(),
       'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
     };
   }
 
   OrderModel copyWith({
     int? id,
-    String? name,
-    String? category,
-    double? price,
-    String? image,
+    int? userId,
+    String? orderNumber,
     String? status,
+    double? totalAmount,
+    String? deliveryAddress,
+    String? notes,
+    List<OrderItemEntity>? items,
     DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return OrderModel(
       id: id ?? this.id,
-      name: name ?? this.name,
-      category: category ?? this.category,
-      price: price ?? this.price,
-      image: image ?? this.image,
+      userId: userId ?? this.userId,
+      orderNumber: orderNumber ?? this.orderNumber,
       status: status ?? this.status,
+      totalAmount: totalAmount ?? this.totalAmount,
+      deliveryAddress: deliveryAddress ?? this.deliveryAddress,
+      notes: notes ?? this.notes,
+      items: items ?? this.items,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }
