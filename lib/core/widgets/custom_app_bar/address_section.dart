@@ -21,33 +21,42 @@ class AddressSection extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min, // Add this to prevent overflow
           children: [
-            Text(
-              'DELIVER TO',
-              style: TextStyle(
-                color: AppColors.lightPrimary,
-                fontSize: 12.sp,
-                fontWeight: FontWeight.bold,
+            Flexible(
+              child: Text(
+                'DELIVER TO',
+                style: TextStyle(
+                  color: AppColors.lightPrimary,
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  address,
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
+            Flexible(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Flexible(
+                    child: Text(
+                      address,
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
                   ),
-                ),
-                SizedBox(width: 4.w),
-                Icon(
-                  Icons.keyboard_arrow_down,
-                  color: Colors.black,
-                  size: 16.sp,
-                ),
-              ],
+                  SizedBox(width: 4.w),
+                  Icon(
+                    Icons.keyboard_arrow_down,
+                    color: Colors.black,
+                    size: 16.sp,
+                  ),
+                ],
+              ),
             ),
           ],
         ),

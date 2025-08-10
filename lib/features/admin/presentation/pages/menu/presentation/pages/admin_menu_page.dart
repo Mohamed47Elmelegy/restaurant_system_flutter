@@ -28,7 +28,7 @@ class _AdminMenuPageState extends State<AdminMenuPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<MenuCubit>()..add(RefreshMenuItems()),
+      create: (context) => getIt<MenuCubit>()..add(LoadMenuItems()),
       child: BlocListener<MenuCubit, MenuState>(
         listener: (context, state) {
           if (state is MenuError) {
@@ -316,7 +316,7 @@ class _AdminMenuPageState extends State<AdminMenuPage> {
   void _refreshMenuItems() {
     try {
       final menuCubit = getIt<MenuCubit>();
-      menuCubit.add(RefreshMenuItems());
+      menuCubit.add(LoadMenuItems());
       print('🔄 AdminMenuPage: Triggered menu items refresh');
     } catch (e) {
       print('❌ AdminMenuPage: Error refreshing menu items - $e');

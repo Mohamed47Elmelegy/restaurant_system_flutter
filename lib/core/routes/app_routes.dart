@@ -9,4 +9,7 @@ class AppRoutes {
   static const String adminAddItem = '/admin/add-item';
   static const String adminMealTimes = '/admin/meal-times';
   static const String adminCategories = '/admin/categories';
+  static const String productDetails = '/product-details';
+  static const String productDetailsDemo = '/product-details-demo';
+  static const String foodCardDemo = '/food-card-demo';
 }

@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {
           return ScreenUtilInit(
-            designSize: const Size(375, 812), // iPhone X design size
+            designSize: const Size(375, 812),
             minTextAdapt: true,
             splitScreenMode: true,
             builder: (context, child) {

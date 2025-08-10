@@ -330,7 +330,7 @@ class _AdminAddCategoryPageState extends State<AdminAddCategoryPage> {
   void _refreshMenu() {
     try {
       final menuCubit = getIt<MenuCubit>();
-      menuCubit.add(RefreshMenuItems());
+      menuCubit.add(LoadMenuItems());
       print('🔄 AdminAddCategoryPage: Triggered menu refresh');
     } catch (e) {
       print('❌ AdminAddCategoryPage: Error refreshing menu - $e');

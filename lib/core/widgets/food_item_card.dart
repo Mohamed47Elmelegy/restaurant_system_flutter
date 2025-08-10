@@ -6,6 +6,7 @@ import '../entities/product.dart';
 import '../entities/main_category.dart';
 import '../theme/theme_helper.dart';
 import '../theme/text_styles.dart';
+import '../routes/app_routes.dart';
 
 class FoodItemCard extends StatelessWidget {
   final ProductEntity foodItem;
@@ -48,15 +49,44 @@ class FoodItemCard extends StatelessWidget {
       width: 160.w,
       height: 200.h,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: ThemeHelper.getCardBackgroundColor(context),
         borderRadius: BorderRadius.circular(12.r),
         boxShadow: ThemeHelper.getCardShadow(context),
       ),
       child: Stack(
         children: [
+          // InkWell for tapping on the card to navigate to product details
+          // This covers the entire card including the image area
+          Positioned.fill(
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(12.r),
+                splashColor: ThemeHelper.getPrimaryColorForTheme(
+                  context,
+                ).withOpacity(0.3),
+                highlightColor: ThemeHelper.getPrimaryColorForTheme(
+                  context,
+                ).withOpacity(0.1),
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    AppRoutes.productDetails,
+                    arguments: {'product': foodItem},
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // Main content - this will be on top of the InkWell
           Column(
             children: [
-              // Image section
+              // Image section - now fully tappable through the InkWell
               Expanded(
                 flex: 5,
                 child: Container(
@@ -75,9 +105,14 @@ class FoodItemCard extends StatelessWidget {
                       topLeft: Radius.circular(12.r),
                       topRight: Radius.circular(12.r),
                     ),
-                    child: foodItem.imageUrl?.isNotEmpty == true
-                        ? _buildImageWidget()
-                        : _buildPlaceholderImage(),
+                    child: Stack(
+                      children: [
+                        // Image or placeholder
+                        foodItem.imageUrl?.isNotEmpty == true
+                            ? _buildImageWidget()
+                            : _buildPlaceholderImage(),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -88,35 +123,43 @@ class FoodItemCard extends StatelessWidget {
                   padding: EdgeInsets.all(12.w),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize:
+                        MainAxisSize.min, // Add this to prevent overflow
                     children: [
                       // Food item name
-                      Text(
-                        foodItem.name,
-                        style: AppTextStyles.senBold14(context).copyWith(
-                          fontSize: 15.sp,
-                          color: ThemeHelper.getPrimaryTextColor(context),
+                      Flexible(
+                        child: Text(
+                          foodItem.name,
+                          style: AppTextStyles.senBold14(context).copyWith(
+                            fontSize: 15.sp,
+                            color: ThemeHelper.getPrimaryTextColor(context),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                       ),
                       SizedBox(height: 4.h),
                       // Location/Subtitle (using category name instead of ID)
-                      Text(
-                        getCategoryName(),
-                        style: AppTextStyles.senRegular14(context).copyWith(
-                          fontSize: 13.sp,
-                          color: ThemeHelper.getSecondaryTextColor(context),
+                      Flexible(
+                        child: Text(
+                          getCategoryName(),
+                          style: AppTextStyles.senRegular14(context).copyWith(
+                            fontSize: 13.sp,
+                            color: ThemeHelper.getSecondaryTextColor(context),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                       ),
                       SizedBox(height: 8.h),
                       // Price
-                      Text(
-                        '\$${foodItem.price.toStringAsFixed(0)}',
-                        style: AppTextStyles.senBold14(context).copyWith(
-                          fontSize: 16.sp,
-                          color: ThemeHelper.getPrimaryTextColor(context),
+                      Flexible(
+                        child: Text(
+                          '\$${foodItem.price.toStringAsFixed(0)}',
+                          style: AppTextStyles.senBold14(context).copyWith(
+                            fontSize: 16.sp,
+                            color: ThemeHelper.getPrimaryTextColor(context),
+                          ),
                         ),
                       ),
                     ],
@@ -126,6 +169,7 @@ class FoodItemCard extends StatelessWidget {
             ],
           ),
           // Orange circular add button positioned at bottom right
+          // This is positioned above the InkWell to ensure it's tappable
           Positioned(
             bottom: 8.h,
             right: 8.w,

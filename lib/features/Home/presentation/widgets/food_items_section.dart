@@ -55,7 +55,7 @@ class FoodItemsSection extends StatelessWidget {
           child: FoodItemCard(
             foodItem: items[index],
             onAddPressed: () {
-              // TODO: Implement add to cart functionality
+             
             },
             categories: state is HomeLoaded ? state.categories : null,
           ),
@@ -83,7 +83,7 @@ class FoodItemsSection extends StatelessWidget {
         return FoodItemCard(
           foodItem: items[index],
           onAddPressed: () {
-            // TODO: Implement add to cart functionality
+           
           },
           categories: state is HomeLoaded ? state.categories : null,
         );
