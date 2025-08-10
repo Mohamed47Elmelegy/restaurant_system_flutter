@@ -58,6 +58,7 @@ import '../../features/admin/presentation/pages/add_category/domain/usecases/get
 import '../../features/admin/presentation/pages/add_category/data/datasources/category_local_data_source.dart';
 import '../../features/admin/presentation/pages/menu/data/datasources/menu_local_data_source.dart';
 import '../../features/admin/presentation/pages/add_items/data/datasources/product_local_data_source.dart';
+
 final getIt = GetIt.instance;
 
 Future<void> setup() async {
@@ -79,7 +80,10 @@ Future<void> setup() async {
   getIt.registerLazySingleton<AuthRemoteDataSource>(
     () => AuthRemoteDataSourceImpl(getIt<Dio>()),
   );
-  getIt.registerLazySingleton<HomeDataSource>(() => HomeDataSourceImpl( getIt<Dio>()));
+  // Use configured DioClient so SimpleInterceptor adds auth token automatically
+  getIt.registerLazySingleton<HomeDataSource>(
+    () => HomeDataSourceImpl(getIt<DioClient>().dio),
+  );
   getIt.registerLazySingleton<MealTimeRemoteDataSource>(
     () => MealTimeRemoteDataSourceImpl(dioClient: getIt<DioClient>()),
   );
@@ -129,7 +133,7 @@ Future<void> setup() async {
     ),
   );
   getIt.registerLazySingleton<CategoryRepository>(
-    () => CategoryRepositoryImpl( 
+    () => CategoryRepositoryImpl(
       remoteDataSource: getIt<CategoryRemoteDataSource>(),
       localDataSource: getIt<CategoryLocalDataSource>(),
     ),
@@ -158,7 +162,7 @@ Future<void> setup() async {
   getIt.registerLazySingleton<GetRecommendedItemsUseCase>(
     () => GetRecommendedItemsUseCase(getIt<HomeRepository>()),
   );
-  
+
   getIt.registerLazySingleton<GetRunningOrdersUseCase>(
     () => GetRunningOrdersUseCase(getIt<OrderRepository>()),
   );
