@@ -35,8 +35,16 @@ class SimpleInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     log('🔴 SimpleInterceptor: Request error - ${err.requestOptions.uri}');
+    log('🔴 SimpleInterceptor: Error type: ${err.type}');
     log('🔴 SimpleInterceptor: Error status: ${err.response?.statusCode}');
     log('🔴 SimpleInterceptor: Error message: ${err.message}');
+    // Useful when status/message are null (e.g., timeouts, SocketException)
+    if (err.error != null) {
+      log('🔴 SimpleInterceptor: Underlying error: ${err.error}');
+    }
+    if (err.response?.data != null) {
+      log('🔴 SimpleInterceptor: Error response body: ${err.response?.data}');
+    }
 
     // تحويل الخطأ إلى ApiError مبسط
     final apiError = AppError.fromDioException(err);

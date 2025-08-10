@@ -116,5 +116,4 @@ class ProductCubit extends Bloc<ProductEvent, ProductState> {
     log('🔄 ProductCubit: Resetting product form');
     emit(ProductFormReset());
   }
-
 }

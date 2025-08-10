@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import '../base/base_entity.dart';
 
 /// 🟦 Product Entity - مبدأ المسؤولية الواحدة (SRP)
@@ -170,7 +172,15 @@ class ProductEntity extends BaseEntity {
   bool get isValid {
     return name.isNotEmpty && price > 0 && mainCategoryId > 0;
   }
-
+ factory ProductEntity.fake() {
+    return ProductEntity(
+      id: '0',
+      name: 'منتج تجريبي',
+      price: 0,
+      imageUrl: '',
+      mainCategoryId: 0,
+    );
+  }
   
 
   /// Get formatted price with currency

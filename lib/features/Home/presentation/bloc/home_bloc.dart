@@ -62,22 +62,22 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   Future<void> _onRefreshHomeData(
-  RefreshHomeData event,
-  Emitter<HomeState> emit,
-) async {
-  if (state is HomeLoaded) {
-    final currentState = state as HomeLoaded;
-    emit(HomeLoading());
+    RefreshHomeData event,
+    Emitter<HomeState> emit,
+  ) async {
+    if (state is HomeLoaded) {
+      final currentState = state as HomeLoaded;
+      emit(HomeLoading());
 
-    try {
-      final categoriesResult = await _getCategoriesUseCase();
-      final popularItemsResult = await _getPopularItemsUseCase();
-      final recommendedItemsResult = await _getRecommendedItemsUseCase();
+      try {
+        final categoriesResult = await _getCategoriesUseCase();
+        final popularItemsResult = await _getPopularItemsUseCase();
+        final recommendedItemsResult = await _getRecommendedItemsUseCase();
 
-      categoriesResult.fold(
-        (failure) => emit(HomeError(failure.message)),
-        (categories) {
-              log('Categories count: ${categories.length}');
+        categoriesResult.fold((failure) => emit(HomeError(failure.message)), (
+          categories,
+        ) {
+          log('Categories count: ${categories.length}');
 
           popularItemsResult.fold(
             (failure) => emit(HomeError(failure.message)),
@@ -97,13 +97,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
               );
             },
           );
-        },
-      );
-    } catch (e) {
-      emit(HomeError(e.toString()));
+        });
+      } catch (e) {
+        emit(HomeError(e.toString()));
+      }
     }
   }
-}
 
   void _onSelectCategory(SelectCategory event, Emitter<HomeState> emit) {
     if (state is HomeLoaded) {

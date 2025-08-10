@@ -15,6 +15,7 @@ import '../../features/Home/domain/usecases/get_categories_usecase.dart';
 import '../../features/Home/domain/usecases/get_popular_items_usecase.dart';
 import '../../features/Home/domain/usecases/get_recommended_items_usecase.dart';
 import '../../features/Home/presentation/bloc/home_bloc.dart';
+import '../../features/Home/presentation/cubit/category_items_cubit.dart';
 import '../../features/orders/data/repositories/order_repository_impl.dart';
 import '../../features/orders/domain/repositories/order_repository.dart';
 import '../../features/orders/domain/usecases/get_running_orders_usecase.dart';
@@ -231,6 +232,9 @@ Future<void> setup() async {
       getPopularItemsUseCase: getIt<GetPopularItemsUseCase>(),
       getRecommendedItemsUseCase: getIt<GetRecommendedItemsUseCase>(),
     ),
+  );
+  getIt.registerFactory<CategoryItemsCubit>(
+    () => CategoryItemsCubit(homeRepository: getIt<HomeRepository>()),
   );
   getIt.registerFactory<OrderBloc>(
     () => OrderBloc(

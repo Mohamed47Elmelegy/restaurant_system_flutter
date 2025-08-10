@@ -176,7 +176,9 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
         '🔄 ProductRemoteDataSourceImpl: Getting products by category - $categoryId',
       );
 
-      final response = await dio.get(ApiPath.publicCategoryProducts(categoryId));
+      final response = await dio.get(
+        ApiPath.publicCategoryProducts(categoryId),
+      );
 
       final List<dynamic> data = response.data['data'];
       final products = data.map((json) => ProductModel.fromJson(json)).toList();

@@ -6,6 +6,7 @@ import '../../../../core/theme/text_styles.dart';
 import '../../../../core/widgets/food_item_card.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_state.dart';
+import 'food_items_grid_view.dart';
 
 class FoodItemsSection extends StatelessWidget {
   final String title;
@@ -54,9 +55,7 @@ class FoodItemsSection extends StatelessWidget {
           padding: EdgeInsets.only(right: 16.w),
           child: FoodItemCard(
             foodItem: items[index],
-            onAddPressed: () {
-             
-            },
+            onAddPressed: () {},
             categories: state is HomeLoaded ? state.categories : null,
           ),
         );
@@ -69,25 +68,12 @@ class FoodItemsSection extends StatelessWidget {
         ? getItems(state)
         : _generatePlaceholderItems();
 
-    return GridView.builder(
+    return FoodItemsGridView(
+      items: items,
+      categories: state is HomeLoaded ? state.categories : null,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 0.8,
-        crossAxisSpacing: 16.w,
-        mainAxisSpacing: 16.h,
-      ),
-      itemCount: items.length,
-      itemBuilder: (context, index) {
-        return FoodItemCard(
-          foodItem: items[index],
-          onAddPressed: () {
-           
-          },
-          categories: state is HomeLoaded ? state.categories : null,
-        );
-      },
+      padding: EdgeInsets.zero,
     );
   }
 

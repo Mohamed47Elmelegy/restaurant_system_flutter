@@ -16,7 +16,6 @@ abstract class HomeDataSource {
   Future<ApiResponse<List<ProductModel>>> getProductsByCategory(int categoryId);
   Future<ApiResponse<List<ProductModel>>> getNewProducts();
 
-  /// Get category by ID
   Future<ApiResponse<MainCategoryModel?>> getCategoryById(int id);
 }
 
@@ -65,6 +64,7 @@ class HomeDataSourceImpl implements HomeDataSource {
       return ApiResponse.success(products);
     } on DioException catch (e) {
       log('❌ HomeDataSourceImpl: Failed to get popular products - $e');
+      log('❌ HomeDataSourceImpl: DioException type - ${e.type}');
       return ApiResponse.fromDioException(e);
     } catch (e) {
       log('❌ HomeDataSourceImpl: Failed to get popular products - $e');
@@ -153,10 +153,32 @@ class HomeDataSourceImpl implements HomeDataSource {
       );
       log('Response data: ${response.data}');
 
-      // Fix: Access nested data structure - response.data['data']['data']
-      final Map<String, dynamic> paginatedData = response.data['data'];
-      final List<dynamic> data = paginatedData['data'];
-      final products = data.map((json) => ProductModel.fromJson(json)).toList();
+      // Robust parsing: support both paginated map and direct list responses
+      final dynamic root = response.data;
+      List<dynamic> itemsJson;
+      if (root is List) {
+        itemsJson = root;
+      } else if (root is Map<String, dynamic>) {
+        final dynamic dataNode = root['data'];
+        if (dataNode is List) {
+          itemsJson = dataNode;
+        } else if (dataNode is Map<String, dynamic>) {
+          final dynamic innerData = dataNode['data'];
+          if (innerData is List) {
+            itemsJson = innerData;
+          } else {
+            throw TypeError();
+          }
+        } else {
+          throw TypeError();
+        }
+      } else {
+        throw TypeError();
+      }
+
+      final products = itemsJson
+          .map((json) => ProductModel.fromJson(json as Map<String, dynamic>))
+          .toList();
 
       log(
         '✅ HomeDataSourceImpl: Products by category loaded - ${products.length}',

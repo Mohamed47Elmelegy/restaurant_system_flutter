@@ -7,6 +7,7 @@ import '../entities/main_category.dart';
 import '../theme/theme_helper.dart';
 import '../theme/text_styles.dart';
 import '../routes/app_routes.dart';
+import '../utils/category_helper.dart';
 
 class FoodItemCard extends StatelessWidget {
   final ProductEntity foodItem;
@@ -19,29 +20,6 @@ class FoodItemCard extends StatelessWidget {
     required this.onAddPressed,
     this.categories, // Add categories parameter
   });
-
-  /// Get category name from mainCategoryId
-  String getCategoryName() {
-    if (categories == null || categories!.isEmpty) {
-      return 'تصنيف ${foodItem.mainCategoryId}';
-    }
-
-    try {
-      final category = categories!.firstWhere(
-        (cat) => cat.id == foodItem.mainCategoryId.toString(),
-        orElse: () => CategoryEntity(
-          id: '',
-          name: 'تصنيف ${foodItem.mainCategoryId}',
-          isActive: true,
-          sortOrder: 0,
-        ),
-      );
-
-      return category.name;
-    } catch (e) {
-      return 'تصنيف ${foodItem.mainCategoryId}';
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -139,10 +117,13 @@ class FoodItemCard extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 4.h),
-                      // Location/Subtitle (using category name instead of ID)
+                      // Category name (resolved from mainCategoryId)
                       Flexible(
                         child: Text(
-                          getCategoryName(),
+                          CategoryHelper.getNameById(
+                            id: foodItem.mainCategoryId,
+                            categories: categories ?? [],
+                          ),
                           style: AppTextStyles.senRegular14(context).copyWith(
                             fontSize: 13.sp,
                             color: ThemeHelper.getSecondaryTextColor(context),

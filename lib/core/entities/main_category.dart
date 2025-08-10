@@ -144,4 +144,12 @@ class CategoryEntity extends BaseEntity {
   bool get isValid {
     return name.isNotEmpty && sortOrder >= 0;
   }
+  factory CategoryEntity.fake() {
+    return CategoryEntity(
+      id: '0',
+      name: 'تصنيف تجريبي',
+      isActive: true,
+      sortOrder: 0,
+    );
+  }
 }

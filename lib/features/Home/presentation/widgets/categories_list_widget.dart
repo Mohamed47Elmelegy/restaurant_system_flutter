@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/entities/main_category.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/widgets/category_card.dart';
+import '../../../../core/routes/app_routes.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
 import '../bloc/home_state.dart';
@@ -44,7 +45,7 @@ class CategoriesListWidget extends StatelessWidget {
       itemBuilder: (context, index) {
         final category = categories[index];
         final isSelected = state is HomeLoaded
-            ? state.selectedCategoryId ==   category.id
+            ? state.selectedCategoryId == category.id
             : false;
 
         return Padding(
@@ -53,8 +54,12 @@ class CategoriesListWidget extends StatelessWidget {
             category: category,
             isSelected: isSelected,
             onTap: () {
-              context.read<HomeBloc>().add(
-                SelectCategory(int.parse(category.id)),
+              final int id = int.parse(category.id);
+              context.read<HomeBloc>().add(SelectCategory(id));
+              Navigator.pushNamed(
+                context,
+                AppRoutes.categoryItems,
+                arguments: {'categoryId': id, 'categoryName': category.name},
               );
             },
             setSelected: (bool selected) {
