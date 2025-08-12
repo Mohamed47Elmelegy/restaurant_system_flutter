@@ -253,7 +253,7 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
           description: products[productIndex].description,
           
           price: products[productIndex].price,
-          mainCategoryId: products[productIndex].mainCategoryId,
+          mainCategoryId: int.tryParse(products[productIndex].mainCategoryId) ?? 0,
           imageUrl: products[productIndex].imageUrl,
           isAvailable: isAvailable,
           rating: products[productIndex].rating,

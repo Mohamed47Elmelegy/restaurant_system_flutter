@@ -33,8 +33,8 @@ class CartButton extends StatelessWidget {
         ),
         if (itemCount > 0)
           Positioned(
-            top: 8.h,
-            right: 8.w,
+            top: 0.h,
+            right: 0.w,
             child: Container(
               width: 18.w,
               height: 18.h,

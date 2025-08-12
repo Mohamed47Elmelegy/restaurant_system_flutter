@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaurant_system_flutter/core/services/snack_bar_service.dart';
+import '../../../../../../../core/di/service_locator.dart';
+import '../../../../../../../core/entities/product.dart';
 import '../../../../../../../core/theme/theme_helper.dart';
 import '../../../../../../../core/utils/responsive_helper.dart';
+import '../../../add_category/presentation/cubit/category_cubit.dart';
+import '../../../add_category/presentation/cubit/category_events.dart';
+import '../cubit/product_cubit.dart';
 import '../cubit/product_events.dart';
 import '../cubit/product_states.dart';
 import '../widgets/index.dart';
-import '../cubit/product_cubit.dart';
-import '../../../../../../../core/entities/product.dart';
-import '../../../../../../../core/di/service_locator.dart';
-import '../../../add_category/presentation/cubit/category_cubit.dart';
-import '../../../add_category/presentation/cubit/category_events.dart';
 
 class AdminAddItemPage extends StatefulWidget {
   const AdminAddItemPage({super.key});
@@ -40,11 +41,11 @@ class _AdminAddItemPageState extends State<AdminAddItemPage> {
   List<String> _selectedAllergens = [];
 
   // ✅ Existing fields
-  List<String> _uploadedImages = <String>[];
+  final List<String> _uploadedImages = <String>[];
   bool _isPickupSelected = false;
   bool _isDeliverySelected = false;
   Set<String> _selectedBasicIngredients = {};
-  Set<String> _selectedFruitIngredients = {};
+  final Set<String> _selectedFruitIngredients = {};
   String? _selectedMealCategory;
 
   @override
@@ -72,34 +73,14 @@ class _AdminAddItemPageState extends State<AdminAddItemPage> {
       child: BlocListener<ProductCubit, ProductState>(
         listener: (context, state) {
           if (state is ProductCreated) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('تم إنشاء المنتج بنجاح'),
-                backgroundColor: Colors.green,
-              ),
-            );
+            SnackBarService.showSuccessSnackBar('تم إنشاء المنتج بنجاح');
             Navigator.pop(context);
           } else if (state is ProductValidationError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('خطأ في البيانات: ${state.message}'),
-                backgroundColor: Colors.orange,
-              ),
-            );
+            SnackBarService.showWarningMessage(context, state.message);
           } else if (state is ProductAuthError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('خطأ في المصادقة: ${state.message}'),
-                backgroundColor: Colors.red,
-              ),
-            );
+            SnackBarService.showErrorMessage(context, state.message);
           } else if (state is ProductError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('خطأ: ${state.message}'),
-                backgroundColor: Colors.red,
-              ),
-            );
+            SnackBarService.showErrorMessage(context, state.message);
           }
         },
         child: BlocBuilder<ProductCubit, ProductState>(
@@ -126,8 +107,10 @@ class _AdminAddItemPageState extends State<AdminAddItemPage> {
                           nameController: _nameController,
                           priceController: _priceController,
                           detailsController: _detailsController,
-
-                          // Additional fields
+                          // Arabic fields
+                          nameArController: _nameArController,
+                          detailsArController: _detailsArController,
+                          // Preparation time and sort order
                           preparationTimeController: _preparationTimeController,
                           sortOrderController: _sortOrderController,
                           // Product settings
@@ -241,6 +224,7 @@ class _AdminAddItemPageState extends State<AdminAddItemPage> {
     setState(() {
       // Clear English fields
       _nameController.clear();
+
       _priceController.clear();
       _detailsController.clear();
 
@@ -280,10 +264,11 @@ class _AdminAddItemPageState extends State<AdminAddItemPage> {
       final product = ProductEntity(
         id: '', // Will be set by the server
         name: _nameController.text.trim(),
-
+        nameAr: _nameArController.text.trim(),
+        descriptionAr: _detailsArController.text.trim(),
         description: _detailsController.text.trim(),
         price: double.tryParse(_priceController.text) ?? 0.0,
-        mainCategoryId: int.tryParse(_selectedMainCategory ?? '1') ?? 1,
+        mainCategoryId: _selectedMainCategory ?? '1',
         imageUrl: _uploadedImages.isNotEmpty ? _uploadedImages.first : null,
         isAvailable: _isAvailable,
         isFeatured: _isFeatured,

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/entities/product.dart';
 import '../../../../core/entities/main_category.dart';
+import '../../../../core/entities/product.dart';
 import '../../../../core/widgets/food_item_card.dart';
+import '../../../cart/presentation/bloc/cart_cubit.dart';
+import '../../../cart/presentation/bloc/cart_event.dart';
 
 class FoodItemsGridView extends StatelessWidget {
   final List<ProductEntity> items;
@@ -49,7 +52,21 @@ class FoodItemsGridView extends StatelessWidget {
           final product = items[index];
           return FoodItemCard(
             foodItem: product,
-            onAddPressed: () {},
+            onAddPressed: () {
+              // Add product to cart using CartCubit
+              final productId = product.intId;
+              print(
+                '🔍 FoodItemsGridView: Add button pressed for product ${product.name} (ID: $productId)',
+              );
+              if (productId != null) {
+                print(
+                  '🔍 FoodItemsGridView: Dispatching AddToCart event with quantity: 1',
+                );
+                context.read<CartCubit>().add(
+                  AddToCart(productId: productId, quantity: 1),
+                );
+              }
+            },
             categories: categories,
           );
         },

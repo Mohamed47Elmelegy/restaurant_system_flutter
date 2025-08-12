@@ -8,6 +8,8 @@ import '../../../../core/theme/text_styles.dart';
 import '../../../../core/di/service_locator.dart';
 import '../cubit/category_items_cubit.dart';
 import '../cubit/category_items_state.dart';
+import '../../../cart/presentation/bloc/cart_cubit.dart';
+import '../../../cart/presentation/bloc/cart_event.dart';
 
 class CategoryItemsPage extends StatefulWidget {
   final int categoryId;
@@ -26,9 +28,14 @@ class CategoryItemsPage extends StatefulWidget {
 class _CategoryItemsPageState extends State<CategoryItemsPage> {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) =>
-          getIt<CategoryItemsCubit>()..loadCategory(widget.categoryId),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) =>
+              getIt<CategoryItemsCubit>()..loadCategory(widget.categoryId),
+        ),
+        BlocProvider(create: (_) => getIt<CartCubit>()..add(LoadCart())),
+      ],
       child: Scaffold(
         appBar: AppBar(title: Text(widget.categoryName ?? 'Items')),
         body: SafeArea(

@@ -1,30 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/utils/app_bar_helper.dart';
+import '../../../../core/routes/app_routes.dart';
+import '../../../cart/presentation/bloc/cart_cubit.dart';
+import '../../../cart/presentation/bloc/cart_state.dart';
 import 'address_selection_dialog.dart';
-import 'cart_dialog.dart';
 
 class HomeCustomAppBar extends StatelessWidget {
   final String currentAddress;
-  final int cartItemCount;
   final Function(String) onAddressChanged;
-  final Function(int) onCartItemCountChanged;
 
   const HomeCustomAppBar({
     super.key,
     required this.currentAddress,
-    required this.cartItemCount,
     required this.onAddressChanged,
-    required this.onCartItemCountChanged,
   });
 
   @override
   Widget build(BuildContext context) {
-    return AppBarHelper.createCustomAppBar(
-      onMenuPressed: () => _handleMenuPressed(context),
-      onAddressPressed: () => _handleAddressPressed(context),
-      onCartPressed: () => _handleCartPressed(context),
-      deliveryAddress: currentAddress,
-      cartItemCount: cartItemCount,
+    return BlocBuilder<CartCubit, CartState>(
+      builder: (context, cartState) {
+        // Calculate cart item count from cart state
+        int cartItemCount = 0;
+        if (cartState is CartLoaded) {
+          cartItemCount = cartState.cart.uniqueItemsCount;
+        }
+
+        return AppBarHelper.createCustomAppBar(
+          onMenuPressed: () => _handleMenuPressed(context),
+          onAddressPressed: () => _handleAddressPressed(context),
+          onCartPressed: () => _handleCartPressed(context),
+          deliveryAddress: currentAddress,
+          cartItemCount: cartItemCount,
+        );
+      },
     );
   }
 
@@ -43,12 +52,7 @@ class HomeCustomAppBar extends StatelessWidget {
   }
 
   void _handleCartPressed(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => CartDialog(
-        cartItemCount: cartItemCount,
-        onCartItemCountChanged: onCartItemCountChanged,
-      ),
-    );
+    // Navigate to cart page using named route
+    Navigator.of(context).pushNamed(AppRoutes.cart);
   }
 }

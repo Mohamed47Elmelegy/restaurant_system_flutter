@@ -1,10 +1,12 @@
+import 'dart:developer';
+
 import 'package:dartz/dartz.dart';
-import '../../../../../../../core/error/failures.dart';
 import '../../../../../../../core/entities/main_category.dart';
-import '../../domain/repositories/category_repository.dart';
+import '../../../../../../../core/error/failures.dart';
 import '../../../../../../../core/models/main_category_model.dart';
-import '../datasources/category_remote_data_source.dart';
+import '../../domain/repositories/category_repository.dart';
 import '../datasources/category_local_data_source.dart';
+import '../datasources/category_remote_data_source.dart';
 
 /// 🟦 CategoryRepositoryImpl - مبدأ المسؤولية الواحدة (SRP)
 /// مسؤول عن تنفيذ عمليات الفئات فقط
@@ -25,7 +27,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
       // 1. محاولة جلب البيانات من الـ local أولاً
       final localCategories = await localDataSource.getMainCategories();
       if (localCategories.isNotEmpty) {
-        print(
+        log(
           '📱 CategoryRepository: Using local data - ${localCategories.length} categories',
         );
         // تحويل MainCategoryModel إلى MainCategory
@@ -36,7 +38,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
       }
 
       // 2. جلب البيانات من الـ API
-      print('🌐 CategoryRepository: Fetching from API...');
+      log('🌐 CategoryRepository: Fetching from API...');
       final response = await remoteDataSource.getCategories(
         mealTimeId: mealTimeId,
       );
@@ -50,8 +52,8 @@ class CategoryRepositoryImpl implements CategoryRepository {
           final categoryModels = categories
               .map((entity) => MainCategoryModel.fromEntity(entity))
               .toList();
-          await localDataSource.saveMainCategories(categoryModels);
-          print(
+          await localDataSource.saveMainCategories(categoryModels.cast<MainCategoryModel>());
+          log(
             '💾 CategoryRepository: Saved ${categories.length} categories to local storage',
           );
         }
@@ -61,7 +63,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
         return Left(ServerFailure(message: response.message));
       }
     } catch (e) {
-      print('❌ CategoryRepository: Error getting categories - $e');
+      log('❌ CategoryRepository: Error getting categories - $e');
       return Left(ServerFailure(message: 'Failed to get categories: $e'));
     }
   }
@@ -70,11 +72,11 @@ class CategoryRepositoryImpl implements CategoryRepository {
   Future<Either<Failure, List<CategoryEntity>>> getCategoriesByMealTime(
     int mealTimeId,
   ) async {
-    try {
+    try { 
       // 1. محاولة جلب الفئات من الـ local أولاً
       final localCategories = await localDataSource.getMainCategories();
       if (localCategories.isNotEmpty) {
-        print(
+        log(
           '📱 CategoryRepository: Using local categories for meal time - ${localCategories.length} categories',
         );
         final categories = localCategories
@@ -84,7 +86,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
       }
 
       // 2. جلب الفئات من الـ API
-      print(
+      log(
         '🌐 CategoryRepository: Fetching categories by meal time from API...',
       );
       final response = await remoteDataSource.getCategoriesByMealTime(
@@ -99,8 +101,8 @@ class CategoryRepositoryImpl implements CategoryRepository {
           final categoryModels = categories
               .map((entity) => MainCategoryModel.fromEntity(entity))
               .toList();
-          await localDataSource.saveMainCategories(categoryModels);
-          print(
+          await localDataSource.saveMainCategories(categoryModels .cast<MainCategoryModel>());
+          log(
             '💾 CategoryRepository: Saved ${categories.length} categories to local storage',
           );
         }
@@ -110,7 +112,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
         return Left(ServerFailure(message: response.message));
       }
     } catch (e) {
-      print('❌ CategoryRepository: Error getting categories by meal time - $e');
+      log('❌ CategoryRepository: Error getting categories by meal time - $e');
       return Left(
         ServerFailure(message: 'Failed to get categories by meal time: $e'),
       );
@@ -123,7 +125,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
       // 1. محاولة جلب الفئات النشطة من الـ local أولاً
       final localCategories = await localDataSource.getActiveMainCategories();
       if (localCategories.isNotEmpty) {
-        print(
+        log(
           '📱 CategoryRepository: Using local active categories - ${localCategories.length} categories',
         );
         final categories = localCategories
@@ -133,7 +135,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
       }
 
       // 2. جلب الفئات النشطة من الـ API
-      print('🌐 CategoryRepository: Fetching active categories from API...');
+      log('🌐 CategoryRepository: Fetching active categories from API...');
       final response = await remoteDataSource.getActiveCategories();
       if (response.status) {
         final categories =
@@ -144,8 +146,8 @@ class CategoryRepositoryImpl implements CategoryRepository {
           final categoryModels = categories
               .map((entity) => MainCategoryModel.fromEntity(entity))
               .toList();
-          await localDataSource.saveMainCategories(categoryModels);
-          print(
+          await localDataSource.saveMainCategories(categoryModels.cast<MainCategoryModel>());
+          log(
             '💾 CategoryRepository: Saved ${categories.length} active categories to local storage',
           );
         }
@@ -155,7 +157,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
         return Left(ServerFailure(message: response.message));
       }
     } catch (e) {
-      print('❌ CategoryRepository: Error getting active categories - $e');
+      log('❌ CategoryRepository: Error getting active categories - $e');
       return Left(
         ServerFailure(message: 'Failed to get active categories: $e'),
       );
@@ -170,13 +172,13 @@ class CategoryRepositoryImpl implements CategoryRepository {
       // 1. محاولة البحث في الـ local أولاً
       final localCategories = await localDataSource.searchMainCategories(name);
       if (localCategories.isNotEmpty) {
-        print('📱 CategoryRepository: Found category by name in local storage');
+        log('📱 CategoryRepository: Found category by name in local storage');
         final category = localCategories.first.toEntity();
         return Right(category);
       }
 
       // 2. البحث في الـ API
-      print('🌐 CategoryRepository: Searching category by name in API...');
+      log('🌐 CategoryRepository: Searching category by name in API...');
       final response = await remoteDataSource.getCategoryByName(name);
       if (response.status) {
         final category = response.data?.toEntity();
@@ -185,7 +187,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
         return Left(ServerFailure(message: response.message));
       }
     } catch (e) {
-      print('❌ CategoryRepository: Error getting category by name - $e');
+      log('❌ CategoryRepository: Error getting category by name - $e');
       return Left(ServerFailure(message: 'Failed to get category by name: $e'));
     }
   }
@@ -202,14 +204,14 @@ class CategoryRepositoryImpl implements CategoryRepository {
 
         // حفظ الفئة الجديدة محلياً
         await localDataSource.saveMainCategory(response.data!);
-        print('💾 CategoryRepository: Saved new category to local storage');
+        log('💾 CategoryRepository: Saved new category to local storage');
 
         return Right(createdCategory);
       } else {
         return Left(ServerFailure(message: response.message));
       }
     } catch (e) {
-      print('❌ CategoryRepository: Error creating category - $e');
+      log('❌ CategoryRepository: Error creating category - $e');
       return Left(ServerFailure(message: 'Failed to create category: $e'));
     }
   }
@@ -228,14 +230,14 @@ class CategoryRepositoryImpl implements CategoryRepository {
 
         // تحديث الفئة محلياً
         await localDataSource.saveMainCategory(response.data!);
-        print('💾 CategoryRepository: Updated category in local storage');
+        log('💾 CategoryRepository: Updated category in local storage');
 
         return Right(updatedCategory);
       } else {
         return Left(ServerFailure(message: response.message));
       }
     } catch (e) {
-      print('❌ CategoryRepository: Error updating category - $e');
+      log('❌ CategoryRepository: Error updating category - $e');
       return Left(ServerFailure(message: 'Failed to update category: $e'));
     }
   }
@@ -245,21 +247,21 @@ class CategoryRepositoryImpl implements CategoryRepository {
     try {
       final categoryId = int.tryParse(id);
       if (categoryId == null) {
-        return Left(ServerFailure(message: 'Invalid category ID'));
+        return const Left(ServerFailure(message: 'Invalid category ID'));
       }
 
       final response = await remoteDataSource.deleteCategory(categoryId);
       if (response.status && response.data != null) {
         // حذف الفئة من التخزين المحلي
         await localDataSource.deleteMainCategory(id);
-        print('🗑️ CategoryRepository: Deleted category from local storage');
+        log('🗑️ CategoryRepository: Deleted category from local storage');
 
         return Right(response.data!);
       } else {
         return Left(ServerFailure(message: response.message));
       }
     } catch (e) {
-      print('❌ CategoryRepository: Error deleting category - $e');
+      log('❌ CategoryRepository: Error deleting category - $e');
       return Left(ServerFailure(message: 'Failed to delete category: $e'));
     }
   }
@@ -275,16 +277,16 @@ class CategoryRepositoryImpl implements CategoryRepository {
       // 1. محاولة جلب الفئة من الـ local أولاً
       final localCategory = await localDataSource.getMainCategoryById(id);
       if (localCategory != null) {
-        print('📱 CategoryRepository: Found category in local storage');
+        log('📱 CategoryRepository: Found category in local storage');
         final category = localCategory.toEntity();
         return Right(category);
       }
 
       // 2. جلب الفئة من الـ API
-      print('🌐 CategoryRepository: Fetching category from API...');
+      log('🌐 CategoryRepository: Fetching category from API...');
       final categoryId = int.tryParse(id);
       if (categoryId == null) {
-        return Left(ServerFailure(message: 'Invalid category ID'));
+        return const Left(ServerFailure(message: 'Invalid category ID'));
       }
 
       final response = await remoteDataSource.getCategoryById(categoryId);
@@ -295,7 +297,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
         return Left(ServerFailure(message: response.message));
       }
     } catch (e) {
-      print('❌ CategoryRepository: Error getting category by ID - $e');
+      log('❌ CategoryRepository: Error getting category by ID - $e');
       return Left(ServerFailure(message: 'Failed to get category by ID: $e'));
     }
   }
@@ -311,7 +313,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
       // 1. محاولة البحث في الـ local أولاً
       final localCategories = await localDataSource.searchMainCategories(query);
       if (localCategories.isNotEmpty) {
-        print(
+        log(
           '📱 CategoryRepository: Using local search results - ${localCategories.length} categories',
         );
         final categories = localCategories
@@ -321,7 +323,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
       }
 
       // 2. البحث في الـ API
-      print('🌐 CategoryRepository: Searching in API...');
+      log('🌐 CategoryRepository: Searching in API...');
       final response = await remoteDataSource.searchCategories(query);
       if (response.status) {
         final categories =
@@ -332,8 +334,8 @@ class CategoryRepositoryImpl implements CategoryRepository {
           final categoryModels = categories
               .map((entity) => MainCategoryModel.fromEntity(entity))
               .toList();
-          await localDataSource.saveMainCategories(categoryModels);
-          print('💾 CategoryRepository: Saved search results to local storage');
+          await localDataSource.saveMainCategories(categoryModels.cast<MainCategoryModel>());
+          log('💾 CategoryRepository: Saved search results to local storage');
         }
 
         return Right(categories);
@@ -341,7 +343,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
         return Left(ServerFailure(message: response.message));
       }
     } catch (e) {
-      print('❌ CategoryRepository: Error searching categories - $e');
+      log('❌ CategoryRepository: Error searching categories - $e');
       return Left(ServerFailure(message: 'Failed to search categories: $e'));
     }
   }
@@ -357,7 +359,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
       // 1. محاولة جلب البيانات المحلية أولاً
       final localCategories = await localDataSource.getMainCategories();
       if (localCategories.isNotEmpty) {
-        print(
+        log(
           '📱 CategoryRepository: Using local paginated data - ${localCategories.length} categories',
         );
         final categories = localCategories
@@ -378,7 +380,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
       }
 
       // 2. جلب البيانات من الـ API
-      print('🌐 CategoryRepository: Fetching paginated data from API...');
+      log('🌐 CategoryRepository: Fetching paginated data from API...');
       final response = await remoteDataSource.getCategoriesPaginated(
         page: page,
         limit: limit,
@@ -394,8 +396,8 @@ class CategoryRepositoryImpl implements CategoryRepository {
           final categoryModels = categories
               .map((entity) => MainCategoryModel.fromEntity(entity))
               .toList();
-          await localDataSource.saveMainCategories(categoryModels);
-          print('💾 CategoryRepository: Saved paginated data to local storage');
+          await localDataSource.saveMainCategories(categoryModels.cast<MainCategoryModel>());
+          log('💾 CategoryRepository: Saved paginated data to local storage');
         }
 
         return Right(categories);
@@ -403,7 +405,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
         return Left(ServerFailure(message: response.message));
       }
     } catch (e) {
-      print('❌ CategoryRepository: Error getting paginated categories - $e');
+      log('❌ CategoryRepository: Error getting paginated categories - $e');
       return Left(
         ServerFailure(message: 'Failed to get paginated categories: $e'),
       );

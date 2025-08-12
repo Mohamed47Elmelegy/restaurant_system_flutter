@@ -1,5 +1,5 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// 🟦 BaseState - مبدأ المسؤولية الواحدة (SRP)
 /// كل state مسؤول عن تمثيل حالة واحدة فقط

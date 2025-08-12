@@ -10,6 +10,9 @@ class AddItemFormWidget extends StatelessWidget {
   final TextEditingController priceController;
   final TextEditingController detailsController;
 
+  // Arabic fields
+  final TextEditingController nameArController;
+  final TextEditingController detailsArController;
   // Additional fields
   final TextEditingController preparationTimeController;
   final TextEditingController sortOrderController;
@@ -54,6 +57,9 @@ class AddItemFormWidget extends StatelessWidget {
     required this.nameController,
     required this.priceController,
     required this.detailsController,
+    // Arabic fields
+    required this.nameArController, // Arabic name controller
+    required this.detailsArController, // Arabic details controller
     // Additional fields
     required this.preparationTimeController,
     required this.sortOrderController,
@@ -105,13 +111,36 @@ class AddItemFormWidget extends StatelessWidget {
               return null;
             },
           ),
+          // Name Arabic Section
+          _buildLabeledTextField(
+            label: 'NAME (ARABIC)',
+            controller: nameArController,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter name in Arabic';
+              }
+              return null;
+            },
+          ),
 
           // Details Section
           _buildLabeledTextField(
             label: 'DETAILS (ENGLISH)',
-           
+
             controller: detailsController,
             maxLines: 3,
+          ),
+          // Details Arabic Section
+          _buildLabeledTextField(
+            label: 'DETAILS (ARABIC)',
+            controller: detailsArController,
+            maxLines: 3,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter details in Arabic';
+              }
+              return null;
+            },
           ),
 
           // Main Category Section

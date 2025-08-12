@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'package:restaurant_system_flutter/core/entities/main_category.dart';
 
 import '../base/base_entity.dart';
 
@@ -6,10 +6,12 @@ import '../base/base_entity.dart';
 /// مسؤول عن تمثيل منتج في الأعمال فقط
 class ProductEntity extends BaseEntity {
   final String name;
+  final String? nameAr; // إضافة الحقل
   final String? description;
-
+  final String? descriptionAr; // إضافة الحقل
   final double price;
-  final int mainCategoryId;
+  final String mainCategoryId;
+  final String? subCategoryId;
   final String? imageUrl;
   final bool isAvailable;
   final double? rating;
@@ -19,14 +21,17 @@ class ProductEntity extends BaseEntity {
   final List<String>? allergens;
   final bool isFeatured;
   final int? sortOrder;
+  final CategoryEntity? mainCategory;
 
   const ProductEntity({
     required super.id,
     required this.name,
+    this.nameAr,
     this.description,
-    
+    this.descriptionAr,
     required this.price,
     required this.mainCategoryId,
+    this.subCategoryId,
     this.imageUrl,
     this.isAvailable = true,
     this.rating,
@@ -38,15 +43,19 @@ class ProductEntity extends BaseEntity {
     this.sortOrder,
     super.createdAt,
     super.updatedAt,
+    this.mainCategory,
   });
 
   /// Constructor for creating Product from existing data with int id
   factory ProductEntity.fromIntId({
     int? id,
     required String name,
+    String? nameAr,
     String? description,
+    String? descriptionAr,
     required double price,
     required int mainCategoryId,
+    int? subCategoryId,
     String? imageUrl,
     bool isAvailable = true,
     double? rating,
@@ -58,13 +67,17 @@ class ProductEntity extends BaseEntity {
     int? sortOrder,
     DateTime? createdAt,
     DateTime? updatedAt,
+    CategoryEntity? mainCategory,
   }) {
     return ProductEntity(
       id: id?.toString() ?? '',
       name: name,
+      nameAr: nameAr,
       description: description,
+      descriptionAr: descriptionAr,
       price: price,
-      mainCategoryId: mainCategoryId,
+      mainCategoryId: mainCategoryId.toString(),
+      subCategoryId: subCategoryId?.toString(),
       imageUrl: imageUrl,
       isAvailable: isAvailable,
       rating: rating,
@@ -76,6 +89,7 @@ class ProductEntity extends BaseEntity {
       sortOrder: sortOrder,
       createdAt: createdAt,
       updatedAt: updatedAt,
+      mainCategory: mainCategory,
     );
   }
 
@@ -84,14 +98,26 @@ class ProductEntity extends BaseEntity {
     return int.tryParse(id);
   }
 
+  /// Get int main category id for backward compatibility
+  int? get intMainCategoryId {
+    return int.tryParse(mainCategoryId);
+  }
+
+  /// Get int sub category id for backward compatibility
+  int? get intSubCategoryId {
+    return subCategoryId != null ? int.tryParse(subCategoryId!) : null;
+  }
+
   @override
   List<Object?> get props => [
     id,
     name,
+    nameAr,
     description,
-    
+    descriptionAr,
     price,
     mainCategoryId,
+    subCategoryId,
     imageUrl,
     isAvailable,
     rating,
@@ -103,6 +129,7 @@ class ProductEntity extends BaseEntity {
     sortOrder,
     createdAt,
     updatedAt,
+    mainCategory,
   ];
 
   @override
@@ -113,7 +140,8 @@ class ProductEntity extends BaseEntity {
     String? description,
     String? descriptionAr,
     double? price,
-    int? mainCategoryId,
+    String? mainCategoryId,
+    String? subCategoryId,
     String? imageUrl,
     bool? isAvailable,
     double? rating,
@@ -125,13 +153,17 @@ class ProductEntity extends BaseEntity {
     int? sortOrder,
     DateTime? createdAt,
     DateTime? updatedAt,
+    CategoryEntity? mainCategory,
   }) {
     return ProductEntity(
       id: id ?? this.id,
       name: name ?? this.name,
+      nameAr: nameAr ?? this.nameAr,
       description: description ?? this.description,
+      descriptionAr: descriptionAr ?? this.descriptionAr,
       price: price ?? this.price,
       mainCategoryId: mainCategoryId ?? this.mainCategoryId,
+      subCategoryId: subCategoryId ?? this.subCategoryId,
       imageUrl: imageUrl ?? this.imageUrl,
       isAvailable: isAvailable ?? this.isAvailable,
       rating: rating ?? this.rating,
@@ -143,6 +175,7 @@ class ProductEntity extends BaseEntity {
       sortOrder: sortOrder ?? this.sortOrder,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      mainCategory: mainCategory ?? this.mainCategory,
     );
   }
 
@@ -151,9 +184,12 @@ class ProductEntity extends BaseEntity {
     return {
       'id': id,
       'name': name,
+      'name_ar': nameAr,
       'description': description,
+      'description_ar': descriptionAr,
       'price': price,
       'main_category_id': mainCategoryId,
+      'sub_category_id': subCategoryId,
       'image_url': imageUrl,
       'is_available': isAvailable,
       'rating': rating,
@@ -170,18 +206,25 @@ class ProductEntity extends BaseEntity {
 
   @override
   bool get isValid {
-    return name.isNotEmpty && price > 0 && mainCategoryId > 0;
+    return name.isNotEmpty &&
+        nameAr != null &&
+        nameAr!.isNotEmpty &&
+        price > 0 &&
+        mainCategoryId.isNotEmpty &&
+        imageUrl != null &&
+        imageUrl!.isNotEmpty;
   }
- factory ProductEntity.fake() {
-    return ProductEntity(
+
+  factory ProductEntity.fake() {
+    return const ProductEntity(
       id: '0',
-      name: 'منتج تجريبي',
-      price: 0,
-      imageUrl: '',
-      mainCategoryId: 0,
+      name: 'Test Product',
+      nameAr: 'منتج تجريبي',
+      price: 25.0,
+      imageUrl: 'https://via.placeholder.com/300',
+      mainCategoryId: '1',
     );
   }
-  
 
   /// Get formatted price with currency
   String getFormattedPrice() {

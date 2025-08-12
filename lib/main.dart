@@ -1,17 +1,18 @@
-import 'package:flutter/material.dart';
 import 'package:bot_toast/bot_toast.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+
 import 'core/di/service_locator.dart';
 import 'core/routes/app_router.dart';
 import 'core/routes/app_routes.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/services/app_bloc_observer.dart';
-import 'package:provider/provider.dart';
-import 'core/theme/theme_provider.dart';
 import 'core/theme/app_theme.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:skeletonizer/skeletonizer.dart';
+import 'core/theme/theme_provider.dart';
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 

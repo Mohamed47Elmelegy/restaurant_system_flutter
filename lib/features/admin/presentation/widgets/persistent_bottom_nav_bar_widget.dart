@@ -22,7 +22,7 @@ class _PersistentBottomNavBarWidgetState
   int selectedIndex = 0;
 
   final List<Widget> _pages = [
-    const SellerDashboardHome(),
+    //const SellerDashboardHome(),
     const AdminMenuPage(),
     const AdminNotificationsPage(),
     const AdminProfilePage(),

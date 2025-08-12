@@ -220,4 +220,6 @@ class SnackBarService {
       padding: const EdgeInsets.all(16),
     );
   }
+
+  static void showSuccessSnackBar(String s) {}
 }

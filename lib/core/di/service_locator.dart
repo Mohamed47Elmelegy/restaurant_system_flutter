@@ -1,13 +1,9 @@
-import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../../features/admin/presentation/pages/add_items/data/datasources/remoteDataSource/product_remote_data_source.dart';
-import '../../features/auth/data/repositories/auth_repository_impl.dart';
-import '../../features/auth/domain/repositories/auth_repository.dart';
-import '../../features/auth/domain/usecases/login_usecase.dart';
-import '../../features/auth/domain/usecases/register_usecase.dart';
-import '../../features/auth/presentation/bloc/auth_bloc.dart';
-import '../../features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:get_it/get_it.dart';
+
+import '../../core/network/dio_client.dart';
+import '../../core/network/simple_interceptor.dart';
 import '../../features/Home/data/datasources/home_datasource.dart';
 import '../../features/Home/data/repositories/home_repository_impl.dart';
 import '../../features/Home/domain/repositories/home_repository.dart';
@@ -16,49 +12,65 @@ import '../../features/Home/domain/usecases/get_popular_items_usecase.dart';
 import '../../features/Home/domain/usecases/get_recommended_items_usecase.dart';
 import '../../features/Home/presentation/bloc/home_bloc.dart';
 import '../../features/Home/presentation/cubit/category_items_cubit.dart';
-import '../../features/orders/data/repositories/order_repository_impl.dart';
-import '../../features/orders/domain/repositories/order_repository.dart';
-import '../../features/orders/domain/usecases/get_running_orders_usecase.dart';
-import '../../features/orders/domain/usecases/mark_order_done_usecase.dart';
-import '../../features/orders/domain/usecases/cancel_order_usecase.dart';
-import '../../features/orders/presentation/bloc/order_bloc.dart';
+import '../../features/admin/presentation/pages/add_category/data/datasources/category_local_data_source.dart';
+import '../../features/admin/presentation/pages/add_category/data/datasources/category_remote_data_source.dart';
+import '../../features/admin/presentation/pages/add_category/data/datasources/category_remote_data_source_impl.dart';
+import '../../features/admin/presentation/pages/add_category/data/repositories/category_repository_impl.dart';
+import '../../features/admin/presentation/pages/add_category/domain/repositories/category_repository.dart';
+import '../../features/admin/presentation/pages/add_category/domain/usecases/create_category_usecase.dart';
+import '../../features/admin/presentation/pages/add_category/domain/usecases/get_categories_usecase.dart'
+    as admin_category;
+import '../../features/admin/presentation/pages/add_category/domain/usecases/get_category_by_id_usecase.dart';
+import '../../features/admin/presentation/pages/add_category/domain/usecases/update_category_usecase.dart';
+import '../../features/admin/presentation/pages/add_category/presentation/cubit/category_cubit.dart';
+import '../../features/admin/presentation/pages/add_items/data/datasources/product_local_data_source.dart';
+import '../../features/admin/presentation/pages/add_items/data/datasources/remoteDataSource/product_remote_data_source.dart';
+import '../../features/admin/presentation/pages/add_items/data/datasources/remoteDataSource/product_remote_data_source_imp.dart';
+import '../../features/admin/presentation/pages/add_items/data/repositories/product_repository_impl.dart';
+import '../../features/admin/presentation/pages/add_items/domain/repositories/product_repository.dart';
+import '../../features/admin/presentation/pages/add_items/domain/usecases/create_product_usecase.dart';
+import '../../features/admin/presentation/pages/add_items/domain/usecases/get_products_usecase.dart';
+import '../../features/admin/presentation/pages/add_items/presentation/cubit/product_cubit.dart';
 import '../../features/admin/presentation/pages/meal_times/data/datasources/meal_time_remote_datasource.dart';
 import '../../features/admin/presentation/pages/meal_times/data/datasources/meal_time_remote_datasource_impl.dart';
 import '../../features/admin/presentation/pages/meal_times/data/repositories/meal_time_repository_impl.dart';
 import '../../features/admin/presentation/pages/meal_times/domain/repositories/meal_time_repository.dart';
-import '../../features/admin/presentation/pages/meal_times/domain/usecases/get_meal_times.dart';
 import '../../features/admin/presentation/pages/meal_times/domain/usecases/create_meal_time.dart';
-import '../../features/admin/presentation/pages/meal_times/domain/usecases/update_meal_time.dart';
 import '../../features/admin/presentation/pages/meal_times/domain/usecases/delete_meal_time.dart';
+import '../../features/admin/presentation/pages/meal_times/domain/usecases/get_meal_times.dart';
 import '../../features/admin/presentation/pages/meal_times/domain/usecases/toggle_meal_time_status.dart';
+import '../../features/admin/presentation/pages/meal_times/domain/usecases/update_meal_time.dart';
 import '../../features/admin/presentation/pages/meal_times/domain/usecases/update_meal_times_order.dart';
 import '../../features/admin/presentation/pages/meal_times/presentation/bloc/meal_time_bloc.dart';
-import '../../core/network/dio_client.dart';
-import '../../core/network/simple_interceptor.dart';
-import '../../features/admin/presentation/pages/add_items/data/datasources/remoteDataSource/product_remote_data_source_imp.dart';
-import '../../features/admin/presentation/pages/add_items/data/repositories/product_repository_impl.dart';
-import '../../features/admin/presentation/pages/add_items/domain/repositories/product_repository.dart';
-import '../../features/admin/presentation/pages/add_items/domain/usecases/get_products_usecase.dart';
-import '../../features/admin/presentation/pages/add_items/domain/usecases/create_product_usecase.dart';
-import '../../features/admin/presentation/pages/add_items/presentation/cubit/product_cubit.dart';
+import '../../features/admin/presentation/pages/menu/data/datasources/menu_local_data_source.dart';
 // Menu imports
 import '../../features/admin/presentation/pages/menu/data/datasources/menu_remote_data_source.dart';
 import '../../features/admin/presentation/pages/menu/data/repositories/menu_repository_impl.dart';
 import '../../features/admin/presentation/pages/menu/domain/repositories/menu_repository.dart';
 import '../../features/admin/presentation/pages/menu/presentation/bloc/menu_cubit.dart';
-import '../../features/admin/presentation/pages/add_category/data/datasources/category_remote_data_source.dart';
-import '../../features/admin/presentation/pages/add_category/data/datasources/category_remote_data_source_impl.dart';
-import '../../features/admin/presentation/pages/add_category/domain/repositories/category_repository.dart';
-import '../../features/admin/presentation/pages/add_category/data/repositories/category_repository_impl.dart';
-import '../../features/admin/presentation/pages/add_category/presentation/cubit/category_cubit.dart';
-import '../../features/admin/presentation/pages/add_category/domain/usecases/create_category_usecase.dart';
-import '../../features/admin/presentation/pages/add_category/domain/usecases/update_category_usecase.dart';
-import '../../features/admin/presentation/pages/add_category/domain/usecases/get_category_by_id_usecase.dart';
-import '../../features/admin/presentation/pages/add_category/domain/usecases/get_categories_usecase.dart'
-    as admin_category;
-import '../../features/admin/presentation/pages/add_category/data/datasources/category_local_data_source.dart';
-import '../../features/admin/presentation/pages/menu/data/datasources/menu_local_data_source.dart';
-import '../../features/admin/presentation/pages/add_items/data/datasources/product_local_data_source.dart';
+import '../../features/auth/data/datasources/auth_remote_data_source.dart';
+import '../../features/auth/data/repositories/auth_repository_impl.dart';
+import '../../features/auth/domain/repositories/auth_repository.dart';
+import '../../features/auth/domain/usecases/login_usecase.dart';
+import '../../features/auth/domain/usecases/register_usecase.dart';
+import '../../features/auth/presentation/bloc/auth_bloc.dart';
+import '../../features/orders/data/repositories/order_repository_impl.dart';
+import '../../features/orders/domain/repositories/order_repository.dart';
+import '../../features/orders/domain/usecases/cancel_order_usecase.dart';
+import '../../features/orders/domain/usecases/get_running_orders_usecase.dart';
+import '../../features/orders/domain/usecases/mark_order_done_usecase.dart';
+import '../../features/orders/presentation/bloc/order_bloc.dart';
+// Cart imports
+import '../../features/cart/data/datasources/cart_remote_data_source.dart';
+import '../../features/cart/data/datasources/cart_remote_data_source_impl.dart';
+import '../../features/cart/data/repositories/cart_repository_impl.dart';
+import '../../features/cart/domain/repositories/cart_repository.dart';
+import '../../features/cart/domain/usecases/get_cart_usecase.dart';
+import '../../features/cart/domain/usecases/add_to_cart_usecase.dart';
+import '../../features/cart/domain/usecases/update_cart_item_usecase.dart';
+import '../../features/cart/domain/usecases/remove_cart_item_usecase.dart';
+import '../../features/cart/domain/usecases/clear_cart_usecase.dart';
+import '../../features/cart/presentation/bloc/cart_cubit.dart';
 
 final getIt = GetIt.instance;
 
@@ -66,7 +78,7 @@ Future<void> setup() async {
   // External
   getIt.registerLazySingleton<Dio>(() => Dio());
   getIt.registerLazySingleton<FlutterSecureStorage>(
-    () => FlutterSecureStorage(),
+    () => const FlutterSecureStorage(),
   );
 
   // Core
@@ -98,6 +110,10 @@ Future<void> setup() async {
   getIt.registerLazySingleton<CategoryRemoteDataSource>(
     () => CategoryRemoteDataSourceImpl(getIt<DioClient>().dio),
   );
+  // Cart data source
+  getIt.registerLazySingleton<CartRemoteDataSource>(
+    () => CartRemoteDataSourceImpl(getIt<DioClient>().dio),
+  );
 
   // Repository
   getIt.registerLazySingleton<AuthRepository>(
@@ -109,7 +125,7 @@ Future<void> setup() async {
   getIt.registerLazySingleton<HomeRepository>(
     () => HomeRepositoryImpl(getIt<HomeDataSource>()),
   );
-  getIt.registerLazySingleton<OrderRepository>(() => OrderRepositoryImpl());
+  // getIt.registerLazySingleton<OrderRepository>(() => OrderRepositoryImpl());
   getIt.registerLazySingleton<MealTimeRepository>(
     () => MealTimeRepositoryImpl(
       remoteDataSource: getIt<MealTimeRemoteDataSource>(),
@@ -145,6 +161,10 @@ Future<void> setup() async {
       remoteDataSource: getIt<MenuRemoteDataSource>(),
       localDataSource: getIt<MenuLocalDataSource>(),
     ),
+  );
+  // Cart repository
+  getIt.registerLazySingleton<CartRepository>(
+    () => CartRepositoryImpl(remoteDataSource: getIt<CartRemoteDataSource>()),
   );
 
   // Use cases
@@ -218,6 +238,23 @@ Future<void> setup() async {
     () => GetCategoryByIdUseCase(repository: getIt<CategoryRepository>()),
   );
 
+  // Cart use cases
+  getIt.registerLazySingleton<GetCartUseCase>(
+    () => GetCartUseCase(repository: getIt<CartRepository>()),
+  );
+  getIt.registerLazySingleton<AddToCartUseCase>(
+    () => AddToCartUseCase(repository: getIt<CartRepository>()),
+  );
+  getIt.registerLazySingleton<UpdateCartItemUseCase>(
+    () => UpdateCartItemUseCase(repository: getIt<CartRepository>()),
+  );
+  getIt.registerLazySingleton<RemoveCartItemUseCase>(
+    () => RemoveCartItemUseCase(repository: getIt<CartRepository>()),
+  );
+  getIt.registerLazySingleton<ClearCartUseCase>(
+    () => ClearCartUseCase(repository: getIt<CartRepository>()),
+  );
+
   // Bloc
   getIt.registerFactory<AuthBloc>(
     () => AuthBloc(
@@ -272,6 +309,17 @@ Future<void> setup() async {
       updateCategoryUseCase: getIt<UpdateCategoryUseCase>(),
       getCategoryByIdUseCase: getIt<GetCategoryByIdUseCase>(),
       categoryRepository: getIt<CategoryRepository>(),
+    ),
+  );
+
+  // Cart cubit
+  getIt.registerFactory<CartCubit>(
+    () => CartCubit(
+      getCartUseCase: getIt<GetCartUseCase>(),
+      addToCartUseCase: getIt<AddToCartUseCase>(),
+      updateCartItemUseCase: getIt<UpdateCartItemUseCase>(),
+      removeCartItemUseCase: getIt<RemoveCartItemUseCase>(),
+      clearCartUseCase: getIt<ClearCartUseCase>(),
     ),
   );
 }

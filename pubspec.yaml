@@ -55,7 +55,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   pretty_dio_logger: ^1.4.0
   fl_chart: ^1.0.0
-  modular_ui: ^0.0.5
+  animated_custom_dropdown: ^3.1.1
   
 dev_dependencies:
   flutter_test:

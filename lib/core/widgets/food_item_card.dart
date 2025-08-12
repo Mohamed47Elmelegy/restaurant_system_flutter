@@ -1,178 +1,154 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-
-import '../entities/product.dart';
 import '../entities/main_category.dart';
-import '../theme/theme_helper.dart';
-import '../theme/text_styles.dart';
+import '../entities/product.dart';
 import '../routes/app_routes.dart';
+import '../theme/text_styles.dart';
+import '../theme/theme_helper.dart';
 import '../utils/category_helper.dart';
 
 class FoodItemCard extends StatelessWidget {
   final ProductEntity foodItem;
   final VoidCallback onAddPressed;
-  final List<CategoryEntity>? categories; // Add categories parameter
+  final List<CategoryEntity>? categories;
 
   const FoodItemCard({
     super.key,
     required this.foodItem,
     required this.onAddPressed,
-    this.categories, // Add categories parameter
+    this.categories,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 160.w,
-      height: 200.h,
-      decoration: BoxDecoration(
-        color: ThemeHelper.getCardBackgroundColor(context),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
         borderRadius: BorderRadius.circular(12.r),
-        boxShadow: ThemeHelper.getCardShadow(context),
-      ),
-      child: Stack(
-        children: [
-          // InkWell for tapping on the card to navigate to product details
-          // This covers the entire card including the image area
-          Positioned.fill(
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(12.r),
-                splashColor: ThemeHelper.getPrimaryColorForTheme(
-                  context,
-                ).withOpacity(0.3),
-                highlightColor: ThemeHelper.getPrimaryColorForTheme(
-                  context,
-                ).withOpacity(0.1),
-                onTap: () {
-                  Navigator.pushNamed(
-                    context,
-                    AppRoutes.productDetails,
-                    arguments: {'product': foodItem},
-                  );
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                ),
-              ),
-            ),
+        onTap: () {
+          Navigator.pushNamed(
+            context,
+            AppRoutes.productDetails,
+            arguments: {'product': foodItem},
+          );
+        },
+        child: Container(
+          width: 160.w,
+          height: 200.h,
+          decoration: BoxDecoration(
+            color: ThemeHelper.getCardBackgroundColor(context),
+            borderRadius: BorderRadius.circular(12.r),
+            boxShadow: ThemeHelper.getCardShadow(context),
           ),
-          // Main content - this will be on top of the InkWell
-          Column(
+          child: Stack(
             children: [
-              // Image section - now fully tappable through the InkWell
-              Expanded(
-                flex: 5,
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: const Color(
-                      0xFF8DA0B3,
-                    ), // Blue-gray color from image
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(12.r),
-                      topRight: Radius.circular(12.r),
-                    ),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(12.r),
-                      topRight: Radius.circular(12.r),
-                    ),
-                    child: Stack(
-                      children: [
-                        // Image or placeholder
-                        foodItem.imageUrl?.isNotEmpty == true
+              // Main content
+              Column(
+                children: [
+                  // Image section
+                  Expanded(
+                    flex: 5,
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF8DA0B3),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(12.r),
+                          topRight: Radius.circular(12.r),
+                        ),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(12.r),
+                          topRight: Radius.circular(12.r),
+                        ),
+                        child: foodItem.imageUrl?.isNotEmpty == true
                             ? _buildImageWidget()
                             : _buildPlaceholderImage(),
-                      ],
+                      ),
                     ),
                   ),
-                ),
+                  // Content section
+                  Expanded(
+                    flex: 5,
+                    child: Padding(
+                      padding: EdgeInsets.all(12.w),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Food item name
+                          Flexible(
+                            child: Text(
+                              foodItem.name,
+                              style: AppTextStyles.senBold14(context).copyWith(
+                                fontSize: 15.sp,
+                                color: ThemeHelper.getPrimaryTextColor(context),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          SizedBox(height: 4.h),
+                          // Category name
+                          Flexible(
+                            child: Text(
+                              CategoryHelper.getNameById(
+                                id: int.tryParse(foodItem.mainCategoryId) ?? 0,
+                                categories: categories ?? [],
+                              ),
+                              style: AppTextStyles.senRegular14(context)
+                                  .copyWith(
+                                    fontSize: 13.sp,
+                                    color: ThemeHelper.getSecondaryTextColor(
+                                      context,
+                                    ),
+                                  ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          SizedBox(height: 8.h),
+                          // Price
+                          Flexible(
+                            child: Text(
+                              '\$${foodItem.price.toStringAsFixed(0)}',
+                              style: AppTextStyles.senBold14(context).copyWith(
+                                fontSize: 16.sp,
+                                color: ThemeHelper.getPrimaryTextColor(context),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              // Content section
-              Expanded(
-                flex: 5,
-                child: Padding(
-                  padding: EdgeInsets.all(12.w),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize:
-                        MainAxisSize.min, // Add this to prevent overflow
-                    children: [
-                      // Food item name
-                      Flexible(
-                        child: Text(
-                          foodItem.name,
-                          style: AppTextStyles.senBold14(context).copyWith(
-                            fontSize: 15.sp,
-                            color: ThemeHelper.getPrimaryTextColor(context),
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+              // Add button positioned at bottom right
+              Positioned(
+                bottom: 8.h,
+                right: 8.w,
+                child: Skeleton.ignore(
+                  child: GestureDetector(
+                    onTap: onAddPressed,
+                    child: Container(
+                      width: 32.w,
+                      height: 32.h,
+                      decoration: BoxDecoration(
+                        color: ThemeHelper.getPrimaryColorForTheme(context),
+                        shape: BoxShape.circle,
+                        boxShadow: ThemeHelper.getCardShadow(context),
                       ),
-                      SizedBox(height: 4.h),
-                      // Category name (resolved from mainCategoryId)
-                      Flexible(
-                        child: Text(
-                          CategoryHelper.getNameById(
-                            id: foodItem.mainCategoryId,
-                            categories: categories ?? [],
-                          ),
-                          style: AppTextStyles.senRegular14(context).copyWith(
-                            fontSize: 13.sp,
-                            color: ThemeHelper.getSecondaryTextColor(context),
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      SizedBox(height: 8.h),
-                      // Price
-                      Flexible(
-                        child: Text(
-                          '\$${foodItem.price.toStringAsFixed(0)}',
-                          style: AppTextStyles.senBold14(context).copyWith(
-                            fontSize: 16.sp,
-                            color: ThemeHelper.getPrimaryTextColor(context),
-                          ),
-                        ),
-                      ),
-                    ],
+                      child: Icon(Icons.add, color: Colors.white, size: 18.sp),
+                    ),
                   ),
                 ),
               ),
             ],
           ),
-          // Orange circular add button positioned at bottom right
-          // This is positioned above the InkWell to ensure it's tappable
-          Positioned(
-            bottom: 8.h,
-            right: 8.w,
-            child: Skeleton.ignore(
-              child: GestureDetector(
-                onTap: onAddPressed,
-                child: Container(
-                  width: 32.w,
-                  height: 32.h,
-                  decoration: BoxDecoration(
-                    color: ThemeHelper.getPrimaryColorForTheme(
-                      context,
-                    ), // Orange color from image
-                    shape: BoxShape.circle,
-                    boxShadow: ThemeHelper.getCardShadow(context),
-                  ),
-                  child: Icon(Icons.add, color: Colors.white, size: 18.sp),
-                ),
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -220,12 +196,10 @@ class FoodItemCard extends StatelessWidget {
 
   /// Build placeholder image when no image is available
   Widget _buildPlaceholderImage() {
-    return Container(
-      color: const Color(0xFF8DA0B3),
-      child: Icon(
-        Icons.fastfood,
-        size: 40.sp,
-        color: Colors.white.withOpacity(0.7),
+    return Center(
+      child: Container(
+        color: const Color(0xFF8DA0B3),
+        child: Icon(Icons.fastfood, size: 40.sp, color: Colors.white),
       ),
     );
   }

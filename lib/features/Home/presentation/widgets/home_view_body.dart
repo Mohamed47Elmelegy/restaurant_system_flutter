@@ -14,7 +14,6 @@ class HomeViewBody extends StatefulWidget {
 
 class _HomeViewBodyState extends State<HomeViewBody> {
   String currentAddress = 'Halal Lab office';
-  int cartItemCount = 2;
 
   @override
   Widget build(BuildContext context) {
@@ -23,15 +22,9 @@ class _HomeViewBodyState extends State<HomeViewBody> {
         // Custom App Bar
         HomeCustomAppBar(
           currentAddress: currentAddress,
-          cartItemCount: cartItemCount,
           onAddressChanged: (newAddress) {
             setState(() {
               currentAddress = newAddress;
-            });
-          },
-          onCartItemCountChanged: (newCount) {
-            setState(() {
-              cartItemCount = newCount;
             });
           },
         ),

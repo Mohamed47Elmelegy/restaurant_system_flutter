@@ -1,37 +1,61 @@
 import 'package:equatable/equatable.dart';
 
+/// 🟩 Order Item Entity - Domain Layer
 class OrderItemEntity extends Equatable {
   final int id;
-  final int productId;
-  final String productName;
+  final int orderId;
+  final int menuItemId;
+  final String name;
+  final String? description;
+  final String? image;
+  final double unitPrice;
   final int quantity;
-  final double price;
-  final String? productImage;
   final double totalPrice;
+  final String? specialInstructions;
+  final DateTime createdAt;
+  final DateTime updatedAt;
 
   const OrderItemEntity({
     required this.id,
-    required this.productId,
-    required this.productName,
+    required this.orderId,
+    required this.menuItemId,
+    required this.name,
+    this.description,
+    this.image,
+    required this.unitPrice,
     required this.quantity,
-    required this.price,
-    this.productImage,
     required this.totalPrice,
+    this.specialInstructions,
+    required this.createdAt,
+    required this.updatedAt,
   });
+
+  /// Calculate total price for this item
+  double get calculatedTotal => unitPrice * quantity;
+
+  /// Check if item has special instructions
+  bool get hasSpecialInstructions =>
+      specialInstructions != null && specialInstructions!.isNotEmpty;
+
+  /// Get formatted unit price
+  String get formattedUnitPrice => unitPrice.toStringAsFixed(2);
+
+  /// Get formatted total price
+  String get formattedTotalPrice => totalPrice.toStringAsFixed(2);
 
   @override
   List<Object?> get props => [
     id,
-    productId,
-    productName,
+    orderId,
+    menuItemId,
+    name,
+    description,
+    image,
+    unitPrice,
     quantity,
-    price,
-    productImage,
     totalPrice,
+    specialInstructions,
+    createdAt,
+    updatedAt,
   ];
-
-  @override
-  String toString() {
-    return 'OrderItemEntity(id: $id, productName: $productName, quantity: $quantity, totalPrice: $totalPrice)';
-  }
 }

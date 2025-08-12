@@ -39,8 +39,6 @@ abstract class CategoryLocalDataSource {
   /// حذف فئة رئيسية واحدة
   Future<void> deleteMainCategory(String id);
 
-  /// تحديث حالة نشاط الفئة
-  Future<void> updateCategoryActivity(String id, bool isActive);
 }
 
 class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
@@ -231,41 +229,5 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
     }
   }
 
-  @override
-  Future<void> updateCategoryActivity(String id, bool isActive) async {
-    try {
-      final categories = await getMainCategories();
-      final categoryIndex = categories.indexWhere(
-        (category) => category.id == id,
-      );
 
-      if (categoryIndex != -1) {
-        final updatedCategory = MainCategoryModel.fromIntId(
-          id: int.tryParse(id),
-          name: categories[categoryIndex].name,
-          
-          icon: categories[categoryIndex].icon,
-          color: categories[categoryIndex].color, 
-          description: categories[categoryIndex].description,
-          
-          isActive: isActive,
-          sortOrder: categories[categoryIndex].sortOrder,
-          createdAt: categories[categoryIndex].createdAt,
-          updatedAt: DateTime.now(),
-          productsCount: categories[categoryIndex].productsCount,
-        );
-
-        categories[categoryIndex] = updatedCategory;
-        await saveMainCategories(categories);
-        log(
-          '🔄 CategoryLocalDataSource: Updated activity for main category $id to $isActive',
-        );
-      }
-    } catch (e) {
-      log(
-        '❌ CategoryLocalDataSource: Error updating main category activity: $e',
-      );
-      rethrow;
-    }
-  }
 }

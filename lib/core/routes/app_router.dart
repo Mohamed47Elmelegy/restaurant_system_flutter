@@ -14,6 +14,9 @@ import '../../features/admin/presentation/pages/add_items/presentation/pages/adm
 import '../../features/admin/presentation/pages/meal_times/presentation/pages/meal_time_management_page.dart';
 import '../../features/menu/presentation/pages/product_details_page.dart';
 import '../../features/Home/presentation/pages/category_items_page.dart';
+import '../../features/cart/presentation/pages/cart_page.dart';
+import '../../features/cart/presentation/bloc/cart_cubit.dart';
+import '../../features/cart/presentation/bloc/cart_event.dart';
 import 'app_routes.dart';
 
 Route<dynamic>? appRouter(RouteSettings settings) {
@@ -28,8 +31,8 @@ Route<dynamic>? appRouter(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => const SignupPage());
     case AppRoutes.home:
       return MaterialPageRoute(builder: (_) => const HomePage());
-    case AppRoutes.sellerDashboard:
-      return MaterialPageRoute(builder: (_) => const SellerDashboardHome());
+    // case AppRoutes.sellerDashboard:
+    //   return MaterialPageRoute(builder: (_) => const SellerDashboardHome());
     case AppRoutes.admin:
       return MaterialPageRoute(builder: (_) => const AdminMainView());
     case AppRoutes.adminAddItem:
@@ -56,6 +59,13 @@ Route<dynamic>? appRouter(RouteSettings settings) {
         builder: (_) => CategoryItemsPage(
           categoryId: categoryId,
           categoryName: categoryName,
+        ),
+      );
+    case AppRoutes.cart:
+      return MaterialPageRoute(
+        builder: (_) => BlocProvider(
+          create: (context) => getIt<CartCubit>()..add(LoadCart()),
+          child: const CartPage(),
         ),
       );
 

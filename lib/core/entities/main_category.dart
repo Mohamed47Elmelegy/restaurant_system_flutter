@@ -1,13 +1,15 @@
-import '../base/base_entity.dart';
 import '../../features/admin/presentation/pages/meal_times/domain/entities/meal_time.dart';
+import '../base/base_entity.dart';
 
 /// 🟦 MainCategory Entity - مبدأ المسؤولية الواحدة (SRP)
 /// مسؤول عن تمثيل فئة رئيسية في الأعمال فقط
 class CategoryEntity extends BaseEntity {
   final String name;
+  final String? nameAr; // تأكد من وجود هذا الحقل
   final String? icon;
   final String? color;
   final String? description;
+  final String? descriptionAr; // تأكد من وجود هذا الحقل
   final bool isActive;
   final int sortOrder;
   final int? productsCount;
@@ -16,10 +18,11 @@ class CategoryEntity extends BaseEntity {
   const CategoryEntity({
     required super.id,
     required this.name,
-
+    this.nameAr,
     this.icon,
     this.color,
     this.description,
+    this.descriptionAr,
     required this.isActive,
     required this.sortOrder,
     super.createdAt,
@@ -66,9 +69,11 @@ class CategoryEntity extends BaseEntity {
   List<Object?> get props => [
     id,
     name,
+    nameAr,
     icon,
     color,
     description,
+    descriptionAr,
     isActive,
     sortOrder,
     createdAt,
@@ -81,9 +86,11 @@ class CategoryEntity extends BaseEntity {
   CategoryEntity copyWith({
     String? id,
     String? name,
+    String? nameAr,
     String? icon,
     String? color,
     String? description,
+    String? descriptionAr,
     bool? isActive,
     int? sortOrder,
     DateTime? createdAt,
@@ -94,10 +101,11 @@ class CategoryEntity extends BaseEntity {
     return CategoryEntity(
       id: id ?? this.id,
       name: name ?? this.name,
-
+      nameAr: nameAr ?? this.nameAr,
       icon: icon ?? this.icon,
       color: color ?? this.color,
       description: description ?? this.description,
+      descriptionAr: descriptionAr ?? this.descriptionAr,
       isActive: isActive ?? this.isActive,
       sortOrder: sortOrder ?? this.sortOrder,
       createdAt: createdAt ?? this.createdAt,
@@ -112,10 +120,12 @@ class CategoryEntity extends BaseEntity {
     return {
       'id': id,
       'name': name,
+      'name_ar': nameAr, // إضافة هذا السطر
 
       'icon': icon,
       'color': color,
       'description': description,
+      'description_ar': descriptionAr, // إضافة هذا السطر
       'is_active': isActive,
       'sort_order': sortOrder,
       'created_at': createdAt?.toIso8601String(),
@@ -144,8 +154,9 @@ class CategoryEntity extends BaseEntity {
   bool get isValid {
     return name.isNotEmpty && sortOrder >= 0;
   }
+
   factory CategoryEntity.fake() {
-    return CategoryEntity(
+    return const CategoryEntity(
       id: '0',
       name: 'تصنيف تجريبي',
       isActive: true,

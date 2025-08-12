@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:restaurant_system_flutter/core/entities/product.dart';
+import 'package:restaurant_system_flutter/features/Home/presentation/widgets/food_items_list_view.dart';
 import '../../../../core/theme/text_styles.dart';
-import '../../../../core/widgets/food_item_card.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_state.dart';
 import 'food_items_grid_view.dart';
@@ -32,9 +32,29 @@ class FoodItemsSection extends StatelessWidget {
               Text(title, style: AppTextStyles.senBold20(context)),
               SizedBox(height: 16.h),
               if (isHorizontal)
-                SizedBox(height: 200.h, child: _buildItemsList(context, state))
-              else
-                _buildItemsGrid(context, state),
+                SizedBox(
+                  height: 200.h,
+                  child: FoodItemsListView(
+                    physics: const BouncingScrollPhysics(),
+                    items: state is HomeLoaded
+                        ? getItems(state)
+                        : _generatePlaceholderItems(),
+                    categories: state is HomeLoaded ? state.categories : null,
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                  ),
+                )
+              else FoodItemsGridView(
+                  items: state is HomeLoaded
+                      ? getItems(state)
+                      : _generatePlaceholderItems(),
+                  categories: state is HomeLoaded ? state.categories : null,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.zero,
+                ),
+               
+          
             ],
           ),
         );
@@ -42,42 +62,8 @@ class FoodItemsSection extends StatelessWidget {
     );
   }
 
-  Widget _buildItemsList(BuildContext context, HomeState state) {
-    final items = state is HomeLoaded
-        ? getItems(state)
-        : _generatePlaceholderItems();
-
-    return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemCount: items.length,
-      itemBuilder: (context, index) {
-        return Padding(
-          padding: EdgeInsets.only(right: 16.w),
-          child: FoodItemCard(
-            foodItem: items[index],
-            onAddPressed: () {},
-            categories: state is HomeLoaded ? state.categories : null,
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildItemsGrid(BuildContext context, HomeState state) {
-    final items = state is HomeLoaded
-        ? getItems(state)
-        : _generatePlaceholderItems();
-
-    return FoodItemsGridView(
-      items: items,
-      categories: state is HomeLoaded ? state.categories : null,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.zero,
-    );
-  }
-
-  // Fake Data Placeholder for Skeleton Wrapper  This Data will come from the API
+  
+// Fake Data Placeholder for Skeleton Wrapper  This Data will come from the API
   List<ProductEntity> _generatePlaceholderItems() {
     return List.generate(6, (index) {
       return ProductEntity(
@@ -87,7 +73,7 @@ class FoodItemsSection extends StatelessWidget {
         price: 25.0 + (index * 5),
         rating: 4.5 + (index * 0.1),
         imageUrl: 'assets/icons/basic/Chicken.png',
-        mainCategoryId: 1,
+        mainCategoryId: '1',
       );
     });
   }

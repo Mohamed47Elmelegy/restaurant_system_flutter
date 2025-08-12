@@ -1,70 +1,88 @@
-import '../entities/product.dart';
+import 'dart:math';
+
 import '../base/base_model.dart';
+import '../entities/product.dart';
+import 'main_category_model.dart';
 
 /// 🟦 ProductModel - مبدأ المسؤولية الواحدة (SRP)
-/// مسؤول عن تحويل البيانات من/إلى JSON والـ Entity
+/// مسؤول عن تحويل بيانات المنتجات فقط
 class ProductModel extends BaseModel<ProductEntity> {
   final String id;
   final String name;
+  final String? nameAr;
   final String? description;
-  final double price;
-  final int mainCategoryId;
+  final String? descriptionAr;
+  final String price;
+  final String mainCategoryId;
+  final String? subCategoryId;
   final String? imageUrl;
   final bool isAvailable;
-  final double? rating;
+  final String? rating;
   final int? reviewCount;
   final int? preparationTime;
   final List<String>? ingredients;
   final List<String>? allergens;
   final bool isFeatured;
-  final int? sortOrder;
+  final int sortOrder;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final MainCategoryModel? mainCategory;
 
   ProductModel({
     required this.id,
     required this.name,
+    this.nameAr,
     this.description,
+    this.descriptionAr,
     required this.price,
     required this.mainCategoryId,
+    this.subCategoryId,
     this.imageUrl,
-    this.isAvailable = true,
+    required this.isAvailable,
     this.rating,
     this.reviewCount,
     this.preparationTime,
     this.ingredients,
     this.allergens,
-    this.isFeatured = false,
-    this.sortOrder,
+    required this.isFeatured,
+    required this.sortOrder,
     this.createdAt,
     this.updatedAt,
+    this.mainCategory,
   });
 
   /// Constructor for creating ProductModel from existing data with int id
   factory ProductModel.fromIntId({
     int? id,
     required String name,
+    String? nameAr,
     String? description,
-    required double price,
+    String? descriptionAr,
+    required String price,
     required int mainCategoryId,
+    int? subCategoryId,
     String? imageUrl,
-    bool isAvailable = true,
-    double? rating,
+    required bool isAvailable,
+    String? rating,
     int? reviewCount,
     int? preparationTime,
     List<String>? ingredients,
     List<String>? allergens,
-    bool isFeatured = false,
-    int? sortOrder,
+    required bool isFeatured,
+    required int sortOrder,
     DateTime? createdAt,
     DateTime? updatedAt,
+    MainCategoryModel? mainCategory,
   }) {
     return ProductModel(
       id: id?.toString() ?? '',
       name: name,
+      nameAr: nameAr,
       description: description,
+      descriptionAr: descriptionAr,
       price: price,
-      mainCategoryId: mainCategoryId,
+      mainCategoryId: mainCategoryId.toString(),
+      subCategoryId: subCategoryId?.toString(),
       imageUrl: imageUrl,
       isAvailable: isAvailable,
       rating: rating,
@@ -76,6 +94,7 @@ class ProductModel extends BaseModel<ProductEntity> {
       sortOrder: sortOrder,
       createdAt: createdAt,
       updatedAt: updatedAt,
+      mainCategory: mainCategory,
     );
   }
 
@@ -84,16 +103,39 @@ class ProductModel extends BaseModel<ProductEntity> {
     return int.tryParse(id);
   }
 
+  /// Get int main category id for backward compatibility
+  int? get intMainCategoryId {
+    return int.tryParse(mainCategoryId);
+  }
+
+  /// Get int sub category id for backward compatibility
+  int? get intSubCategoryId {
+    return subCategoryId != null ? int.tryParse(subCategoryId!) : null;
+  }
+
+  /// Get price as double
+  double get priceAsDouble {
+    return double.tryParse(price) ?? 0.0;
+  }
+
+  /// Get rating as double
+  double get ratingAsDouble {
+    return rating != null ? double.tryParse(rating!) ?? 0.0 : 0.0;
+  }
+
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(
       id: json['id']?.toString() ?? '',
       name: json['name'] ?? '',
+      nameAr: json['name_ar'],
       description: json['description'],
-      price: _parsePrice(json['price']),
-      mainCategoryId: json['main_category_id'] ?? 0,
+      descriptionAr: json['description_ar'],
+      price: json['price']?.toString() ?? '0',
+      mainCategoryId: json['main_category_id']?.toString() ?? '',
+      subCategoryId: json['sub_category_id']?.toString(),
       imageUrl: json['image_url'],
       isAvailable: json['is_available'] ?? true,
-      rating: _parseRating(json['rating']),
+      rating: json['rating']?.toString(),
       reviewCount: json['review_count'],
       preparationTime: json['preparation_time'],
       ingredients: json['ingredients'] != null
@@ -103,104 +145,57 @@ class ProductModel extends BaseModel<ProductEntity> {
           ? List<String>.from(json['allergens'])
           : null,
       isFeatured: json['is_featured'] ?? false,
-      sortOrder: json['sort_order'],
+      sortOrder: json['sort_order'] ?? 0,
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
           : null,
       updatedAt: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'])
           : null,
+      mainCategory: json['main_category'] != null
+          ? MainCategoryModel.fromJson(json['main_category'])
+          : null,
     );
-  }
-
-  /// Create ProductModel from Product entity
-  factory ProductModel.fromEntity(ProductEntity entity) {
-    return ProductModel(
-      id: entity.id,
-      name: entity.name,
-      description: entity.description,
-      price: entity.price,
-      mainCategoryId: entity.mainCategoryId,
-      imageUrl: entity.imageUrl,
-      isAvailable: entity.isAvailable,
-      rating: entity.rating,
-      reviewCount: entity.reviewCount,
-      preparationTime: entity.preparationTime,
-      ingredients: entity.ingredients,
-      allergens: entity.allergens,
-      isFeatured: entity.isFeatured,
-      sortOrder: entity.sortOrder,
-      createdAt: entity.createdAt,
-      updatedAt: entity.updatedAt,
-    );
-  }
-
-  /// Parse price from various data types (string, num, double)
-  /// Fixes the NoSuchMethodError when API returns price as string "23.00"
-  ///
-  /// Problem: Laravel API returns price as string "23.00" but Flutter expects num
-  /// Solution: Handle both string and numeric types safely
-  ///
-  /// Example error:
-  /// NoSuchMethodError: Class 'String' has no instance method 'toDouble'.
-  /// Receiver: "23.00"
-  static double _parsePrice(dynamic price) {
-    if (price == null) return 0.0;
-
-    if (price is num) {
-      return price.toDouble();
-    }
-
-    if (price is String) {
-      return double.tryParse(price) ?? 0.0;
-    }
-
-    return 0.0;
-  }
-
-  /// Parse rating from various data types (string, num, double)
-  /// Fixes the TypeError when API returns rating as string "0.00"
-  ///
-  /// Problem: Laravel API returns rating as string "0.00" but Flutter expects num
-  /// Solution: Handle both string and numeric types safely, return null for invalid values
-  ///
-  /// Example error:
-  /// TypeError: "0.00": type 'String' is not a subtype of type 'num'
-  static double? _parseRating(dynamic rating) {
-    if (rating == null) return null;
-
-    if (rating is num) {
-      return rating.toDouble();
-    }
-
-    if (rating is String) {
-      final parsed = double.tryParse(rating);
-      return parsed == 0.0 ? null : parsed; // Return null for 0.0 ratings
-    }
-
-    return null;
   }
 
   @override
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
+    final Map<String, dynamic> data = {
       'name': name,
-      if (description != null) 'description': description,
       'price': price,
       'main_category_id': mainCategoryId,
-      if (imageUrl != null) 'image_url': imageUrl,
       'is_available': isAvailable,
-      if (rating != null) 'rating': rating,
-      if (reviewCount != null) 'review_count': reviewCount,
-      if (preparationTime != null) 'preparation_time': preparationTime,
-      if (ingredients != null) 'ingredients': ingredients,
-      if (allergens != null) 'allergens': allergens,
       'is_featured': isFeatured,
-      if (sortOrder != null) 'sort_order': sortOrder,
-      if (createdAt != null) 'created_at': createdAt!.toIso8601String(),
-      if (updatedAt != null) 'updated_at': updatedAt!.toIso8601String(),
+      'sort_order': sortOrder,
     };
+
+    // Only add non-null optional fields
+    if (nameAr != null) data['name_ar'] = nameAr;
+    if (description != null && description!.isNotEmpty) {
+      data['description'] = description;
+    }
+    if (descriptionAr != null && descriptionAr!.isNotEmpty) {
+      data['description_ar'] = descriptionAr;
+    }
+    if (subCategoryId != null) data['sub_category_id'] = subCategoryId;
+    if (imageUrl != null) data['image_url'] = imageUrl;
+    if (rating != null) data['rating'] = rating;
+    if (reviewCount != null) data['review_count'] = reviewCount;
+    if (preparationTime != null) data['preparation_time'] = preparationTime;
+    if (ingredients != null) data['ingredients'] = ingredients;
+    if (allergens != null) data['allergens'] = allergens;
+
+    // Only add ID if it's not empty (for updates)
+    if (id.isNotEmpty) data['id'] = id;
+
+    // Only add timestamps if they exist (for updates)
+    if (createdAt != null) data['created_at'] = createdAt!.toIso8601String();
+    if (updatedAt != null) data['updated_at'] = updatedAt!.toIso8601String();
+
+    // Add related models if they exist
+    if (mainCategory != null) data['main_category'] = mainCategory!.toJson();
+
+    return data;
   }
 
   @override
@@ -208,12 +203,12 @@ class ProductModel extends BaseModel<ProductEntity> {
     return ProductEntity(
       id: id,
       name: name,
+      
       description: description,
-      price: price,
-      mainCategoryId: mainCategoryId,
+      price: priceAsDouble,
       imageUrl: imageUrl,
       isAvailable: isAvailable,
-      rating: rating,
+      rating: rating != null ? double.tryParse(rating!) : null,
       reviewCount: reviewCount,
       preparationTime: preparationTime,
       ingredients: ingredients,
@@ -222,6 +217,8 @@ class ProductModel extends BaseModel<ProductEntity> {
       sortOrder: sortOrder,
       createdAt: createdAt,
       updatedAt: updatedAt,
+      mainCategory: mainCategory?.toEntity(),
+      mainCategoryId: intMainCategoryId.toString(),
     );
   }
 
@@ -230,9 +227,12 @@ class ProductModel extends BaseModel<ProductEntity> {
     return ProductModel(
       id: changes['id'] ?? id,
       name: changes['name'] ?? name,
+      nameAr: changes['nameAr'] ?? nameAr,
       description: changes['description'] ?? description,
+      descriptionAr: changes['descriptionAr'] ?? descriptionAr,
       price: changes['price'] ?? price,
       mainCategoryId: changes['mainCategoryId'] ?? mainCategoryId,
+      subCategoryId: changes['subCategoryId'] ?? subCategoryId,
       imageUrl: changes['imageUrl'] ?? imageUrl,
       isAvailable: changes['isAvailable'] ?? isAvailable,
       rating: changes['rating'] ?? rating,
@@ -244,6 +244,7 @@ class ProductModel extends BaseModel<ProductEntity> {
       sortOrder: changes['sortOrder'] ?? sortOrder,
       createdAt: changes['createdAt'] ?? createdAt,
       updatedAt: changes['updatedAt'] ?? updatedAt,
+      mainCategory: changes['mainCategory'] ?? mainCategory,
     );
   }
 
@@ -259,5 +260,28 @@ class ProductModel extends BaseModel<ProductEntity> {
   @override
   String toString() {
     return 'ProductModel(id: $id, name: $name, price: $price, isAvailable: $isAvailable)';
+  }
+
+  /// Create ProductModel from ProductEntity
+  static ProductModel fromEntity(ProductEntity entity) {
+    return ProductModel(
+      id: entity.id,
+      name: entity.name,
+      description: entity.description,
+      price: entity.price.toString(), // Convert double to string
+      mainCategoryId: entity.mainCategoryId,
+      imageUrl: entity.imageUrl,
+      isAvailable: entity.isAvailable ,
+      rating: entity.rating?.toString(),
+      reviewCount: entity.reviewCount,
+      preparationTime: entity.preparationTime,
+      ingredients: entity.ingredients,
+      allergens: entity.allergens,
+      isFeatured: entity.isFeatured ,
+      sortOrder: entity.sortOrder ?? 0,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+
+    );
   }
 }

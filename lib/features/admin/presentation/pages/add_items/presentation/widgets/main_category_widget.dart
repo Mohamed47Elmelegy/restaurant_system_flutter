@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../../../core/entities/main_category.dart';
 import '../../../../../../../core/theme/theme_helper.dart';
-import '../../../add_category/presentation/cubit/category_states.dart';
-import '../../../add_category/presentation/cubit/category_events.dart';
+import '../../../../../../../core/widgets/animated_custom_dropdown_list.dart';
 import '../../../add_category/presentation/cubit/category_cubit.dart';
+import '../../../add_category/presentation/cubit/category_events.dart';
+import '../../../add_category/presentation/cubit/category_states.dart';
 
 class MainCategoryWidget extends StatefulWidget {
   final String? selectedCategory;
   final ValueChanged<String> onCategoryChanged;
-
+  final List<CategoryEntity>? categories;
   const MainCategoryWidget({
     super.key,
     this.selectedCategory,
     required this.onCategoryChanged,
+    this.categories,
   });
 
   @override
@@ -25,24 +28,20 @@ class _MainCategoryWidgetState extends State<MainCategoryWidget> {
   @override
   void initState() {
     super.initState();
-    // Load categories when widget initializes
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadCategories();
     });
   }
 
   void _loadCategories() {
-    // Only load if not already loaded
     if (!_hasLoadedOnce) {
-      context.read<CategoryCubit>().add(LoadCategories());
+      context.read<CategoryCubit>().add(const LoadCategories());
       _hasLoadedOnce = true;
     }
   }
 
   void _forceRefreshCategories() {
-    // Force refresh only when user explicitly requests it
-    // This will be used only in error state
-    context.read<CategoryCubit>().add(LoadCategories());
+    context.read<CategoryCubit>().add(const LoadCategories());
   }
 
   @override
@@ -72,89 +71,55 @@ class _MainCategoryWidgetState extends State<MainCategoryWidget> {
           child: BlocBuilder<CategoryCubit, CategoryState>(
             builder: (context, state) {
               if (state is CategoryLoading) {
-                return DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    value: null,
-                    isExpanded: true,
-                    hint: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('Loading categories...'),
-                        SizedBox(width: 8),
-                        SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                      ],
-                    ),
-                    items: [],
-                    onChanged: null,
-                  ),
+                return CustomAnimatedDropdown<String>(
+                  items: const [],
+                  itemLabel: (item) => item,
+                  selectedValue: null,
+                  onChanged: (_) {},
+                  hintText: 'Select main category',
+                  isLoading: true,
                 );
               }
 
               if (state is CategoryError) {
-                return DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    value: null,
-                    isExpanded: true,
-                    hint: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('Error loading categories'),
-                        SizedBox(width: 8),
-                        IconButton(
-                          icon: Icon(Icons.refresh, size: 16),
-                          onPressed: _forceRefreshCategories,
-                          padding: EdgeInsets.zero,
-                          constraints: BoxConstraints(),
-                        ),
-                      ],
-                    ),
-                    items: [],
-                    onChanged: null,
-                  ),
+                return CustomAnimatedDropdown<String>(
+                  items: const [],
+                  itemLabel: (item) => item,
+                  selectedValue: null,
+                  onChanged: (_) {},
+                  hintText: 'Select main category',
+                  errorMessage: 'Error loading categories',
+                  onRetry: _forceRefreshCategories,
                 );
               }
 
-              if (state is CategoriesLoaded) {
-                final categories = state.categories;
+            if (state is CategoriesLoaded) {
+  final categories = state.categories;
 
-                return DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    value: widget.selectedCategory,
-                    isExpanded: true,
-                    hint: Text(
-                      'Select main category',
-                      style: TextStyle(
-                        color: ThemeHelper.getSecondaryTextColor(context),
-                      ),
-                    ),
-                    items: categories.map((category) {
-                      return DropdownMenuItem(
-                        value: category.id.toString(),
-                        child: Text('${category.name} '),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      if (value != null) {
-                        widget.onCategoryChanged(value);
-                      }
-                    },
-                  ),
-                );
-              }
+  // قائمة أسماء الفئات
+  final categoryNames = categories.map((c) => c.name).toList();
 
-              // Default state - show loading
-              return DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  value: null,
-                  isExpanded: true,
-                  hint: const Text('Loading categories...'),
-                  items: [],
-                  onChanged: null,
-                ),
+  return CustomAnimatedDropdown<String>(
+    items: categoryNames,  // هنا بنستخدم الأسماء مش الـ ids
+    itemLabel: (name) => name, // الاسم نفسه يتعرض
+    selectedValue: widget.selectedCategory, // خليها اسم مش id
+    onChanged: (selectedName) {
+      if (selectedName != null) {
+        widget.onCategoryChanged(selectedName); // هترجع الاسم مباشرة
+      }
+    },
+    hintText: 'Select main category',
+  );
+}
+
+
+              return CustomAnimatedDropdown<String>(
+                items: const [],
+                itemLabel: (item) => item,
+                selectedValue: null,
+                onChanged: (_) {},
+                hintText: 'Loading categories...',
+                isLoading: true,
               );
             },
           ),

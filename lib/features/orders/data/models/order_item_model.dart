@@ -1,84 +1,134 @@
+import 'package:equatable/equatable.dart';
+import '../../domain/entities/order_entity.dart';
 import '../../domain/entities/order_item_entity.dart';
 
+/// 🟨 Order Item Model - Data Layer
 class OrderItemModel extends OrderItemEntity {
   const OrderItemModel({
     required super.id,
-    required super.productId,
-    required super.productName,
+    required super.orderId,
+    required super.menuItemId,
+    required super.name,
+    super.description,
+    super.image,
+    required super.unitPrice,
     required super.quantity,
-    required super.price,
-    super.productImage,
     required super.totalPrice,
+    super.specialInstructions,
+    required super.createdAt,
+    required super.updatedAt,
   });
 
+  /// Factory constructor from JSON
   factory OrderItemModel.fromJson(Map<String, dynamic> json) {
     return OrderItemModel(
-      id: json['id'] ?? 0,
-      productId: json['product_id'] ?? 0,
-      productName: json['product_name'] ?? '',
-      quantity: json['quantity'] ?? 1,
-      price: _parseDouble(json['price']),
-      productImage: json['product_image'],
-      totalPrice: _parseDouble(json['total_price']),
+      id: json['id'] as int,
+      orderId: json['order_id'] as int,
+      menuItemId: json['menu_item_id'] as int,
+      name: json['name'] as String,
+      description: json['description'] as String?,
+      image: json['image'] as String?,
+      unitPrice: double.parse(json['unit_price'].toString()),
+      quantity: json['quantity'] as int,
+      totalPrice: double.parse(json['total_price'].toString()),
+      specialInstructions: json['special_instructions'] as String?,
+      createdAt: DateTime.parse(json['created_at']),
+      updatedAt: DateTime.parse(json['updated_at']),
     );
   }
 
-  /// Safely parse double values from various data types
-  static double _parseDouble(dynamic value) {
-    if (value == null) return 0.0;
-
-    if (value is num) {
-      return value.toDouble();
-    }
-
-    if (value is String) {
-      return double.tryParse(value) ?? 0.0;
-    }
-
-    return 0.0;
-  }
-
-  factory OrderItemModel.fromEntity(OrderItemEntity entity) {
-    return OrderItemModel(
-      id: entity.id,
-      productId: entity.productId,
-      productName: entity.productName,
-      quantity: entity.quantity,
-      price: entity.price,
-      productImage: entity.productImage,
-      totalPrice: entity.totalPrice,
-    );
-  }
-
+  /// Convert to JSON
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'product_id': productId,
-      'product_name': productName,
+      'order_id': orderId,
+      'menu_item_id': menuItemId,
+      'name': name,
+      if (description != null) 'description': description,
+      if (image != null) 'image': image,
+      'unit_price': unitPrice.toStringAsFixed(2),
       'quantity': quantity,
-      'price': price,
-      'product_image': productImage,
-      'total_price': totalPrice,
+      'total_price': totalPrice.toStringAsFixed(2),
+      if (specialInstructions != null)
+        'special_instructions': specialInstructions,
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
     };
   }
 
+  /// Create a copy with updated fields
   OrderItemModel copyWith({
     int? id,
-    int? productId,
-    String? productName,
+    int? orderId,
+    int? menuItemId,
+    String? name,
+    String? description,
+    String? image,
+    double? unitPrice,
     int? quantity,
-    double? price,
-    String? productImage,
     double? totalPrice,
+    String? specialInstructions,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return OrderItemModel(
       id: id ?? this.id,
-      productId: productId ?? this.productId,
-      productName: productName ?? this.productName,
+      orderId: orderId ?? this.orderId,
+      menuItemId: menuItemId ?? this.menuItemId,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      image: image ?? this.image,
+      unitPrice: unitPrice ?? this.unitPrice,
       quantity: quantity ?? this.quantity,
-      price: price ?? this.price,
-      productImage: productImage ?? this.productImage,
       totalPrice: totalPrice ?? this.totalPrice,
+      specialInstructions: specialInstructions ?? this.specialInstructions,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  /// Convert from entity to model
+  factory OrderItemModel.fromEntity(OrderItemEntity entity) {
+    return OrderItemModel(
+      id: entity.id,
+      orderId: entity.orderId,
+      menuItemId: entity.menuItemId,
+      name: entity.name,
+      description: entity.description,
+      image: entity.image,
+      unitPrice: entity.unitPrice,
+      quantity: entity.quantity,
+      totalPrice: entity.totalPrice,
+      specialInstructions: entity.specialInstructions,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+    );
+  }
+
+  /// Factory constructor from cart item (for placing orders)
+  factory OrderItemModel.fromCartItem({
+    required int menuItemId,
+    required String name,
+    String? description,
+    String? image,
+    required double unitPrice,
+    required int quantity,
+    String? specialInstructions,
+  }) {
+    final now = DateTime.now();
+    return OrderItemModel(
+      id: 0, // Will be set by backend
+      orderId: 0, // Will be set by backend
+      menuItemId: menuItemId,
+      name: name,
+      description: description,
+      image: image,
+      unitPrice: unitPrice,
+      quantity: quantity,
+      totalPrice: unitPrice * quantity,
+      specialInstructions: specialInstructions,
+      createdAt: now,
+      updatedAt: now,
     );
   }
 }

@@ -5,29 +5,29 @@ class CartItemModel extends CartItemEntity {
     required super.id,
     required super.productId,
     required super.quantity,
-    required super.price,
-    required super.productName,
-    super.productImage,
-    super.productDescription,
-    required super.createdAt,
-    required super.updatedAt,
+    required super.unitPrice,
+    super.product,
   });
 
   factory CartItemModel.fromJson(Map<String, dynamic> json) {
+    // Parse product info if available
+    ProductInfo? productInfo;
+    if (json['product'] != null) {
+      final productData = json['product'] as Map<String, dynamic>;
+      productInfo = ProductInfo(
+        id: productData['id'] ?? 0,
+        name: productData['name'] ?? '',
+        price: productData['price']?.toString() ?? '0',
+        imageUrl: productData['image_url'] ?? productData['image'],
+      );
+    }
+
     return CartItemModel(
       id: json['id'] ?? 0,
       productId: json['product_id'] ?? 0,
       quantity: json['quantity'] ?? 1,
-      price: _parseDouble(json['price']),
-      productName: json['product_name'] ?? '',
-      productImage: json['product_image'],
-      productDescription: json['product_description'],
-      createdAt: DateTime.parse(
-        json['created_at'] ?? DateTime.now().toIso8601String(),
-      ),
-      updatedAt: DateTime.parse(
-        json['updated_at'] ?? DateTime.now().toIso8601String(),
-      ),
+      unitPrice: _parseDouble(json['unit_price']),
+      product: productInfo,
     );
   }
 
@@ -51,50 +51,45 @@ class CartItemModel extends CartItemEntity {
       id: entity.id,
       productId: entity.productId,
       quantity: entity.quantity,
-      price: entity.price,
-      productName: entity.productName,
-      productImage: entity.productImage,
-      productDescription: entity.productDescription,
-      createdAt: entity.createdAt,
-      updatedAt: entity.updatedAt,
+      unitPrice: entity.unitPrice,
+      product: entity.product,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {
+    final Map<String, dynamic> data = {
       'id': id,
       'product_id': productId,
       'quantity': quantity,
-      'price': price,
-      'product_name': productName,
-      'product_image': productImage,
-      'product_description': productDescription,
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt.toIso8601String(),
+      'unit_price': unitPrice,
     };
+
+    // Add product info if available
+    if (product != null) {
+      data['product'] = {
+        'id': product!.id,
+        'name': product!.name,
+        'price': product!.price,
+        'image_url': product!.imageUrl,
+      };
+    }
+
+    return data;
   }
 
   CartItemModel copyWith({
     int? id,
     int? productId,
     int? quantity,
-    double? price,
-    String? productName,
-    String? productImage,
-    String? productDescription,
-    DateTime? createdAt,
-    DateTime? updatedAt,
+    double? unitPrice,
+    ProductInfo? product,
   }) {
     return CartItemModel(
       id: id ?? this.id,
       productId: productId ?? this.productId,
       quantity: quantity ?? this.quantity,
-      price: price ?? this.price,
-      productName: productName ?? this.productName,
-      productImage: productImage ?? this.productImage,
-      productDescription: productDescription ?? this.productDescription,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
+      unitPrice: unitPrice ?? this.unitPrice,
+      product: product ?? this.product,
     );
   }
 }
