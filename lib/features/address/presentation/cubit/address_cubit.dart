@@ -21,7 +21,7 @@ class AddressCubit extends Bloc<AddressEvent, AddressState> {
   final DeleteAddressUseCase deleteAddressUseCase;
   final SetDefaultAddressUseCase setDefaultAddressUseCase;
 
-  AddressCubit({
+  AddressCubit(param0, {
     required this.getAddressesUseCase,
     required this.addAddressUseCase,
     required this.updateAddressUseCase,

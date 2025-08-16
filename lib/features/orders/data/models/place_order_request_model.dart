@@ -6,6 +6,7 @@ import '../../domain/entities/order_entity.dart';
 class PlaceOrderRequestModel extends Equatable {
   final OrderType type;
   final int? tableId;
+  final int? addressId;
   final String? deliveryAddress;
   final String? specialInstructions;
   final String? notes;
@@ -13,6 +14,7 @@ class PlaceOrderRequestModel extends Equatable {
   const PlaceOrderRequestModel({
     required this.type,
     this.tableId,
+    this.addressId,
     this.deliveryAddress,
     this.specialInstructions,
     this.notes,
@@ -24,6 +26,10 @@ class PlaceOrderRequestModel extends Equatable {
 
     if (tableId != null) {
       json['table_id'] = tableId;
+    }
+
+    if (addressId != null) {
+      json['address_id'] = addressId;
     }
 
     if (deliveryAddress != null) {

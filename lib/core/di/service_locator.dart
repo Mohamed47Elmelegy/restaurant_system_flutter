@@ -12,6 +12,17 @@ import '../../features/Home/domain/usecases/get_popular_items_usecase.dart';
 import '../../features/Home/domain/usecases/get_recommended_items_usecase.dart';
 import '../../features/Home/presentation/bloc/home_bloc.dart';
 import '../../features/Home/presentation/cubit/category_items_cubit.dart';
+// Address imports
+import '../../features/address/data/datasources/address_remote_data_source.dart';
+import '../../features/address/data/datasources/address_remote_data_source_impl.dart';
+import '../../features/address/data/repositories/address_repository_impl.dart';
+import '../../features/address/domain/repositories/address_repository.dart';
+import '../../features/address/domain/usecases/add_address_usecase.dart';
+import '../../features/address/domain/usecases/delete_address_usecase.dart';
+import '../../features/address/domain/usecases/get_addresses_usecase.dart';
+import '../../features/address/domain/usecases/set_default_address_usecase.dart';
+import '../../features/address/domain/usecases/update_address_usecase.dart';
+import '../../features/address/presentation/cubit/address_cubit.dart';
 import '../../features/admin/presentation/pages/add_category/data/datasources/category_local_data_source.dart';
 import '../../features/admin/presentation/pages/add_category/data/datasources/category_remote_data_source.dart';
 import '../../features/admin/presentation/pages/add_category/data/datasources/category_remote_data_source_impl.dart';
@@ -54,35 +65,33 @@ import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/domain/usecases/login_usecase.dart';
 import '../../features/auth/domain/usecases/register_usecase.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
-
-import '../../features/orders/domain/repositories/order_repository.dart';
-import '../../features/orders/domain/usecases/cancel_order_usecase.dart';
-import '../../features/orders/domain/usecases/get_running_orders_usecase.dart';
-import '../../features/orders/domain/usecases/mark_order_done_usecase.dart';
-import '../../features/orders/presentation/bloc/order_bloc.dart';
 // Cart imports
 import '../../features/cart/data/datasources/cart_remote_data_source.dart';
 import '../../features/cart/data/datasources/cart_remote_data_source_impl.dart';
 import '../../features/cart/data/repositories/cart_repository_impl.dart';
 import '../../features/cart/domain/repositories/cart_repository.dart';
-import '../../features/cart/domain/usecases/get_cart_usecase.dart';
 import '../../features/cart/domain/usecases/add_to_cart_usecase.dart';
-import '../../features/cart/domain/usecases/update_cart_item_usecase.dart';
-import '../../features/cart/domain/usecases/remove_cart_item_usecase.dart';
 import '../../features/cart/domain/usecases/clear_cart_usecase.dart';
+import '../../features/cart/domain/usecases/get_cart_usecase.dart';
+import '../../features/cart/domain/usecases/remove_cart_item_usecase.dart';
+import '../../features/cart/domain/usecases/update_cart_item_usecase.dart';
 import '../../features/cart/presentation/bloc/cart_cubit.dart';
-
-// Address imports
-import '../../features/address/data/datasources/address_remote_data_source.dart';
-import '../../features/address/data/datasources/address_remote_data_source_impl.dart';
-import '../../features/address/data/repositories/address_repository_impl.dart';
-import '../../features/address/domain/repositories/address_repository.dart';
-import '../../features/address/domain/usecases/add_address_usecase.dart';
-import '../../features/address/domain/usecases/delete_address_usecase.dart';
-import '../../features/address/domain/usecases/get_addresses_usecase.dart';
-import '../../features/address/domain/usecases/set_default_address_usecase.dart';
-import '../../features/address/domain/usecases/update_address_usecase.dart';
-import '../../features/address/presentation/cubit/address_cubit.dart';
+import '../../features/checkout/data/datasources/check_out_remote_data_source.dart';
+import '../../features/checkout/data/repositories/check_out_repository_impl.dart';
+import '../../features/checkout/domain/repositories/check_out_repository.dart';
+import '../../features/checkout/domain/usecases/check_out_place_order_usecase.dart';
+import '../../features/checkout/presentation/cubit/check_out_cubit.dart';
+import '../../features/orders/data/datasources/order_remote_data_source.dart';
+import '../../features/orders/data/datasources/order_remote_data_source_implementation.dart';
+import '../../features/orders/data/repositories/order_repository_impl.dart';
+import '../../features/orders/domain/repositories/order_repository.dart';
+import '../../features/orders/domain/usecases/place_order_usecase.dart';
+import '../../features/orders/presentation/cubit/order_cubit.dart';
+import '../../features/orders/domain/repositories/order_repository.dart';
+import '../../features/orders/domain/usecases/cancel_order_usecase.dart';
+import '../../features/orders/domain/usecases/get_running_orders_usecase.dart';
+import '../../features/orders/domain/usecases/mark_order_done_usecase.dart';
+import '../../features/orders/presentation/bloc/order_bloc.dart';
 
 final getIt = GetIt.instance;
 
@@ -367,13 +376,49 @@ Future<void> setup() async {
   );
 
   // Address cubit
-  getIt.registerFactory<AddressCubit>(
+  getIt.registerLazySingleton<AddressCubit>(
     () => AddressCubit(
+      getIt<GetAddressesUseCase>(),
       getAddressesUseCase: getIt<GetAddressesUseCase>(),
       addAddressUseCase: getIt<AddAddressUseCase>(),
       updateAddressUseCase: getIt<UpdateAddressUseCase>(),
       deleteAddressUseCase: getIt<DeleteAddressUseCase>(),
       setDefaultAddressUseCase: getIt<SetDefaultAddressUseCase>(),
     ),
+  );
+
+  // ==================== CHECKOUT FEATURE ====================
+  getIt.registerLazySingleton<CheckOutRemoteDataSource>(
+    () => CheckOutRemoteDataSourceImpl(getIt<DioClient>()),
+  );
+  getIt.registerLazySingleton<CheckOutRepository>(
+    () => CheckOutRepositoryImpl(getIt<CheckOutRemoteDataSource>()),
+  );
+  getIt.registerLazySingleton<CheckOutPlaceOrderUseCase>(
+    () => CheckOutPlaceOrderUseCase(getIt<CheckOutRepository>()),
+  );
+  getIt.registerFactory<CheckOutCubit>(
+    () => CheckOutCubit(getIt<CheckOutPlaceOrderUseCase>()),
+  );
+
+  // ==================== ORDERS FEATURE ====================
+  // Data Source
+  getIt.registerLazySingleton<OrderRemoteDataSource>(
+    () => OrderRemoteDataSourceImpl(getIt<DioClient>().dio),
+  );
+
+  // Repository
+  // getIt.registerLazySingleton<OrderRepository>(
+  //   () => OrderRepositoryImpl(getIt<OrderRemoteDataSource>()),
+  // );
+
+  // UseCase
+  getIt.registerLazySingleton<PlaceOrderUseCase>(
+    () => PlaceOrderUseCase(getIt<OrderRepository>()),
+  );
+
+  // Cubit
+  getIt.registerFactory<OrderCubit>(
+    () => OrderCubit(getIt<PlaceOrderUseCase>()),
   );
 }

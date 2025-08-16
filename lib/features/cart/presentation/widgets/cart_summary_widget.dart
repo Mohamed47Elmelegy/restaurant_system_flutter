@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../orders/domain/entities/order_entity.dart';
 import '../../domain/entities/cart_entity.dart';
-import '../pages/checkout_page.dart';
+import '../../../checkout/presentation/pages/checkout_page.dart';
+import '../../../checkout/presentation/widgets/qr_scanner_page.dart';
 
 class CartSummaryWidget extends StatelessWidget {
   final CartEntity cart;
+  final String? deliveryAddress;
 
-  const CartSummaryWidget({super.key, required this.cart});
+  const CartSummaryWidget({super.key, required this.cart, this.deliveryAddress});
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +55,7 @@ class CartSummaryWidget extends StatelessWidget {
                       ),
                     ),
                     const Spacer(),
-                    Text(
+                    const Text(
                       'EDIT',
                       style: TextStyle(
                         color: AppColors.lightPrimary,
@@ -65,7 +68,7 @@ class CartSummaryWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '2118 Thornridge Cir. Syracuse',
+                  deliveryAddress ?? 'No delivery address',
                   style: TextStyle(color: Colors.grey[300], fontSize: 14),
                 ),
               ],
@@ -106,7 +109,7 @@ class CartSummaryWidget extends StatelessWidget {
                     total,
                   );
                 },
-                child: Text(
+                child: const Text(
                   'Breakdown',
                   style: TextStyle(
                     color: AppColors.lightPrimary,
@@ -218,9 +221,64 @@ class CartSummaryWidget extends StatelessWidget {
     );
   }
 
-  void _handlePlaceOrder(BuildContext context) {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (context) => CheckoutPage(cart: cart)));
+  void _handlePlaceOrder(BuildContext context) async {
+    final orderType = await showModalBottomSheet<String>(
+      context: context,
+      builder: (context) => _OrderTypeBottomSheet(),
+    );
+
+    if (orderType == 'delivery') {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) =>
+              CheckoutPage(cart: cart, orderType: OrderType.delivery),
+        ),
+      );
+    } else if (orderType == 'dine_in') {
+      final tableId = await _scanQrCode(context);
+      if (tableId != null) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => CheckoutPage(
+              cart: cart,
+              orderType: OrderType.dineIn,
+              tableId: tableId,
+            ),
+          ),
+        );
+      }
+    }
   }
+}
+
+// Widget بسيط لاختيار نوع الطلب
+class _OrderTypeBottomSheet extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Wrap(
+        children: [
+          ListTile(
+            leading: Icon(Icons.delivery_dining),
+            title: Text('Delivery'),
+            onTap: () => Navigator.of(context).pop('delivery'),
+          ),
+          ListTile(
+            leading: Icon(Icons.qr_code_scanner),
+            title: Text('Dine In'),
+            onTap: () => Navigator.of(context).pop('dine_in'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// دالة وهمية لمسح QR (استبدلها لاحقاً بمكتبة QR المناسبة)
+Future<int?> _scanQrCode(BuildContext context) async {
+  final result = await Navigator.push(
+    context,
+    MaterialPageRoute(builder: (_) => const QrScannerPage()),
+  );
+  return int.tryParse(result ?? '');
 }
