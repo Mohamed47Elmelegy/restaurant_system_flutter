@@ -1,4 +1,8 @@
-import 'package:flutter/material.dart';import '../../../../core/theme/app_colors.dart';
+import 'dart:developer';
+
+import 'package:flutter/material.dart';
+import 'package:restaurant_system_flutter/core/utils/debug_console_messages.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../../checkout/presentation/pages/checkout_page.dart';
 import '../../../checkout/presentation/widgets/qr_scanner_page.dart';
 import '../../../orders/domain/entities/order_entity.dart';
@@ -7,11 +11,13 @@ import '../../domain/entities/cart_entity.dart';
 class CartSummaryWidget extends StatelessWidget {
   final CartEntity cart;
   final String? deliveryAddress;
+  final OrderType orderType;
 
   const CartSummaryWidget({
     super.key,
     required this.cart,
     this.deliveryAddress,
+    required this.orderType,
   });
 
   @override
@@ -185,7 +191,7 @@ class CartSummaryWidget extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text(
+            child: const Text(
               'Close',
               style: TextStyle(color: AppColors.lightPrimary),
             ),
@@ -225,36 +231,43 @@ class CartSummaryWidget extends StatelessWidget {
   }
 
   void _handlePlaceOrder(BuildContext context) async {
-    final orderType = await showModalBottomSheet<String>(
+    final orderType = await showModalBottomSheet<OrderType>(
       context: context,
       builder: (context) => _OrderTypeBottomSheet(),
     );
 
-    if (orderType == 'delivery') {
+    if (orderType == null) return;
+
+    if (orderType == OrderType.delivery) {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) =>
               CheckoutPage(cart: cart, orderType: OrderType.delivery),
         ),
       );
-    } else if (orderType == 'dine_in') {
-      final tableQrCode = await _scanQrCode(context);
-      if (tableQrCode != null) {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => CheckoutPage(
-              cart: cart,
-              orderType: OrderType.dineIn,
-              tableId: int.parse(tableQrCode), // مرر qr code كما هو
-            ),
-          ),
-        );
-      }
+    } else if (orderType == OrderType.dineIn) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => QrScannerPage(cart: cart)),
+      );
     }
   }
 }
 
-// Widget بسيط لاختيار نوع الطلب
+String? extractTableId(String qr) {
+  qr = qr.trim(); // إزالة المسافات الزائدة
+  log(DebugConsoleMessages.error('QR code scanned: $qr')); // Debugging
+  final match = RegExp(r'TABLE_(\d+)').firstMatch(qr);
+  if (match != null) {
+    return match.group(1);
+  }
+  // إذا كان qr رقم فقط
+  if (RegExp(r'^\d+ 0$').hasMatch(qr)) {
+    return qr;
+  }
+  return null;
+}
+
 class _OrderTypeBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -264,24 +277,15 @@ class _OrderTypeBottomSheet extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.delivery_dining),
             title: Text('Delivery'),
-            onTap: () => Navigator.of(context).pop('delivery'),
+            onTap: () => Navigator.of(context).pop(OrderType.delivery),
           ),
           ListTile(
             leading: Icon(Icons.qr_code_scanner),
             title: Text('Dine In'),
-            onTap: () => Navigator.of(context).pop('dine_in'),
+            onTap: () => Navigator.of(context).pop(OrderType.dineIn),
           ),
         ],
       ),
     );
   }
-}
-
-// دالة وهمية لمسح QR (استبدلها لاحقاً بمكتبة QR المناسبة)
-Future<String?> _scanQrCode(BuildContext context) async {
-  final result = await Navigator.push(
-    context,
-    MaterialPageRoute(builder: (_) => const QrScannerPage()),
-  );
-  return result;
 }

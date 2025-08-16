@@ -4,6 +4,7 @@ import '../../../cart/domain/entities/cart_entity.dart';
 import '../../../orders/data/models/order_item_model.dart';
 import '../../../orders/data/models/place_order_request_model.dart';
 import '../../../orders/domain/entities/order_entity.dart';
+import '../../../orders/presentation/cubit/table_cubit.dart';
 import '../cubit/check_out_cubit.dart';
 import '../cubit/check_out_state.dart';
 import 'checkout_listener.dart';
@@ -46,6 +47,8 @@ class _CheckoutBodyState extends State<CheckoutBody> {
     // استخدم القيم القادمة من الكونستركتور
     if (widget.orderType == OrderType.delivery) {
       context.read<AddressCubit>().add(LoadAddresses());
+    } else if (widget.orderType == OrderType.dineIn) {
+      context.read<TableCubit>().getTableByQr(widget.tableId.toString());
     }
   }
 
@@ -427,6 +430,13 @@ class _CheckoutBodyState extends State<CheckoutBody> {
               .fullAddress;
         }
       }
+      // تحقق من أن type ليس null
+      if (widget.orderType == null) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('يرجى اختيار نوع الطلب')));
+        return;
+      }
       final request = PlaceOrderRequestModel(
         type: widget.orderType,
         tableId: widget.orderType == OrderType.dineIn ? widget.tableId : null,
@@ -434,13 +444,15 @@ class _CheckoutBodyState extends State<CheckoutBody> {
             ? _selectedAddressId
             : null, // أضف هذا
         deliveryAddress: widget.orderType == OrderType.delivery
-            ? selectedAddressFull
+            ? (selectedAddressFull ?? '')
             : null,
         specialInstructions: null,
         notes: _notesController.text.trim().isEmpty
             ? null
             : _notesController.text.trim(),
       );
+      print('DEBUG: PlaceOrderRequestModel type:  [32m [1m${request.type} [0m');
+      print('DEBUG: PlaceOrderRequestModel json: ${request.toJson()}');
 
       context.read<CheckOutCubit>().placeOrder(request, items);
     }

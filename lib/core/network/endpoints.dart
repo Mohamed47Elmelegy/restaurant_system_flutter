@@ -116,4 +116,8 @@ class Endpoints {
 
   /// Get full URL for health check
   static String getHealthCheckUrl() => 'http://127.0.0.1:8000/api/test';
+
+  static const String tables = '/tables'; // + /{table}
+  static const String tableByQr = '/tables/qr'; // + /{qrCode}
+  static const String occupyTable = '/tables'; // + /{table}/occupy
 }

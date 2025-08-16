@@ -1,9 +1,10 @@
-import 'package:dio/dio.dart';
-import 'package:restaurant_system_flutter/core/error/api_response.dart';
-import 'package:restaurant_system_flutter/core/error/failures.dart';
-import 'package:restaurant_system_flutter/core/network/dio_client.dart';
-import 'package:restaurant_system_flutter/core/network/endpoints.dart';
+import 'dart:developer';
 
+import 'package:dio/dio.dart';
+import 'package:restaurant_system_flutter/core/error/failures.dart';
+import 'package:restaurant_system_flutter/core/network/api_path.dart';
+
+import '../../../../core/utils/debug_console_messages.dart';
 import '../../../orders/data/models/order_item_model.dart';
 import '../../../orders/data/models/order_model.dart';
 import '../../../orders/data/models/place_order_request_model.dart';
@@ -17,37 +18,43 @@ abstract class CheckOutRemoteDataSource {
 }
 
 class CheckOutRemoteDataSourceImpl implements CheckOutRemoteDataSource {
-  final DioClient dioClient;
-  CheckOutRemoteDataSourceImpl(this.dioClient);
+  final Dio dio;
+  CheckOutRemoteDataSourceImpl(this.dio);
 
   @override
   Future<OrderEntity> placeOrder(
     PlaceOrderRequestModel request,
     List<OrderItemModel> items,
   ) async {
-    final data = request.toJson();
-    data['items'] = items.map((e) => e.toJson()).toList();
     try {
-      final response = await dioClient.dio.post(
-        Endpoints.placeOrder,
-        data: data,
+      final data = request.toJson();
+      data['items'] = items.map((e) => e.toJson()).toList();
+      // Logging
+      log(
+        DebugConsoleMessages.info('🔄 CheckOutRemoteDataSource: Placing order'),
       );
-      final apiResponse = ApiResponse.fromJson(
-        response.data,
-        (json) => OrderModel.fromJson(json as Map<String, dynamic>),
+      log(DebugConsoleMessages.info('📤 Request data: $data'));
+
+      final response = await dio.post(ApiPath.placeOrder(), data: data);
+
+      log(
+        DebugConsoleMessages.success(
+          '✅ CheckOutRemoteDataSource: Order placed successfully',
+        ),
       );
-      if (apiResponse.isSuccess && apiResponse.data != null) {
-        return apiResponse.data!;
-      } else {
-        throw Failure.fromAppError(apiResponse.toAppError());
+      log(DebugConsoleMessages.success('📄 Response data: ${response.data}'));
+
+      final orderData = response.data['data'];
+      if (orderData == null) {
+        throw const ServerFailure(message: 'No order data returned from API');
       }
+      return OrderModel.fromJson(orderData);
+    } on DioException catch (e) {
+      // log('❌ CheckOutRemoteDataSource: Failed to place order - $e');
+      throw ServerFailure(message: e.message ?? 'Failed to place order');
     } catch (e) {
-      if (e is Failure) rethrow;
-      if (e is DioException) {
-        final apiError = ApiResponse<OrderModel>.fromDioException(e);
-        throw Failure.fromAppError(apiError.toAppError());
-      }
-      throw ServerFailure.custom(e.toString());
+      // log('❌ CheckOutRemoteDataSource: Failed to place order - $e');
+      throw ServerFailure(message: e.toString());
     }
   }
 }

@@ -17,6 +17,7 @@ class OrderEntity extends Equatable {
   final String? specialInstructions;
   final String? notes;
   final TableEntity? table;
+  final int? tableId;
   final List<OrderItemEntity> items;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -35,6 +36,7 @@ class OrderEntity extends Equatable {
     this.specialInstructions,
     this.notes,
     this.table,
+    this.tableId,
     required this.items,
     required this.createdAt,
     required this.updatedAt,
@@ -64,6 +66,7 @@ class OrderEntity extends Equatable {
     specialInstructions,
     notes,
     table,
+    tableId,
     items,
     createdAt,
     updatedAt,

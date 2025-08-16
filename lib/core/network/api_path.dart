@@ -172,4 +172,10 @@ class ApiPath {
 
   // ==================== HEALTH CHECK PATH ====================
   static String healthCheck() => Endpoints.getHealthCheckUrl();
+
+  // ==================== TABLE PATHS ====================
+  static String tableByQr(String qrCode) =>
+      Endpoints.getUrlWithId(Endpoints.tableByQr, qrCode);
+  static String occupyTable(int tableId) =>
+      Endpoints.getUrlWithIdAndAction(Endpoints.occupyTable, tableId, 'occupy');
 }

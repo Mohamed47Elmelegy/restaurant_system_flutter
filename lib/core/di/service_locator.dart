@@ -83,6 +83,7 @@ import '../../features/checkout/domain/usecases/check_out_place_order_usecase.da
 import '../../features/checkout/presentation/cubit/check_out_cubit.dart';
 import '../../features/orders/data/datasources/order_remote_data_source.dart';
 import '../../features/orders/data/datasources/order_remote_data_source_implementation.dart';
+import '../../features/orders/data/datasources/table_remote_datasource.dart';
 import '../../features/orders/data/repositories/order_repository_impl.dart';
 import '../../features/orders/domain/repositories/order_repository.dart';
 import '../../features/orders/domain/usecases/place_order_usecase.dart';
@@ -92,6 +93,10 @@ import '../../features/orders/domain/usecases/cancel_order_usecase.dart';
 import '../../features/orders/domain/usecases/get_running_orders_usecase.dart';
 import '../../features/orders/domain/usecases/mark_order_done_usecase.dart';
 import '../../features/orders/presentation/bloc/order_bloc.dart';
+import '../../features/orders/data/datasources/table_remote_data_source_impl.dart';
+import '../../features/orders/data/repositories/table_repository_impl.dart';
+import '../../features/orders/domain/repositories/table_repository.dart';
+import '../../features/orders/presentation/cubit/table_cubit.dart';
 
 final getIt = GetIt.instance;
 
@@ -389,7 +394,7 @@ Future<void> setup() async {
 
   // ==================== CHECKOUT FEATURE ====================
   getIt.registerLazySingleton<CheckOutRemoteDataSource>(
-    () => CheckOutRemoteDataSourceImpl(getIt<DioClient>()),
+    () => CheckOutRemoteDataSourceImpl(getIt<Dio>()),
   );
   getIt.registerLazySingleton<CheckOutRepository>(
     () => CheckOutRepositoryImpl(getIt<CheckOutRemoteDataSource>()),
@@ -421,4 +426,18 @@ Future<void> setup() async {
   getIt.registerFactory<OrderCubit>(
     () => OrderCubit(getIt<PlaceOrderUseCase>()),
   );
+
+  // ==================== TABLE FEATURE ====================
+  // Table Data Source
+  getIt.registerLazySingleton<TableRemoteDataSource>(
+    () => TableRemoteDataSourceImpl(getIt<Dio>()),
+  );
+
+  // Table Repository
+  getIt.registerLazySingleton<TableRepository>(
+    () => TableRepositoryImpl(getIt<TableRemoteDataSource>()),
+  );
+
+  // Table Cubit
+  getIt.registerFactory<TableCubit>(() => TableCubit(getIt<TableRepository>()));
 }

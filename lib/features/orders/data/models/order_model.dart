@@ -21,6 +21,7 @@ class OrderModel extends OrderEntity {
     required super.items,
     required super.createdAt,
     required super.updatedAt,
+    super.tableId, // أضف هذا السطرg
   });
 
   /// Factory constructor from JSON
@@ -38,6 +39,7 @@ class OrderModel extends OrderEntity {
       deliveryAddress: json['delivery_address'] as String?,
       specialInstructions: json['special_instructions'] as String?,
       notes: json['notes'] as String?,
+      tableId: json['table_id'] as int?, // أضف هذا السطر
       table: json['table'] != null
           ? TableModel.fromJson(json['table'] as Map<String, dynamic>)
           : null,
