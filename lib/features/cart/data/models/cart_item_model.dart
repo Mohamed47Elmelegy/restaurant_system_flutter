@@ -1,33 +1,36 @@
+import '../../../../core/models/product_model.dart';
 import '../../domain/entities/cart_item_entity.dart';
 
 class CartItemModel extends CartItemEntity {
   const CartItemModel({
     required super.id,
-    required super.productId,
     required super.quantity,
     required super.unitPrice,
-    super.product,
+    required super.product,
   });
 
   factory CartItemModel.fromJson(Map<String, dynamic> json) {
     // Parse product info if available
-    ProductInfo? productInfo;
+    ProductModel? productModel;
     if (json['product'] != null) {
       final productData = json['product'] as Map<String, dynamic>;
-      productInfo = ProductInfo(
-        id: productData['id'] ?? 0,
+      productModel = ProductModel(
+        id: productData['id']?.toString() ?? '',
         name: productData['name'] ?? '',
         price: productData['price']?.toString() ?? '0',
         imageUrl: productData['image_url'] ?? productData['image'],
+        mainCategoryId: productData['main_category_id']?.toString() ?? '',
+        isAvailable: productData['is_available'] ?? false,
+        isFeatured: productData['is_featured'] ?? false,
+        sortOrder: productData['sort_order'] ?? 0,
       );
     }
 
     return CartItemModel(
       id: json['id'] ?? 0,
-      productId: json['product_id'] ?? 0,
       quantity: json['quantity'] ?? 1,
       unitPrice: _parseDouble(json['unit_price']),
-      product: productInfo,
+      product: productModel!,
     );
   }
 
@@ -49,7 +52,6 @@ class CartItemModel extends CartItemEntity {
   factory CartItemModel.fromEntity(CartItemEntity entity) {
     return CartItemModel(
       id: entity.id,
-      productId: entity.productId,
       quantity: entity.quantity,
       unitPrice: entity.unitPrice,
       product: entity.product,
@@ -59,34 +61,22 @@ class CartItemModel extends CartItemEntity {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {
       'id': id,
-      'product_id': productId,
       'quantity': quantity,
       'unit_price': unitPrice,
+      'product': product.toJson(),
     };
-
-    // Add product info if available
-    if (product != null) {
-      data['product'] = {
-        'id': product!.id,
-        'name': product!.name,
-        'price': product!.price,
-        'image_url': product!.imageUrl,
-      };
-    }
 
     return data;
   }
 
   CartItemModel copyWith({
     int? id,
-    int? productId,
     int? quantity,
     double? unitPrice,
-    ProductInfo? product,
+    ProductModel? product,
   }) {
     return CartItemModel(
       id: id ?? this.id,
-      productId: productId ?? this.productId,
       quantity: quantity ?? this.quantity,
       unitPrice: unitPrice ?? this.unitPrice,
       product: product ?? this.product,

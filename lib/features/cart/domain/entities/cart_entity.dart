@@ -24,7 +24,7 @@ class CartEntity extends Equatable {
   /// Get item by product ID
   CartItemEntity? getItemByProductId(int productId) {
     try {
-      return items.firstWhere((item) => item.productId == productId);
+      return items.firstWhere((item) => item.product.id == productId.toString());
     } catch (e) {
       return null;
     }
@@ -32,7 +32,7 @@ class CartEntity extends Equatable {
 
   /// Check if product exists in cart
   bool hasProduct(int productId) {
-    return items.any((item) => item.productId == productId);
+    return items.any((item) => item.product.id == productId.toString());
   }
 
   @override

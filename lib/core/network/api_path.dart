@@ -22,10 +22,12 @@ class ApiPath {
     int? perPage,
   }) {
     final queryParams = <String>[];
-    if (mainCategoryId != null)
+    if (mainCategoryId != null) {
       queryParams.add('main_category_id=$mainCategoryId');
-    if (subCategoryId != null)
+    }
+    if (subCategoryId != null) {
       queryParams.add('sub_category_id=$subCategoryId');
+    }
     if (search != null && search.isNotEmpty) queryParams.add('search=$search');
     if (perPage != null) queryParams.add('per_page=$perPage');
 
@@ -90,8 +92,8 @@ class ApiPath {
 
   // ==================== ADDRESSES PATHS (يتطلب توكن) ====================
   static String addresses() => Endpoints.getUrl(Endpoints.addresses);
-  static String address(int addressId) =>
-      Endpoints.getUrlWithId(Endpoints.address, addressId);
+  static String addressUD(int addressId) =>
+      Endpoints.getUrlWithId(Endpoints.addressUD, addressId);
 
   // ==================== ADMIN CATEGORIES PATHS (يتطلب role:admin) ====================
   static String adminCategories() =>

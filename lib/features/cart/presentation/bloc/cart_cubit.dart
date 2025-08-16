@@ -1,11 +1,12 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:developer';
 
-import '../../domain/usecases/get_cart_usecase.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../domain/usecases/add_to_cart_usecase.dart';
-import '../../domain/usecases/update_cart_item_usecase.dart';
-import '../../domain/usecases/remove_cart_item_usecase.dart';
 import '../../domain/usecases/clear_cart_usecase.dart';
+import '../../domain/usecases/get_cart_usecase.dart';
+import '../../domain/usecases/remove_cart_item_usecase.dart';
+import '../../domain/usecases/update_cart_item_usecase.dart';
 import 'cart_event.dart';
 import 'cart_state.dart';
 
@@ -48,7 +49,7 @@ class CartCubit extends Bloc<CartEvent, CartState> {
       result.fold(
         (failure) {
           log('❌ CartCubit: Failed to load cart - $failure');
-          _emitErrorBasedOnType(failure.message, emit);
+          emit(CartError(failure.message));
         },
         (cart) {
           log(
@@ -63,7 +64,7 @@ class CartCubit extends Bloc<CartEvent, CartState> {
       );
     } catch (e) {
       log('❌ CartCubit: Failed to load cart - $e');
-      emit(CartError('حدث خطأ غير متوقع أثناء تحميل السلة'));
+      emit(const CartError('حدث خطأ غير متوقع أثناء تحميل السلة'));
     }
   }
 
@@ -85,7 +86,7 @@ class CartCubit extends Bloc<CartEvent, CartState> {
       result.fold(
         (failure) {
           log('❌ CartCubit: Failed to add item to cart - $failure');
-          _emitErrorBasedOnType(failure.message, emit);
+          emit(CartError(failure.message));
         },
         (cartItem) {
           log('✅ CartCubit: Item added/updated in cart successfully');
@@ -96,7 +97,7 @@ class CartCubit extends Bloc<CartEvent, CartState> {
       );
     } catch (e) {
       log('❌ CartCubit: Failed to add item to cart - $e');
-      emit(CartError('حدث خطأ غير متوقع أثناء إضافة المنتج'));
+      emit(const CartError('حدث خطأ غير متوقع أثناء إضافة المنتج'));
     }
   }
 
@@ -105,10 +106,9 @@ class CartCubit extends Bloc<CartEvent, CartState> {
     UpdateCartItem event,
     Emitter<CartState> emit,
   ) async {
-    emit(CartLoading());
     try {
       log(
-        '🔄 CartCubit: Updating cart item ${event.cartItemId} (quantity: ${event.quantity})',
+        '🔄 CartCubit: Updating cart item  [200m${event.cartItemId} [0m (quantity: ${event.quantity})',
       );
 
       final params = UpdateCartItemParams(
@@ -121,18 +121,22 @@ class CartCubit extends Bloc<CartEvent, CartState> {
       result.fold(
         (failure) {
           log('❌ CartCubit: Failed to update cart item - $failure');
-          _emitErrorBasedOnType(failure.message, emit);
+          emit(CartError(failure.message));
         },
         (cartItem) {
           log('✅ CartCubit: Cart item updated successfully');
-          emit(CartItemUpdated(cartItem: cartItem));
-          // إعادة تحميل السلة لعرض التحديثات
-          add(LoadCart());
+          emit(
+            CartItemQuantityUpdated(
+              cartItemId: event.cartItemId,
+              quantity: event.quantity,
+            ),
+          );
+          // لا تعيد تحميل السلة بالكامل هنا
         },
       );
     } catch (e) {
       log('❌ CartCubit: Failed to update cart item - $e');
-      emit(CartError('حدث خطأ غير متوقع أثناء تحديث العنصر'));
+      emit(const CartError('حدث خطأ غير متوقع أثناء تحديث العنصر'));
     }
   }
 
@@ -152,7 +156,7 @@ class CartCubit extends Bloc<CartEvent, CartState> {
       result.fold(
         (failure) {
           log('❌ CartCubit: Failed to remove cart item - $failure');
-          _emitErrorBasedOnType(failure.message, emit);
+          emit(CartError(failure.message));
         },
         (success) {
           log('✅ CartCubit: Cart item removed successfully');
@@ -163,7 +167,7 @@ class CartCubit extends Bloc<CartEvent, CartState> {
       );
     } catch (e) {
       log('❌ CartCubit: Failed to remove cart item - $e');
-      emit(CartError('حدث خطأ غير متوقع أثناء حذف العنصر'));
+      emit(const CartError('حدث خطأ غير متوقع أثناء حذف العنصر'));
     }
   }
 
@@ -178,7 +182,7 @@ class CartCubit extends Bloc<CartEvent, CartState> {
       result.fold(
         (failure) {
           log('❌ CartCubit: Failed to clear cart - $failure');
-          _emitErrorBasedOnType(failure.message, emit);
+          emit(CartError(failure.message));
         },
         (success) {
           log('✅ CartCubit: Cart cleared successfully');
@@ -189,7 +193,7 @@ class CartCubit extends Bloc<CartEvent, CartState> {
       );
     } catch (e) {
       log('❌ CartCubit: Failed to clear cart - $e');
-      emit(CartError('حدث خطأ غير متوقع أثناء تفريغ السلة'));
+      emit(const CartError('حدث خطأ غير متوقع أثناء تفريغ السلة'));
     }
   }
 
@@ -206,28 +210,6 @@ class CartCubit extends Bloc<CartEvent, CartState> {
   void _onResetCartState(ResetCartState event, Emitter<CartState> emit) {
     log('🔄 CartCubit: Resetting cart state');
     emit(CartInitial());
-  }
-
-  /// معالجة الأخطاء بناءً على النوع
-  void _emitErrorBasedOnType(String message, Emitter<CartState> emit) {
-    if (message.contains('تسجيل الدخول') ||
-        message.contains('مصادقة') ||
-        message.contains('authorization') ||
-        message.contains('unauthorized')) {
-      emit(CartAuthError(message));
-    } else if (message.contains('كمية') ||
-        message.contains('منتج') ||
-        message.contains('validation') ||
-        message.contains('invalid')) {
-      emit(CartValidationError(message));
-    } else if (message.contains('شبكة') ||
-        message.contains('اتصال') ||
-        message.contains('network') ||
-        message.contains('connection')) {
-      emit(CartNetworkError(message));
-    } else {
-      emit(CartError(message));
-    }
   }
 
   /// الحصول على عدد العناصر في السلة

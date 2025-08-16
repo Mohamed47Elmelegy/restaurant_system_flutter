@@ -37,7 +37,7 @@ class CartItemAdded extends CartState {
 
   const CartItemAdded({
     required this.cartItem,
-    this.message = 'تم إضافة المنتج إلى السلة',
+    this.message = 'تم إضافة المنتج إلى السلة بنجاح! 🛒',
   });
 
   @override
@@ -51,7 +51,7 @@ class CartItemUpdated extends CartState {
 
   const CartItemUpdated({
     required this.cartItem,
-    this.message = 'تم تحديث الكمية',
+    this.message = 'تم تحديث الكمية بنجاح! ✅',
   });
 
   @override
@@ -65,7 +65,7 @@ class CartItemRemoved extends CartState {
 
   const CartItemRemoved({
     required this.cartItemId,
-    this.message = 'تم حذف المنتج من السلة',
+    this.message = 'تم حذف المنتج من السلة بنجاح! 🗑️',
   });
 
   @override
@@ -120,4 +120,17 @@ class CartNetworkError extends CartState {
 
   @override
   List<Object?> get props => [message];
+}
+
+/// تحديث كمية عنصر واحد فقط في السلة
+class CartItemQuantityUpdated extends CartState {
+  final int cartItemId;
+  final int quantity;
+  const CartItemQuantityUpdated({
+    required this.cartItemId,
+    required this.quantity,
+  });
+
+  @override
+  List<Object?> get props => [cartItemId, quantity];
 }

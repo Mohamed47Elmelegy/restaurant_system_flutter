@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:restaurant_system_flutter/main.dart';
+import '../../../../core/routes/app_routes.dart';
 import 'address_option.dart';
 
 class AddressSelectionDialog extends StatelessWidget {
   final String currentAddress;
   final Function(String) onAddressSelected;
+  final VoidCallback? onManageAddresses;
 
   const AddressSelectionDialog({
     super.key,
     required this.currentAddress,
     required this.onAddressSelected,
+    this.onManageAddresses,
   });
 
   @override
@@ -40,8 +44,17 @@ class AddressSelectionDialog extends StatelessWidget {
             title: 'Add new address',
             subtitle: 'Add a new delivery address',
             isSelected: false,
-            onTap: () => Navigator.pop(context),
+            onTap: () =>
+                navigatorKey.currentState?.pushNamed(AppRoutes.addAddress),
             leadingIcon: Icons.add_location,
+          ),
+          const Divider(),
+          AddressOption(
+            title: 'إدارة العناوين',
+            subtitle: 'عرض وتعديل العناوين المحفوظة',
+            isSelected: false,
+            onTap: onManageAddresses ?? () {},
+            leadingIcon: Icons.settings_outlined,
           ),
         ],
       ),

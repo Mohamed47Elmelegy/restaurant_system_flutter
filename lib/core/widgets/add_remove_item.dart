@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../features/cart/domain/entities/cart_item_entity.dart';
 import '../theme/theme_helper.dart';
 
 class AddRemoveItem extends StatelessWidget {
   const AddRemoveItem({
     super.key,
-    // required this.cartItemEntity,
+    required this.cartItemEntity,
   });
-  // final CartItemEntity cartItemEntity;
+  final CartItemEntity cartItemEntity;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +39,7 @@ class AddRemoveItem extends StatelessWidget {
             ),
           ),
         ),
-        Text(
+     const   Text(
           '',
           //cartItemEntity.totalUnitAmount().toString(),
         ),

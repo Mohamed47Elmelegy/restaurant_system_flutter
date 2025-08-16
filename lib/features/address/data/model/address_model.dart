@@ -11,7 +11,7 @@ class AddressModel extends AddressEntity {
     required super.postalCode,
     required super.country,
     super.phone,
-    super.isDefault,
+    super.isDefault = false,
     super.label,
     required super.createdAt,
     required super.updatedAt,

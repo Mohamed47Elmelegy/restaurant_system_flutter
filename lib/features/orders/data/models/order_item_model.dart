@@ -1,5 +1,3 @@
-import 'package:equatable/equatable.dart';
-import '../../domain/entities/order_entity.dart';
 import '../../domain/entities/order_item_entity.dart';
 
 /// 🟨 Order Item Model - Data Layer

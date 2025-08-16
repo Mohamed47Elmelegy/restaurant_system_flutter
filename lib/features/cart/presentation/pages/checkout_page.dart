@@ -110,7 +110,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'Order Summary',
             style: TextStyle(
               color: Colors.white,
@@ -121,31 +121,29 @@ class _CheckoutPageState extends State<CheckoutPage> {
           const SizedBox(height: 16),
 
           // Items
-          ...widget.cart.items
-              .map(
-                (item) => Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Row(
-                    children: [
-                      Text(
-                        '${item.quantity}x ',
-                        style: TextStyle(color: Colors.grey[400]),
-                      ),
-                      Expanded(
-                        child: Text(
-                          item.product?.name ?? 'Unknown Product',
-                          style: TextStyle(color: Colors.grey[300]),
-                        ),
-                      ),
-                      Text(
-                        '\$${(item.quantity * item.unitPrice).toStringAsFixed(2)}',
-                        style: TextStyle(color: Colors.grey[300]),
-                      ),
-                    ],
+          ...widget.cart.items.map(
+            (item) => Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Row(
+                children: [
+                  Text(
+                    '${item.quantity}x ',
+                    style: TextStyle(color: Colors.grey[400]),
                   ),
-                ),
-              )
-              .toList(),
+                  Expanded(
+                    child: Text(
+                      item.product?.name ?? 'Unknown Product',
+                      style: TextStyle(color: Colors.grey[300]),
+                    ),
+                  ),
+                  Text(
+                    '\$${(item.quantity * item.unitPrice).toStringAsFixed(2)}',
+                    style: TextStyle(color: Colors.grey[300]),
+                  ),
+                ],
+              ),
+            ),
+          ),
 
           const Divider(color: Colors.grey),
 
@@ -197,7 +195,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
         children: [
           Row(
             children: [
-              Text(
+              const Text(
                 'Delivery Address',
                 style: TextStyle(
                   color: Colors.white,
@@ -207,10 +205,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
               ),
               const Spacer(),
               TextButton(
-                onPressed: () {
-                  // TODO: Navigate to address selection
-                },
-                child: Text(
+                onPressed: () {},
+                child: const Text(
                   'Change',
                   style: TextStyle(color: AppColors.lightPrimary),
                 ),
@@ -237,7 +233,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'Payment Method',
             style: TextStyle(
               color: Colors.white,
@@ -247,25 +243,20 @@ class _CheckoutPageState extends State<CheckoutPage> {
           ),
           const SizedBox(height: 16),
 
-          ..._paymentMethods
-              .map(
-                (method) => RadioListTile<String>(
-                  value: method,
-                  groupValue: _selectedPaymentMethod,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedPaymentMethod = value!;
-                    });
-                  },
-                  title: Text(
-                    method,
-                    style: TextStyle(color: Colors.grey[300]),
-                  ),
-                  activeColor: AppColors.lightPrimary,
-                  contentPadding: EdgeInsets.zero,
-                ),
-              )
-              .toList(),
+          ..._paymentMethods.map(
+            (method) => RadioListTile<String>(
+              value: method,
+              groupValue: _selectedPaymentMethod,
+              onChanged: (value) {
+                setState(() {
+                  _selectedPaymentMethod = value!;
+                });
+              },
+              title: Text(method, style: TextStyle(color: Colors.grey[300])),
+              activeColor: AppColors.lightPrimary,
+              contentPadding: EdgeInsets.zero,
+            ),
+          ),
         ],
       ),
     );
@@ -281,7 +272,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'Order Notes (Optional)',
             style: TextStyle(
               color: Colors.white,
@@ -307,7 +298,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: AppColors.lightPrimary),
+                borderSide: const BorderSide(color: AppColors.lightPrimary),
               ),
             ),
           ),
@@ -366,7 +357,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 Navigator.of(context).pop(); // Go back to cart
                 Navigator.of(context).pop(); // Go back to home
               },
-              child: Text(
+              child: const Text(
                 'OK',
                 style: TextStyle(color: AppColors.lightPrimary),
               ),

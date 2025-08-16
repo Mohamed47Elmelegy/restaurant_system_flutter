@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/services/snack_bar_service.dart';
 import '../bloc/cart_cubit.dart';
 import '../bloc/cart_event.dart';
 import '../bloc/cart_state.dart';
@@ -56,13 +57,11 @@ class _AddToCartButtonState extends State<AddToCartButton>
             _isLoading = false;
           });
 
-          // Show success feedback
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text('تم إضافة المنتج إلى السلة'),
-              backgroundColor: AppColors.success,
-              duration: const Duration(seconds: 2),
-            ),
+          // Show success feedback using SnackBarService
+          SnackBarService.showSuccessMessage(
+            context,
+            'تم إضافة المنتج إلى السلة بنجاح!',
+            title: 'تم بنجاح',
           );
 
           widget.onSuccess?.call();
@@ -71,14 +70,8 @@ class _AddToCartButtonState extends State<AddToCartButton>
             _isLoading = false;
           });
 
-          // Show error feedback
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: AppColors.error,
-              duration: const Duration(seconds: 3),
-            ),
-          );
+          // Show error feedback using SnackBarService
+          SnackBarService.showErrorMessage(context, state.message);
         }
       },
       child: AnimatedBuilder(

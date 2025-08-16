@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaurant_system_flutter/features/address/presentation/cubit/address_cubit.dart';
+import 'package:restaurant_system_flutter/features/address/presentation/cubit/address_event.dart';
 import '../../../../core/di/service_locator.dart';
+import '../../../../core/routes/app_routes.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/theme_helper.dart';
 import '../../../cart/presentation/bloc/cart_cubit.dart';
 import '../../../cart/presentation/bloc/cart_event.dart';
@@ -19,6 +23,9 @@ class HomePage extends StatelessWidget {
           create: (context) => getIt<HomeBloc>()..add(const LoadHomeData()),
         ),
         BlocProvider(create: (context) => getIt<CartCubit>()..add(LoadCart())),
+        BlocProvider(
+          create: (context) => getIt<AddressCubit>()..add(LoadAddresses()),
+        ),
       ],
       child: SafeArea(
         child: Scaffold(

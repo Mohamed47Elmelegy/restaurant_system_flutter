@@ -1,7 +1,6 @@
-import 'package:equatable/equatable.dart';
 import '../../domain/entities/order_entity.dart';
-import 'table_model.dart';
 import 'order_item_model.dart';
+import 'table_model.dart';
 
 /// 🟨 Order Model - Data Layer
 class OrderModel extends OrderEntity {

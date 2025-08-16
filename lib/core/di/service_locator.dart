@@ -54,7 +54,7 @@ import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/domain/usecases/login_usecase.dart';
 import '../../features/auth/domain/usecases/register_usecase.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
-import '../../features/orders/data/repositories/order_repository_impl.dart';
+
 import '../../features/orders/domain/repositories/order_repository.dart';
 import '../../features/orders/domain/usecases/cancel_order_usecase.dart';
 import '../../features/orders/domain/usecases/get_running_orders_usecase.dart';
@@ -71,6 +71,18 @@ import '../../features/cart/domain/usecases/update_cart_item_usecase.dart';
 import '../../features/cart/domain/usecases/remove_cart_item_usecase.dart';
 import '../../features/cart/domain/usecases/clear_cart_usecase.dart';
 import '../../features/cart/presentation/bloc/cart_cubit.dart';
+
+// Address imports
+import '../../features/address/data/datasources/address_remote_data_source.dart';
+import '../../features/address/data/datasources/address_remote_data_source_impl.dart';
+import '../../features/address/data/repositories/address_repository_impl.dart';
+import '../../features/address/domain/repositories/address_repository.dart';
+import '../../features/address/domain/usecases/add_address_usecase.dart';
+import '../../features/address/domain/usecases/delete_address_usecase.dart';
+import '../../features/address/domain/usecases/get_addresses_usecase.dart';
+import '../../features/address/domain/usecases/set_default_address_usecase.dart';
+import '../../features/address/domain/usecases/update_address_usecase.dart';
+import '../../features/address/presentation/cubit/address_cubit.dart';
 
 final getIt = GetIt.instance;
 
@@ -320,6 +332,48 @@ Future<void> setup() async {
       updateCartItemUseCase: getIt<UpdateCartItemUseCase>(),
       removeCartItemUseCase: getIt<RemoveCartItemUseCase>(),
       clearCartUseCase: getIt<ClearCartUseCase>(),
+    ),
+  );
+
+  // ==================== ADDRESS FEATURE ====================
+
+  // Address data sources
+  getIt.registerLazySingleton<AddressRemoteDataSource>(
+    () => AddressRemoteDataSourceImpl(dio: getIt<Dio>()),
+  );
+
+  // Address repository
+  getIt.registerLazySingleton<AddressRepository>(
+    () => AddressRepositoryImpl(
+      remoteDataSource: getIt<AddressRemoteDataSource>(),
+    ),
+  );
+
+  // Address use cases
+  getIt.registerLazySingleton<GetAddressesUseCase>(
+    () => GetAddressesUseCase(repository: getIt<AddressRepository>()),
+  );
+  getIt.registerLazySingleton<AddAddressUseCase>(
+    () => AddAddressUseCase(repository: getIt<AddressRepository>()),
+  );
+  getIt.registerLazySingleton<UpdateAddressUseCase>(
+    () => UpdateAddressUseCase(repository: getIt<AddressRepository>()),
+  );
+  getIt.registerLazySingleton<DeleteAddressUseCase>(
+    () => DeleteAddressUseCase(repository: getIt<AddressRepository>()),
+  );
+  getIt.registerLazySingleton<SetDefaultAddressUseCase>(
+    () => SetDefaultAddressUseCase(repository: getIt<AddressRepository>()),
+  );
+
+  // Address cubit
+  getIt.registerFactory<AddressCubit>(
+    () => AddressCubit(
+      getAddressesUseCase: getIt<GetAddressesUseCase>(),
+      addAddressUseCase: getIt<AddAddressUseCase>(),
+      updateAddressUseCase: getIt<UpdateAddressUseCase>(),
+      deleteAddressUseCase: getIt<DeleteAddressUseCase>(),
+      setDefaultAddressUseCase: getIt<SetDefaultAddressUseCase>(),
     ),
   );
 }

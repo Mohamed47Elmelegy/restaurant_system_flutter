@@ -53,7 +53,7 @@ class Endpoints {
 
   // ==================== ADDRESSES ENDPOINTS (يتطلب توكن) ====================
   static const String addresses = '/addresses';
-  static const String address = '/addresses'; // + /{address}
+  static const String addressUD = '/addresses'; // + /{address}
 
   // ==================== ADMIN CATEGORIES ENDPOINTS (يتطلب role:admin) ====================
   static const String adminCategories = '/admin/categories';

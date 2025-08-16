@@ -1,20 +1,21 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../../core/models/product_model.dart';
+
 /// 🟦 CartItem Entity - مبدأ المسؤولية الواحدة (SRP)
 /// مسؤول عن تمثيل عنصر في سلة التسوق فقط
+// ignore: must_be_immutable
 class CartItemEntity extends Equatable {
   final int id;
-  final int productId;
   final int quantity;
   final double unitPrice;
-  final ProductInfo? product;
+  final ProductModel product;
 
   const CartItemEntity({
     required this.id,
-    required this.productId,
     required this.quantity,
     required this.unitPrice,
-    this.product,
+    required this.product,
   });
 
   /// Calculate total price for this cart item
@@ -24,39 +25,29 @@ class CartItemEntity extends Equatable {
   bool get isValidQuantity => quantity > 0;
 
   /// Get product name safely
-  String get productName => product?.name ?? 'Unknown Product';
+  String get productName => product.name;
 
   /// Get product price safely
-  String get productPrice => product?.price ?? unitPrice.toString();
+  String get productPrice => product.price;
 
-  @override
-  List<Object?> get props => [id, productId, quantity, unitPrice, product];
-
-  @override
-  String toString() {
-    return 'CartItemEntity(id: $id, productId: $productId, quantity: $quantity, unitPrice: $unitPrice, product: $product)';
+  CartItemEntity copyWith({
+    int? quantity,
+    double? unitPrice,
+    ProductModel? product,
+  }) {
+    return CartItemEntity(
+      id: id,
+      quantity: quantity ?? this.quantity,
+      unitPrice: unitPrice ?? this.unitPrice,
+      product: product ?? this.product,
+    );
   }
-}
-
-/// 🟦 ProductInfo - معلومات المنتج المرفقة مع عنصر السلة
-class ProductInfo extends Equatable {
-  final int id;
-  final String name;
-  final String price;
-  final String? imageUrl;
-
-  const ProductInfo({
-    required this.id,
-    required this.name,
-    required this.price,
-    this.imageUrl,
-  });
 
   @override
-  List<Object?> get props => [id, name, price, imageUrl];
+  List<Object?> get props => [id, product.id, quantity, unitPrice, product];
 
   @override
   String toString() {
-    return 'ProductInfo(id: $id, name: $name, price: $price, imageUrl: $imageUrl)';
+    return 'CartItemEntity(id: $id, productId:  [200m${product.id} [0m, quantity: $quantity, unitPrice: $unitPrice, product: $product)';
   }
 }
