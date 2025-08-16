@@ -1,15 +1,18 @@
-import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../orders/domain/entities/order_entity.dart';
-import '../../domain/entities/cart_entity.dart';
+import 'package:flutter/material.dart';import '../../../../core/theme/app_colors.dart';
 import '../../../checkout/presentation/pages/checkout_page.dart';
 import '../../../checkout/presentation/widgets/qr_scanner_page.dart';
+import '../../../orders/domain/entities/order_entity.dart';
+import '../../domain/entities/cart_entity.dart';
 
 class CartSummaryWidget extends StatelessWidget {
   final CartEntity cart;
   final String? deliveryAddress;
 
-  const CartSummaryWidget({super.key, required this.cart, this.deliveryAddress});
+  const CartSummaryWidget({
+    super.key,
+    required this.cart,
+    this.deliveryAddress,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -235,14 +238,14 @@ class CartSummaryWidget extends StatelessWidget {
         ),
       );
     } else if (orderType == 'dine_in') {
-      final tableId = await _scanQrCode(context);
-      if (tableId != null) {
+      final tableQrCode = await _scanQrCode(context);
+      if (tableQrCode != null) {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => CheckoutPage(
               cart: cart,
               orderType: OrderType.dineIn,
-              tableId: tableId,
+              tableId: int.parse(tableQrCode), // مرر qr code كما هو
             ),
           ),
         );
@@ -275,10 +278,10 @@ class _OrderTypeBottomSheet extends StatelessWidget {
 }
 
 // دالة وهمية لمسح QR (استبدلها لاحقاً بمكتبة QR المناسبة)
-Future<int?> _scanQrCode(BuildContext context) async {
+Future<String?> _scanQrCode(BuildContext context) async {
   final result = await Navigator.push(
     context,
     MaterialPageRoute(builder: (_) => const QrScannerPage()),
   );
-  return int.tryParse(result ?? '');
+  return result;
 }
