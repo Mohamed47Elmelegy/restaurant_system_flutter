@@ -1,10 +1,10 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:restaurant_system_flutter/core/routes/app_routes.dart';
 import 'package:restaurant_system_flutter/core/utils/debug_console_messages.dart';
+
 import '../../../../core/theme/app_colors.dart';
-import '../../../checkout/presentation/pages/checkout_page.dart';
-import '../../../checkout/presentation/widgets/qr_scanner_page.dart';
 import '../../../orders/domain/entities/order_entity.dart';
 import '../../domain/entities/cart_entity.dart';
 
@@ -238,17 +238,17 @@ class CartSummaryWidget extends StatelessWidget {
 
     if (orderType == null) return;
 
+    if (!context.mounted) return;
+
     if (orderType == OrderType.delivery) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) =>
-              CheckoutPage(cart: cart, orderType: OrderType.delivery),
-        ),
+      Navigator.of(context).pushNamed(
+        AppRoutes.checkout,
+        arguments: {'cart': cart, 'orderType': OrderType.delivery},
       );
     } else if (orderType == OrderType.dineIn) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => QrScannerPage(cart: cart)),
+      Navigator.of(context).pushNamed(
+        AppRoutes.qrScanner,
+        arguments: {'cart': cart, 'orderType': OrderType.dineIn},
       );
     }
   }
@@ -275,13 +275,13 @@ class _OrderTypeBottomSheet extends StatelessWidget {
       child: Wrap(
         children: [
           ListTile(
-            leading: Icon(Icons.delivery_dining),
-            title: Text('Delivery'),
+            leading: const Icon(Icons.delivery_dining),
+            title: const Text('Delivery'),
             onTap: () => Navigator.of(context).pop(OrderType.delivery),
           ),
           ListTile(
-            leading: Icon(Icons.qr_code_scanner),
-            title: Text('Dine In'),
+            leading: const Icon(Icons.qr_code_scanner),
+            title: const Text('Dine In'),
             onTap: () => Navigator.of(context).pop(OrderType.dineIn),
           ),
         ],

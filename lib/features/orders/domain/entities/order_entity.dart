@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'table_entity.dart';
+
 import 'order_item_entity.dart';
+import 'table_entity.dart';
 
 /// 🟩 Order Entity - Domain Layer
 class OrderEntity extends Equatable {
@@ -16,13 +17,14 @@ class OrderEntity extends Equatable {
   final String? deliveryAddress;
   final String? specialInstructions;
   final String? notes;
+  final String? paymentMethod;
   final TableEntity? table;
   final int? tableId;
   final List<OrderItemEntity> items;
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  const OrderEntity({
+  const OrderEntity({ 
     required this.id,
     required this.userId,
     required this.type,
@@ -35,6 +37,7 @@ class OrderEntity extends Equatable {
     this.deliveryAddress,
     this.specialInstructions,
     this.notes,
+    this.paymentMethod,
     this.table,
     this.tableId,
     required this.items,

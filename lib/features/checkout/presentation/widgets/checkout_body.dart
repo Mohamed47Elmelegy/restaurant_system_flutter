@@ -16,12 +16,12 @@ import '../../../address/presentation/cubit/address_event.dart';
 class CheckoutBody extends StatefulWidget {
   final CartEntity cart;
   final OrderType orderType;
-  final int? tableId;
+  final String? qrCode;
   const CheckoutBody({
     super.key,
     required this.cart,
     required this.orderType,
-    this.tableId,
+    this.qrCode,
   });
 
   @override
@@ -40,15 +40,17 @@ class _CheckoutBodyState extends State<CheckoutBody> {
   ];
 
   int? _selectedAddressId;
+  int? _selectedTableId; // أضف هذا المتغير
 
   @override
   void initState() {
     super.initState();
-    // استخدم القيم القادمة من الكونستركتور
     if (widget.orderType == OrderType.delivery) {
       context.read<AddressCubit>().add(LoadAddresses());
     } else if (widget.orderType == OrderType.dineIn) {
-      context.read<TableCubit>().getTableByQr(widget.tableId.toString());
+      if (widget.qrCode != null) {
+        context.read<TableCubit>().getTableByQr(widget.qrCode!);
+      }
     }
   }
 
@@ -97,7 +99,7 @@ class _CheckoutBodyState extends State<CheckoutBody> {
                     children: [
                       _buildOrderSummary(subtotal, tax, deliveryFee, total),
                       const SizedBox(height: 24),
-                      _buildDeliveryAddress(),
+                      _buildOrderTypeSection(),
                       const SizedBox(height: 24),
                       _buildPaymentMethod(),
                       const SizedBox(height: 24),
@@ -197,22 +199,89 @@ class _CheckoutBodyState extends State<CheckoutBody> {
     );
   }
 
-  Widget _buildDeliveryAddress() {
-    if (widget.orderType != OrderType.delivery) return SizedBox.shrink();
+  Widget _buildTableInfo() {
+    return BlocBuilder<TableCubit, TableState>(
+      builder: (context, state) {
+        if (state is TableLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (state is TableLoaded) {
+          final table = state.table;
+          _selectedTableId = table.id; // خزّن table.id هنا
+          return Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: const Color(0xFF3A3A4A),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Table Information',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Table Number: \t${table.id}',
+                  style: const TextStyle(color: Colors.grey, fontSize: 14),
+                ),
+                if (table.name != null && table.name.isNotEmpty)
+                  Text(
+                    'Table Name: ${table.name}',
+                    style: const TextStyle(color: Colors.grey, fontSize: 14),
+                  ),
+                // يمكنك إضافة المزيد من بيانات الطاولة هنا
+              ],
+            ),
+          );
+        }
+        if (state is TableError) {
+          return Text(state.message, style: const TextStyle(color: Colors.red));
+        }
+        // في حالة عدم وجود بيانات
+        return Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFF3A3A4A),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: const Text(
+            'No table data found.',
+            style: TextStyle(color: Colors.grey, fontSize: 14),
+          ),
+        );
+      },
+    );
+  }
 
+  Widget _buildOrderTypeSection() {
+    if (widget.orderType == OrderType.dineIn) {
+      return _buildTableInfo();
+    }
+    if (widget.orderType == OrderType.delivery) {
+      return _buildAddressSection();
+    }
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildAddressSection() {
     return BlocBuilder<AddressCubit, AddressState>(
       builder: (context, state) {
         if (state is AddressLoading) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
         if (state is AddressLoaded) {
           if (state.addresses.isEmpty) {
-            return Text(
+            return const Text(
               'No addresses found. Please add a new address.',
               style: TextStyle(color: Colors.white),
             );
           }
-          // أول مرة: اختر الافتراضي أو الأول
           _selectedAddressId ??=
               state.defaultAddress?.id ?? state.addresses.first.id;
           return Container(
@@ -247,7 +316,7 @@ class _CheckoutBodyState extends State<CheckoutBody> {
                       style: TextStyle(color: Colors.grey[300]),
                     ),
                     subtitle: address.isDefault
-                        ? Text(
+                        ? const Text(
                             'Default',
                             style: TextStyle(color: AppColors.lightPrimary),
                           )
@@ -269,9 +338,9 @@ class _CheckoutBodyState extends State<CheckoutBody> {
           );
         }
         if (state is AddressError) {
-          return Text(state.message, style: TextStyle(color: Colors.red));
+          return Text(state.message, style: const TextStyle(color: Colors.red));
         }
-        return SizedBox.shrink();
+        return const SizedBox.shrink();
       },
     );
   }
@@ -439,10 +508,12 @@ class _CheckoutBodyState extends State<CheckoutBody> {
       }
       final request = PlaceOrderRequestModel(
         type: widget.orderType,
-        tableId: widget.orderType == OrderType.dineIn ? widget.tableId : null,
+        tableId: widget.orderType == OrderType.dineIn
+            ? _selectedTableId
+            : null, // أرسل tableId هنا
         addressId: widget.orderType == OrderType.delivery
             ? _selectedAddressId
-            : null, // أضف هذا
+            : null,
         deliveryAddress: widget.orderType == OrderType.delivery
             ? (selectedAddressFull ?? '')
             : null,
@@ -451,9 +522,6 @@ class _CheckoutBodyState extends State<CheckoutBody> {
             ? null
             : _notesController.text.trim(),
       );
-      print('DEBUG: PlaceOrderRequestModel type:  [32m [1m${request.type} [0m');
-      print('DEBUG: PlaceOrderRequestModel json: ${request.toJson()}');
-
       context.read<CheckOutCubit>().placeOrder(request, items);
     }
   }
@@ -462,8 +530,7 @@ class _CheckoutBodyState extends State<CheckoutBody> {
 class ThankYouPage extends StatelessWidget {
   final int orderId;
   final String? qrCode;
-  const ThankYouPage({Key? key, required this.orderId, this.qrCode})
-    : super(key: key);
+  const ThankYouPage({super.key, required this.orderId, this.qrCode});
 
   @override
   Widget build(BuildContext context) {

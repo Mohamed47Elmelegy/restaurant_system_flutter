@@ -20,16 +20,16 @@ class OrderItemModel extends OrderItemEntity {
   /// Factory constructor from JSON
   factory OrderItemModel.fromJson(Map<String, dynamic> json) {
     return OrderItemModel(
-      id: json['id'] as int,
-      orderId: json['order_id'] as int,
-      menuItemId: json['menu_item_id'] as int,
-      name: json['name'] as String,
-      description: json['description'] as String?,
-      image: json['image'] as String?,
+      id: json['id'] as int? ?? 0,
+      orderId: json['order_id'] as int? ?? 0,
+      menuItemId: json['menu_item_id'] as int? ?? 0,
+      name: json['name']?.toString() ?? '',
+      description: json['description']?.toString() ?? '',
+      image: json['image']?.toString() ?? '',
       unitPrice: double.parse(json['unit_price'].toString()),
-      quantity: json['quantity'] as int,
+      quantity: json['quantity'] as int? ?? 0,
       totalPrice: double.parse(json['total_price'].toString()),
-      specialInstructions: json['special_instructions'] as String?,
+      specialInstructions: json['special_instructions']?.toString() ?? '',
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
     );

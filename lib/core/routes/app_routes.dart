@@ -15,5 +15,8 @@ class AppRoutes {
   static const String categoryItems = '/category-items';
   static const String cart = '/cart';
   static const String address = '/address';
-  static const String addAddress = '/add-address';  
+  static const String addAddress = '/add-address';
+  static const String qrScanner = '/qr-scanner';
+  static const String tableInfo = '/table-info';
+  static const String checkout = '/checkout';
 }

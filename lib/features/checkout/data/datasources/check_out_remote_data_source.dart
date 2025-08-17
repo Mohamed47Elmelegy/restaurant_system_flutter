@@ -50,10 +50,10 @@ class CheckOutRemoteDataSourceImpl implements CheckOutRemoteDataSource {
       }
       return OrderModel.fromJson(orderData);
     } on DioException catch (e) {
-      // log('❌ CheckOutRemoteDataSource: Failed to place order - $e');
+       log('❌ CheckOutRemoteDataSource: Failed to place order - $e');
       throw ServerFailure(message: e.message ?? 'Failed to place order');
     } catch (e) {
-      // log('❌ CheckOutRemoteDataSource: Failed to place order - $e');
+     log('❌ CheckOutRemoteDataSource: Failed to place order - $e');
       throw ServerFailure(message: e.toString());
     }
   }

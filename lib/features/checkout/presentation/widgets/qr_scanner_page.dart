@@ -1,9 +1,14 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
+import '../../../../core/di/service_locator.dart';
 import '../../../cart/domain/entities/cart_entity.dart';
+import '../../../orders/domain/entities/order_entity.dart';
+import '../../../orders/presentation/cubit/table_cubit.dart';
 import 'table_info_page.dart';
+import '../../../../core/routes/app_routes.dart';
 
 class QrScannerPage extends StatefulWidget {
   final CartEntity cart;
@@ -79,12 +84,21 @@ class _QrScannerPageState extends State<QrScannerPage> {
         });
         final qrString = scanData.code ?? '';
         controller.pauseCamera();
-        // Instead of pop, navigate to TableInfoPage
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (_) => TableInfoPage(qrCode: qrString, cart: widget.cart),
-          ),
-        );
+        // أرسل qrString مباشرة بدلاً من استخراج tableId
+        if (qrString.isNotEmpty) {
+          Navigator.of(context).pushReplacementNamed(
+            AppRoutes.checkout,
+            arguments: {
+              'cart': widget.cart,
+              'orderType': OrderType.dineIn,
+              'qrCode': qrString,
+            },
+          );
+        } else {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('QR code is invalid!')));
+        }
       }
     });
   }

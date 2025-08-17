@@ -17,6 +17,7 @@ class OrderModel extends OrderEntity {
     super.deliveryAddress,
     super.specialInstructions,
     super.notes,
+    super.paymentMethod,
     super.table,
     required super.items,
     required super.createdAt,
@@ -27,8 +28,12 @@ class OrderModel extends OrderEntity {
   /// Factory constructor from JSON
   factory OrderModel.fromJson(Map<String, dynamic> json) {
     return OrderModel(
-      id: json['id'] as int,
-      userId: json['user_id'] as int,
+      id: (json['id'] is int)
+          ? json['id'] as int
+          : int.tryParse(json['id']?.toString() ?? '') ?? 0,
+      userId: (json['user_id'] is int)
+          ? json['user_id'] as int
+          : int.tryParse(json['user_id']?.toString() ?? '') ?? 0,
       type: _parseOrderType(json['type'] as String),
       status: _parseOrderStatus(json['status'] as String),
       paymentStatus: _parsePaymentStatus(json['payment_status'] as String),
@@ -36,10 +41,13 @@ class OrderModel extends OrderEntity {
       taxAmount: double.parse(json['tax_amount'].toString()),
       deliveryFee: double.parse(json['delivery_fee'].toString()),
       totalAmount: double.parse(json['total_amount'].toString()),
-      deliveryAddress: json['delivery_address'] as String?,
-      specialInstructions: json['special_instructions'] as String?,
-      notes: json['notes'] as String?,
-      tableId: json['table_id'] as int?, // أضف هذا السطر
+      deliveryAddress: json['delivery_address']?.toString() ?? '',
+      specialInstructions: json['special_instructions']?.toString() ?? '',
+      notes: json['notes']?.toString() ?? '',
+      paymentMethod: json['payment_method']?.toString() ?? '',
+      tableId: (json['table_id'] is int)
+          ? json['table_id'] as int
+          : int.tryParse(json['table_id']?.toString() ?? '') ?? 0,
       table: json['table'] != null
           ? TableModel.fromJson(json['table'] as Map<String, dynamic>)
           : null,
@@ -91,6 +99,7 @@ class OrderModel extends OrderEntity {
       deliveryFee: entity.deliveryFee,
       totalAmount: entity.totalAmount,
       deliveryAddress: entity.deliveryAddress,
+      paymentMethod: entity.paymentMethod,
       specialInstructions: entity.specialInstructions,
       notes: entity.notes,
       table: entity.table != null ? TableModel.fromEntity(entity.table!) : null,

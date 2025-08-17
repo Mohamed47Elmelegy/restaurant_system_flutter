@@ -16,6 +16,7 @@ import '../../../address/domain/usecases/delete_address_usecase.dart';
 import '../../../address/domain/usecases/set_default_address_usecase.dart';
 import '../../../../core/di/service_locator.dart';
 import '../../../cart/domain/entities/cart_entity.dart';
+import '../../../cart/presentation/bloc/cart_cubit.dart';
 import '../../../orders/domain/entities/order_entity.dart';
 import '../../../orders/domain/repositories/table_repository.dart';
 import '../../../orders/presentation/cubit/table_cubit.dart';
@@ -26,22 +27,28 @@ import '../widgets/checkout_body.dart';
 class CheckoutPage extends StatelessWidget {
   final CartEntity cart;
   final OrderType orderType;
-  final int? tableId;
+  final String? qrCode;
 
   const CheckoutPage({
     super.key,
     required this.cart,
     required this.orderType,
-    this.tableId,
+    this.qrCode,
   });
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)?.settings.arguments as Map?;
+    final cart = args != null ? args['cart'] as CartEntity : this.cart;
+    final orderType = args != null
+        ? args['orderType'] as OrderType
+        : this.orderType;
+    final qrCode = args != null ? args['qrCode'] as String? : this.qrCode;
     return BlocProvider<TableCubit>(
-      create: (context) =>
-          TableCubit(getIt<TableRepository>()), // تأكد من ربط TableRepository في getIt
+      create: (context) => TableCubit(getIt<TableRepository>()),
       child: MultiBlocProvider(
         providers: [
+          BlocProvider<CartCubit>(create: (context) => getIt<CartCubit>()),
           BlocProvider<CheckOutCubit>(
             create: (context) =>
                 CheckOutCubit(getIt<CheckOutPlaceOrderUseCase>()),
@@ -57,7 +64,7 @@ class CheckoutPage extends StatelessWidget {
             ),
           ),
         ],
-        child: CheckoutBody(cart: cart, orderType: orderType, tableId: tableId),
+        child: CheckoutBody(cart: cart, orderType: orderType, qrCode: qrCode),
       ),
     );
   }

@@ -20,6 +20,10 @@ import '../../features/cart/presentation/pages/cart_page.dart';
 import '../../features/menu/presentation/pages/product_details_page.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
 import 'app_routes.dart';
+import '../../features/checkout/presentation/widgets/qr_scanner_page.dart';
+import '../../features/checkout/presentation/widgets/table_info_page.dart';
+import '../../features/checkout/presentation/pages/checkout_page.dart';
+import '../../features/orders/presentation/cubit/table_cubit.dart';
 
 Route<dynamic>? appRouter(RouteSettings settings) {
   switch (settings.name) {
@@ -33,11 +37,14 @@ Route<dynamic>? appRouter(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => const SignupPage());
     case AppRoutes.home:
       return MaterialPageRoute(builder: (_) => const HomePage());
-    case AppRoutes.addAddress:return MaterialPageRoute(builder: (_)=> AddAddressPage(
-        onAddressAdded: (address) {
-          // Handle address addition logic here
-        },
-      ));
+    case AppRoutes.addAddress:
+      return MaterialPageRoute(
+        builder: (_) => AddAddressPage(
+          onAddressAdded: (address) {
+            // Handle address addition logic here
+          },
+        ),
+      );
     // case AppRoutes.sellerDashboard:
     //   return MaterialPageRoute(builder: (_) => const SellerDashboardHome());
     case AppRoutes.admin:
@@ -75,6 +82,28 @@ Route<dynamic>? appRouter(RouteSettings settings) {
         builder: (_) => BlocProvider(
           create: (context) => getIt<CartCubit>()..add(LoadCart()),
           child: const CartPage(),
+        ),
+      );
+    case AppRoutes.qrScanner:
+      final args = settings.arguments as Map<String, dynamic>;
+      return MaterialPageRoute(
+        builder: (_) => QrScannerPage(cart: args['cart']),
+      );
+    case AppRoutes.tableInfo:
+      final args = settings.arguments as Map<String, dynamic>;
+      return MaterialPageRoute(
+        builder: (_) => BlocProvider<TableCubit>(
+          create: (context) => getIt<TableCubit>(),
+          child: TableInfoPage(qrCode: args['qrCode'], cart: args['cart']),
+        ),
+      );
+    case AppRoutes.checkout:
+      final args = settings.arguments as Map<String, dynamic>;
+      return MaterialPageRoute(
+        builder: (_) => CheckoutPage(
+          cart: args['cart'],
+          orderType: args['orderType'],
+          qrCode: args['qrCode'],
         ),
       );
 

@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../orders/presentation/cubit/table_cubit.dart';
+
+import '../../../../core/routes/app_routes.dart';
 import '../../../cart/domain/entities/cart_entity.dart';
-import '../../presentation/pages/checkout_page.dart';
 import '../../../orders/domain/entities/order_entity.dart';
+import '../../../orders/domain/entities/table_entity.dart';
+import '../../../orders/presentation/cubit/table_cubit.dart';
 
 class TableInfoPage extends StatelessWidget {
   final String qrCode;
   final CartEntity cart;
-  const TableInfoPage({Key? key, required this.qrCode, required this.cart})
-    : super(key: key);
+  final TableEntity? table;
+  const TableInfoPage({
+    super.key,
+    required this.qrCode,
+    required this.cart,
+    this.table,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,15 +31,15 @@ class TableInfoPage extends StatelessWidget {
                   ? (context.read<TableCubit>().state as TableLoaded).table.id
                   : null;
               if (tableId != null) {
-                Navigator.pushReplacement(
+                Navigator.pushReplacementNamed(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => CheckoutPage(
-                      cart: cart,
-                      orderType: OrderType.dineIn,
-                      tableId: tableId,
-                    ),
-                  ),
+                  AppRoutes.checkout,
+                  arguments: {
+                    'cart': cart,
+                    'orderType': OrderType.dineIn,
+                    'tableId': tableId,
+                    'table': table,
+                  },
                 );
               }
             }
