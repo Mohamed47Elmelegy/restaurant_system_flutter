@@ -8,13 +8,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../address/presentation/cubit/address_cubit.dart';
-import '../../../address/domain/usecases/get_addresses_usecase.dart';
-import '../../../address/domain/usecases/add_address_usecase.dart';
-import '../../../address/domain/usecases/update_address_usecase.dart';
-import '../../../address/domain/usecases/delete_address_usecase.dart';
-import '../../../address/domain/usecases/set_default_address_usecase.dart';
+
 import '../../../../core/di/service_locator.dart';
+
+import '../../../address/presentation/cubit/address_cubit.dart';
 import '../../../cart/domain/entities/cart_entity.dart';
 import '../../../cart/presentation/bloc/cart_cubit.dart';
 import '../../../orders/domain/entities/order_entity.dart';
@@ -54,14 +51,7 @@ class CheckoutPage extends StatelessWidget {
                 CheckOutCubit(getIt<CheckOutPlaceOrderUseCase>()),
           ),
           BlocProvider<AddressCubit>(
-            create: (context) => AddressCubit(
-              getIt<GetAddressesUseCase>(),
-              getAddressesUseCase: getIt<GetAddressesUseCase>(),
-              addAddressUseCase: getIt<AddAddressUseCase>(),
-              updateAddressUseCase: getIt<UpdateAddressUseCase>(),
-              deleteAddressUseCase: getIt<DeleteAddressUseCase>(),
-              setDefaultAddressUseCase: getIt<SetDefaultAddressUseCase>(),
-            ),
+            create: (context) => getIt<AddressCubit>(),
           ),
         ],
         child: CheckoutBody(cart: cart, orderType: orderType, qrCode: qrCode),

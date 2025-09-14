@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 import '../../features/cart/domain/entities/cart_item_entity.dart';
+import '../../features/cart/presentation/bloc/cart_cubit.dart';
+import '../../features/cart/presentation/bloc/cubit/cart_item_cubit.dart';
 import '../theme/theme_helper.dart';
 
 class AddRemoveItem extends StatelessWidget {
-  const AddRemoveItem({
-    super.key,
-    required this.cartItemEntity,
-  });
+  const AddRemoveItem({super.key, required this.cartItemEntity});
   final CartItemEntity cartItemEntity;
 
   @override
@@ -21,8 +21,8 @@ class AddRemoveItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(50.r),
           child: GestureDetector(
             onTap: () {
-              // cartItemEntity.increaseItemCount();
-              // context.read<CartItemCubit>().updateCartItem(cartItemEntity);
+              cartItemEntity.isValidQuantity;
+              context.read<CartItemCubit>().updateCartItem(cartItemEntity);
             },
             child: Container(
               height: 30.h,
@@ -39,20 +39,17 @@ class AddRemoveItem extends StatelessWidget {
             ),
           ),
         ),
-     const   Text(
-          '',
-          //cartItemEntity.totalUnitAmount().toString(),
-        ),
+        Text(cartItemEntity.totalPrice.toString()),
         ClipRRect(
           borderRadius: BorderRadius.circular(50.r),
           child: GestureDetector(
             onTap: () {
-              // cartItemEntity.decreaseItemCount();
-              // if (cartItemEntity.count == 0) {
-              //   context.read<CartCubit>().removeCartItem(cartItemEntity);
-              // } else {
-              //   context.read<CartItemCubit>().updateCartItem(cartItemEntity);
-              // }
+              cartItemEntity.isValidQuantity;
+              if (cartItemEntity.quantity == 0) {
+                context.read<CartCubit>().removeCartItemUseCase;
+              } else {
+                context.read<CartItemCubit>().updateCartItem(cartItemEntity);
+              }
             },
             child: Container(
               height: 30.h,

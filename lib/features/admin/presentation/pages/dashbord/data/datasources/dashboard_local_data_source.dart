@@ -1,7 +1,8 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'dart:developer';
-import 'dart:convert';
 
 /// 🟦 DashboardLocalDataSource - للتخزين المحلي لبيانات الـ dashboard باستخدام Hive
 ///
@@ -61,7 +62,7 @@ class DashboardLocalDataSourceImpl implements DashboardLocalDataSource {
   static const String _productsDataKey = 'dashboard_products_data';
   static const String _revenueDataKey = 'dashboard_revenue_data';
   static const String _customersDataKey = 'dashboard_customers_data';
-  static const Duration _cacheDuration = const Duration(
+  static const Duration _cacheDuration = Duration(
     minutes: 30,
   ); // dashboard يحتاج cache قصير
 

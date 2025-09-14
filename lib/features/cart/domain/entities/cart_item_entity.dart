@@ -4,7 +4,6 @@ import '../../../../core/models/product_model.dart';
 
 /// 🟦 CartItem Entity - مبدأ المسؤولية الواحدة (SRP)
 /// مسؤول عن تمثيل عنصر في سلة التسوق فقط
-// ignore: must_be_immutable
 class CartItemEntity extends Equatable {
   final int id;
   final int quantity;
@@ -28,7 +27,7 @@ class CartItemEntity extends Equatable {
   String get productName => product.name;
 
   /// Get product price safely
-  String get productPrice => product.price;
+  String get productPrice => product.price.toString();
 
   CartItemEntity copyWith({
     int? quantity,
@@ -48,6 +47,6 @@ class CartItemEntity extends Equatable {
 
   @override
   String toString() {
-    return 'CartItemEntity(id: $id, productId:  [200m${product.id} [0m, quantity: $quantity, unitPrice: $unitPrice, product: $product)';
+    return 'CartItemEntity(id: $id, productId: ${product.id}, quantity: $quantity, unitPrice: $unitPrice, product: $product)';
   }
 }

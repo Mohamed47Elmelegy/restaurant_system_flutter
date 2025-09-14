@@ -18,7 +18,7 @@ class AddAddressUseCase extends BaseUseCase<AddressEntity, AddAddressParams> {
 
   @override
   Future<Either<Failure, AddressEntity>> call(AddAddressParams params) async {
-    return await repository.addAddress(params.address);
+    return repository.addAddress(params.address);
   }
 }
 

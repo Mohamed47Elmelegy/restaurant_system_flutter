@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/theme/app_colors.dart';
+
 import '../../../../core/services/snack_bar_service.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../bloc/cart_cubit.dart';
 import '../bloc/cart_event.dart';
 import '../bloc/cart_state.dart';
@@ -121,7 +122,7 @@ class _AddToCartButtonState extends State<AddToCartButton>
                       : null,
                   child: Center(
                     child: _isLoading
-                        ? SizedBox(
+                        ? const SizedBox(
                             width: 24,
                             height: 24,
                             child: CircularProgressIndicator(
@@ -134,7 +135,7 @@ class _AddToCartButtonState extends State<AddToCartButton>
                         : Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.shopping_cart_outlined,
                                 color: Colors.white,
                                 size: 20,
@@ -175,46 +176,46 @@ class _AddToCartButtonState extends State<AddToCartButton>
   }
 }
 
-/// Simplified version for quick actions
-class QuickAddToCartButton extends StatelessWidget {
-  final int productId;
-  final VoidCallback? onPressed;
+// /// Simplified version for quick actions
+// class QuickAddToCartButton extends StatelessWidget {
+//   final int productId;
+//   final VoidCallback? onPressed;
 
-  const QuickAddToCartButton({
-    super.key,
-    required this.productId,
-    this.onPressed,
-  });
+//   const QuickAddToCartButton({
+//     super.key,
+//     required this.productId,
+//     this.onPressed,
+//   });
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 40,
-      height: 40,
-      decoration: BoxDecoration(
-        color: AppColors.lightPrimary,
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.lightPrimary.withOpacity(0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(20),
-          onTap: () {
-            context.read<CartCubit>().add(
-              AddToCart(productId: productId, quantity: 1),
-            );
-            onPressed?.call();
-          },
-          child: const Icon(Icons.add, color: Colors.white, size: 20),
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       width: 40,
+//       height: 40,
+//       decoration: BoxDecoration(
+//         color: AppColors.lightPrimary,
+//         shape: BoxShape.circle,
+//         boxShadow: [
+//           BoxShadow(
+//             color: AppColors.lightPrimary.withOpacity(0.3),
+//             blurRadius: 8,
+//             offset: const Offset(0, 2),
+//           ),
+//         ],
+//       ),
+//       child: Material(
+//         color: Colors.transparent,
+//         child: InkWell(
+//           borderRadius: BorderRadius.circular(20),
+//           onTap: () {
+//             context.read<CartCubit>().add(
+//               AddToCart(productId: productId, quantity: 1),
+//             );
+//             onPressed?.call();
+//           },
+//           child: const Icon(Icons.add, color: Colors.white, size: 20),
+//         ),
+//       ),
+//     );
+//   }
+// }

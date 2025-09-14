@@ -12,6 +12,7 @@ import '../cubit/address_cubit.dart';
 import '../cubit/address_event.dart';
 import '../cubit/address_state.dart';
 import '../widgets/address_card.dart';
+import 'edit_address_page.dart';
 
 class AddressPage extends StatelessWidget {
   const AddressPage({super.key});
@@ -37,7 +38,7 @@ class _AddressPageContent extends StatelessWidget {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'عناويني',
+          'My Addresses',
           style: AppTextStyles.senBold18(
             context,
           ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
@@ -77,18 +78,11 @@ class _AddressPageContent extends StatelessWidget {
                       backgroundColor: AppColors.success,
                     ),
                   );
-                } else if (state is AddressSetAsDefault) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(state.message),
-                      backgroundColor: AppColors.success,
-                    ),
-                  );
                 }
               },
               builder: (context, state) {
                 if (state is AddressLoading) {
-                  return Center(
+                  return const Center(
                     child: CircularProgressIndicator(
                       color: AppColors.lightPrimary,
                     ),
@@ -108,7 +102,7 @@ class _AddressPageContent extends StatelessWidget {
           Padding(
             padding: EdgeInsets.all(24.w),
             child: CustomButton(
-              text: 'إضافة عنوان جديد',
+              text: 'Add New Address',
               onPressed: () =>
                   Navigator.pushNamed(context, AppRoutes.addAddress),
               width: double.infinity,
@@ -137,14 +131,14 @@ class _AddressPageContent extends StatelessWidget {
           ),
           SizedBox(height: 16.h),
           Text(
-            'لا توجد عناوين محفوظة',
+            'No Saved Addresses',
             style: AppTextStyles.senBold18(
               context,
             ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
           ),
           SizedBox(height: 8.h),
           Text(
-            'أضف عنوانك الأول لتسهيل عملية التوصيل',
+            'Add your first address to make delivery easier',
             style: AppTextStyles.senRegular14(
               context,
             ).copyWith(color: ThemeHelper.getSecondaryTextColor(context)),
@@ -163,7 +157,7 @@ class _AddressPageContent extends StatelessWidget {
           Icon(Icons.error_outline, size: 80.w, color: AppColors.error),
           SizedBox(height: 16.h),
           Text(
-            'حدث خطأ',
+            'An Error Occurred',
             style: AppTextStyles.senBold18(
               context,
             ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
@@ -185,7 +179,7 @@ class _AddressPageContent extends StatelessWidget {
               backgroundColor: AppColors.lightPrimary,
               foregroundColor: Colors.white,
             ),
-            child: const Text('إعادة المحاولة'),
+            child: const Text('Retry'),
           ),
         ],
       ),
@@ -202,11 +196,16 @@ class _AddressPageContent extends StatelessWidget {
       itemBuilder: (context, index) {
         final address = addresses[index];
         return CustomAddressCart(
-          title: address.label ?? 'عنوان',
+          title: address.name,
           address: address.fullAddress,
           isDefault: address.isDefault,
           onEdit: () {
-            // TODO: Navigate to edit address page
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EditAddressPage(address: address),
+              ),
+            );
           },
           onDelete: () {
             _showDeleteConfirmation(context, address);
@@ -229,13 +228,13 @@ class _AddressPageContent extends StatelessWidget {
       builder: (dialogContext) => AlertDialog(
         backgroundColor: ThemeHelper.getCardBackgroundColor(context),
         title: Text(
-          'حذف العنوان',
+          'Delete Address',
           style: AppTextStyles.senBold18(
             context,
           ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
         ),
         content: Text(
-          'هل أنت متأكد من حذف هذا العنوان؟',
+          'Are you sure you want to delete this address?',
           style: AppTextStyles.senRegular14(
             context,
           ).copyWith(color: ThemeHelper.getSecondaryTextColor(context)),
@@ -244,7 +243,7 @@ class _AddressPageContent extends StatelessWidget {
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
             child: Text(
-              'إلغاء',
+              'Cancel',
               style: TextStyle(
                 color: ThemeHelper.getSecondaryTextColor(context),
               ),
@@ -257,7 +256,10 @@ class _AddressPageContent extends StatelessWidget {
                 DeleteAddress(addressId: address.id),
               );
             },
-            child: const Text('حذف', style: TextStyle(color: AppColors.error)),
+            child: const Text(
+              'Delete',
+              style: TextStyle(color: AppColors.error),
+            ),
           ),
         ],
       ),

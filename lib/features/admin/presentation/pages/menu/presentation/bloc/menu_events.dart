@@ -1,7 +1,8 @@
 import 'package:equatable/equatable.dart';
+
+import '../../domain/usecases/delete_menu_item_usecase.dart';
 import '../../domain/usecases/load_menu_items_by_category_usecase.dart';
 import '../../domain/usecases/search_menu_items_usecase.dart';
-import '../../domain/usecases/delete_menu_item_usecase.dart';
 import '../../domain/usecases/toggle_menu_item_availability_usecase.dart';
 
 // Events

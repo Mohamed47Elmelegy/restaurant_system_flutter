@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import '../entities/main_category.dart';
 import '../theme/app_colors.dart';
-import '../theme/theme_helper.dart';
 import '../theme/text_styles.dart';
+import '../theme/theme_helper.dart';
 import '../utils/hex_to_color.dart';
 
 class CategoryCard extends StatelessWidget {

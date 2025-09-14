@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
-import '../entities/table_entity.dart';
+
 import '../../../../core/error/failures.dart';
+import '../entities/table_entity.dart';
 
 abstract class TableRepository {
   Future<Either<Failure, TableEntity>> getTableByQr(String qrCode);

@@ -17,6 +17,6 @@ class GetAddressesUseCase extends BaseUseCaseNoParams<List<AddressEntity>> {
 
   @override
   Future<Either<Failure, List<AddressEntity>>> call() async {
-    return await repository.getAddresses();
+    return repository.getAddresses();
   }
 }

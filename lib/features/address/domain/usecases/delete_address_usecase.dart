@@ -17,7 +17,7 @@ class DeleteAddressUseCase extends BaseUseCase<bool, DeleteAddressParams> {
 
   @override
   Future<Either<Failure, bool>> call(DeleteAddressParams params) async {
-    return await repository.deleteAddress(params.addressId);
+    return repository.deleteAddress(params.addressId);
   }
 }
 

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/widgets/custom_indicator.dart';
+
 import '../../../../core/routes/app_routes.dart';
 import '../../../../core/services/snack_bar_service.dart';
+import '../../../../core/widgets/custom_indicator.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_state.dart';
 import 'login_view_body.dart';
@@ -16,7 +17,7 @@ class LoginViewBodyConsumer extends StatelessWidget {
       listener: (context, state) {
         if (state is AuthSuccess) {
           // Get username from auth data
-          String username = state.auth.user.name;
+          final String username = state.auth.user.name;
           SnackBarService.showSuccessMessage(
             context,
             'تم تسجيل الدخول بنجاح',

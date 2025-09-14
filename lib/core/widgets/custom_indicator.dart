@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-
 class CustomLoadingIndicator extends StatelessWidget {
   const CustomLoadingIndicator({
     super.key,
@@ -29,7 +28,7 @@ class CustomLoadingIndicator extends StatelessWidget {
             child: Center(
               child: Platform.isIOS
                   ? const CupertinoActivityIndicator(color: Colors.white)
-                  : SpinKitFadingCircle(color: Colors.white, size: 60.0),
+                  : const SpinKitFadingCircle(color: Colors.white, size: 60.0),
             ),
           ),
       ],

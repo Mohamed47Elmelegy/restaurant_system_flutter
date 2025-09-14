@@ -1,8 +1,9 @@
-import '../repositories/menu_repository.dart';
-import '../entities/menu_item.dart';
+import 'package:dartz/dartz.dart';
+
 import '../../../../../../../core/base/base_usecase.dart';
 import '../../../../../../../core/error/failures.dart';
-import 'package:dartz/dartz.dart';
+import '../entities/menu_item.dart';
+import '../repositories/menu_repository.dart';
 
 class LoadMenuItemsByCategoryParams {
   final String category;
@@ -25,7 +26,7 @@ class LoadMenuItemsByCategoryUseCase
   ) async {
     try {
       if (params.category.isEmpty) {
-        return Left(ServerFailure(message: 'اسم الفئة مطلوب'));
+        return const Left(ServerFailure(message: 'اسم الفئة مطلوب'));
       }
 
       return await repository.getMenuItemsByCategory(params.category);

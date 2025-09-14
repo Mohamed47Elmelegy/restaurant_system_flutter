@@ -1,11 +1,13 @@
+import 'dart:developer';
+
+import 'package:dartz/dartz.dart';
+
+import '../../../../../../../core/error/failures.dart';
 import '../../domain/entities/menu_item.dart';
 import '../../domain/repositories/menu_repository.dart';
-import '../models/menu_item_model.dart';
-import '../datasources/menu_remote_data_source.dart';
 import '../datasources/menu_local_data_source.dart';
-import '../../../../../../../core/error/failures.dart';
-import 'package:dartz/dartz.dart';
-import 'dart:developer';
+import '../datasources/menu_remote_data_source.dart';
+import '../models/menu_item_model.dart';
 
 class MenuRepositoryImpl implements MenuRepository {
   final MenuRemoteDataSource remoteDataSource;
@@ -90,9 +92,7 @@ class MenuRepositoryImpl implements MenuRepository {
             .map((entity) => MenuItemModel.fromEntity(entity))
             .toList();
         await localDataSource.saveMenuItems(menuItemModelsForLocal);
-        log(
-          '💾 MenuRepository: Saved menu items by category to local storage',
-        );
+        log('💾 MenuRepository: Saved menu items by category to local storage');
       }
 
       return Right(menuItems);
@@ -110,9 +110,7 @@ class MenuRepositoryImpl implements MenuRepository {
       // 1. محاولة جلب البيانات من الـ local أولاً
       final localMenuItem = await localDataSource.getMenuItemById(id);
       if (localMenuItem != null) {
-        log(
-          '📱 MenuRepository: Using local menu item - ${localMenuItem.name}',
-        );
+        log('📱 MenuRepository: Using local menu item - ${localMenuItem.name}');
         return Right(localMenuItem.toEntity());
       }
 
@@ -129,7 +127,7 @@ class MenuRepositoryImpl implements MenuRepository {
         return Right(menuItem);
       }
 
-      return Right(null);
+      return const Right(null);
     } catch (e) {
       log('❌ MenuRepository: Error getting menu item by ID - $e');
       return Left(ServerFailure(message: 'Failed to get menu item: $e'));
@@ -256,7 +254,7 @@ class MenuRepositoryImpl implements MenuRepository {
         log(
           '⚠️ MenuRepository: No categories received from backend, using fallback',
         );
-        return Right([
+        return const Right([
           'Fast Food',
           'Pizza',
           'Beverages',
@@ -292,7 +290,7 @@ class MenuRepositoryImpl implements MenuRepository {
       log('❌ MenuRepository: Failed to get categories from backend - $e');
       log('🔄 MenuRepository: Using fallback categories');
 
-      return Right([
+      return const Right([
         'Fast Food',
         'Pizza',
         'Beverages',
@@ -371,7 +369,7 @@ class MenuRepositoryImpl implements MenuRepository {
       // 2. جلب البيانات من الـ API
       log('🌐 MenuRepository: Fetching paginated data from API...');
       // TODO: Implement getMenuItemsPaginated method in MenuRemoteDataSource
-      return Left(
+      return const Left(
         ServerFailure(message: 'Paginated menu items not implemented yet'),
       );
     } catch (e) {
@@ -400,7 +398,7 @@ class MenuRepositoryImpl implements MenuRepository {
       // 2. جلب البيانات من الـ API (إذا كان متاحاً)
       log('🌐 MenuRepository: Fetching available items from API...');
       // TODO: Implement getAvailableMenuItems in MenuRemoteDataSource
-      return Left(
+      return const Left(
         ServerFailure(message: 'Available menu items not implemented yet'),
       );
     } catch (e) {
@@ -428,7 +426,7 @@ class MenuRepositoryImpl implements MenuRepository {
       // 2. جلب البيانات من الـ API (إذا كان متاحاً)
       log('🌐 MenuRepository: Fetching featured items from API...');
       // TODO: Implement getFeaturedMenuItems in MenuRemoteDataSource
-      return Left(
+      return const Left(
         ServerFailure(message: 'Featured menu items not implemented yet'),
       );
     } catch (e) {

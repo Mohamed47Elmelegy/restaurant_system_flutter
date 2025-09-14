@@ -1,8 +1,10 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+
 import '../models/menu_item_model.dart';
-import 'dart:developer';
-import 'dart:convert';
 
 /// 🟦 MenuLocalDataSource - للتخزين المحلي للقوائم باستخدام Hive
 ///
@@ -59,7 +61,7 @@ class MenuLocalDataSourceImpl implements MenuLocalDataSource {
   static const String _boxName = 'admin_cache';
   static const String _menuItemsKey = 'menu_items';
   static const String _categoriesKey = 'menu_categories';
-  static const Duration _cacheDuration = const Duration(hours: 2);
+  static const Duration _cacheDuration = Duration(hours: 2);
 
   @override
   Future<void> saveMenuItems(List<MenuItemModel> menuItems) async {

@@ -17,6 +17,6 @@ class GetCartUseCase extends BaseUseCaseNoParams<CartEntity> {
 
   @override
   Future<Either<Failure, CartEntity>> call() async {
-    return await repository.getCart();
+    return repository.getCart();
   }
 }

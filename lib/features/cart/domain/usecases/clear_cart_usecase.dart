@@ -16,6 +16,6 @@ class ClearCartUseCase extends BaseUseCaseNoParams<bool> {
 
   @override
   Future<Either<Failure, bool>> call() async {
-    return await repository.clearCart();
+    return repository.clearCart();
   }
 }

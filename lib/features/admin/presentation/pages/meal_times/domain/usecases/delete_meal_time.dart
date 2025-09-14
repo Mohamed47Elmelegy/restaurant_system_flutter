@@ -9,6 +9,6 @@ class DeleteMealTime {
     : _repository = repository;
 
   Future<Either<Failure, bool>> call(String id) async {
-    return await _repository.deleteMealTime(id);
+    return _repository.deleteMealTime(id);
   }
 }

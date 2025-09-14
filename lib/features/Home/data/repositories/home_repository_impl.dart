@@ -1,13 +1,12 @@
 import 'dart:developer';
 
 import 'package:dartz/dartz.dart';
-
 import 'package:restaurant_system_flutter/core/entities/product.dart';
 import 'package:restaurant_system_flutter/core/error/failures.dart';
 
 import '../../../../core/entities/main_category.dart';
-import '../datasources/home_datasource.dart';
 import '../../domain/repositories/home_repository.dart';
+import '../datasources/home_datasource.dart';
 
 class HomeRepositoryImpl implements HomeRepository {
   final HomeDataSource remoteDataSource;
@@ -71,7 +70,7 @@ class HomeRepositoryImpl implements HomeRepository {
       print('🌐 CategoryRepository: Fetching category from API...');
       final categoryId = int.tryParse(id);
       if (categoryId == null) {
-        return Left(ServerFailure(message: 'Invalid category ID'));
+        return const Left(ServerFailure(message: 'Invalid category ID'));
       }
 
       final response = await remoteDataSource.getCategoryById(categoryId);

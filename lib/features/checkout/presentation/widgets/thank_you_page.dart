@@ -8,13 +8,13 @@ class ThankYouPage extends StatelessWidget {
   final String? orderType; // Pass as string: 'delivery' or 'dineIn'
 
   const ThankYouPage({
-    Key? key,
+    super.key,
     required this.orderId,
     this.qrCode,
     this.deliveryAddress,
     this.tableInfo,
     this.orderType,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

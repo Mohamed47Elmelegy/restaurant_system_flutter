@@ -1,8 +1,10 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+
 import '../models/meal_time_model.dart';
-import 'dart:developer';
-import 'dart:convert';
 
 /// 🟦 MealTimeLocalDataSource - للتخزين المحلي لأوقات الوجبات باستخدام Hive
 ///
@@ -52,7 +54,7 @@ abstract class MealTimeLocalDataSource {
 class MealTimeLocalDataSourceImpl implements MealTimeLocalDataSource {
   static const String _boxName = 'admin_cache';
   static const String _storageKey = 'meal_times';
-  static const Duration _cacheDuration = const Duration(
+  static const Duration _cacheDuration = Duration(
     hours: 4,
   ); // أوقات الوجبات تحتاج cache أطول
 

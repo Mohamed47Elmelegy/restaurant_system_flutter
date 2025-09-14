@@ -128,7 +128,7 @@ class RevenueLineChart extends StatelessWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Color(0xFFFF7A00).withValues(alpha: 0.2),
+                    const Color(0xFFFF7A00).withValues(alpha: 0.2),
                     Colors.transparent,
                   ],
                 ),

@@ -56,7 +56,7 @@ class CartAppBar extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    'TOTAL ITEMS ${state.cart.uniqueItemsCount}',
+                    'Total Products  ${state.cart.items.length}',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 12,

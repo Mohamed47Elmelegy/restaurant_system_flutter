@@ -1,8 +1,9 @@
-import '../../../../../../../core/entities/product.dart';
-import '../repositories/product_repository.dart';
-import '../../../../../../../core/base/base_usecase.dart';
-import '../../../../../../../core/error/failures.dart';
 import 'package:dartz/dartz.dart';
+
+import '../../../../../../../core/base/base_usecase.dart';
+import '../../../../../../../core/entities/product.dart';
+import '../../../../../../../core/error/failures.dart';
+import '../repositories/product_repository.dart';
 
 /// 🟦 CreateProductUseCase - مبدأ المسؤولية الواحدة (SRP)
 /// مسؤول عن إنشاء المنتج فقط - لا يتحكم في البيانات
@@ -16,6 +17,6 @@ class CreateProductUseCase extends BaseUseCase<ProductEntity, ProductEntity> {
 
   @override
   Future<Either<Failure, ProductEntity>> call(ProductEntity product) async {
-    return await repository.createProduct(product);
+    return repository.createProduct(product);
   }
 }

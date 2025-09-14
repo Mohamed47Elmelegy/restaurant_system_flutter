@@ -6,6 +6,6 @@ class CancelOrderUseCase {
   CancelOrderUseCase(this.repository);
 
   Future<bool> call(int orderId) async {
-    return await repository.cancelOrder(orderId);
+    return repository.cancelOrder(orderId);
   }
 }

@@ -60,7 +60,7 @@ class CustomAddressCart extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: const Text(
-                          'افتراضي',
+                          'Default',
                           style: TextStyle(
                             fontSize: 10,
                             color: Colors.white,
@@ -115,7 +115,7 @@ class CustomAddressCart extends StatelessWidget {
                   ),
                 ],
               ),
-              if (onSetDefault != null) ...[
+              if (onSetDefault != null && !isDefault) ...[
                 const SizedBox(height: 4),
                 GestureDetector(
                   onTap: onSetDefault,
@@ -130,7 +130,7 @@ class CustomAddressCart extends StatelessWidget {
                       border: Border.all(color: Colors.blue, width: 1),
                     ),
                     child: const Text(
-                      'تعيين كافتراضي',
+                      'Set as Default',
                       style: TextStyle(
                         fontSize: 10,
                         color: Colors.blue,

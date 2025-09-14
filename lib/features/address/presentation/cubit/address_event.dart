@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import '../../domain/entitiy/address_entity.dart';
 
-/// 🟦 AddressEvent - مبدأ المسؤولية الواحدة (SRP)
-/// مسؤول عن تمثيل أحداث العناوين فقط
+/// AddressEvent - Single Responsibility Principle (SRP)
+/// Responsible for representing address events only
 abstract class AddressEvent extends Equatable {
   const AddressEvent();
 
@@ -10,10 +10,10 @@ abstract class AddressEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-/// حدث تحميل العناوين
+/// Load addresses event
 class LoadAddresses extends AddressEvent {}
 
-/// حدث إضافة عنوان جديد
+/// Add new address event
 class AddAddress extends AddressEvent {
   final AddressEntity address;
 
@@ -23,7 +23,7 @@ class AddAddress extends AddressEvent {
   List<Object?> get props => [address];
 }
 
-/// حدث تحديث عنوان موجود
+/// Update existing address event
 class UpdateAddress extends AddressEvent {
   final AddressEntity address;
 
@@ -33,7 +33,7 @@ class UpdateAddress extends AddressEvent {
   List<Object?> get props => [address];
 }
 
-/// حدث حذف عنوان
+/// Delete address event
 class DeleteAddress extends AddressEvent {
   final int addressId;
 
@@ -43,7 +43,7 @@ class DeleteAddress extends AddressEvent {
   List<Object?> get props => [addressId];
 }
 
-/// حدث تعيين عنوان كافتراضي
+/// Set default address event
 class SetDefaultAddress extends AddressEvent {
   final int addressId;
 
@@ -53,8 +53,8 @@ class SetDefaultAddress extends AddressEvent {
   List<Object?> get props => [addressId];
 }
 
-/// حدث إعادة تحميل العناوين
+/// Refresh addresses event
 class RefreshAddresses extends AddressEvent {}
 
-/// حدث إعادة تعيين حالة العناوين
+/// Reset address state event
 class ResetAddressState extends AddressEvent {}

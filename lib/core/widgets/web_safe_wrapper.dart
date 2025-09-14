@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import '../utils/responsive_helper.dart';
+import 'package:flutter/material.dart';
 
 /// A wrapper widget that automatically handles web-specific rendering issues
 /// and prevents RenderFlex overflow errors
@@ -108,12 +107,12 @@ extension WebSafeExtension on Widget {
     MainAxisAlignment mainAxisAlignment = MainAxisAlignment.start,
   }) {
     return WebSafeWrapper(
-      child: this,
       enableOverflowProtection: enableOverflowProtection,
       useFlexibleText: useFlexibleText,
       mainAxisSize: mainAxisSize,
       crossAxisAlignment: crossAxisAlignment,
       mainAxisAlignment: mainAxisAlignment,
+      child: this,
     );
   }
 }

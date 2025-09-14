@@ -17,7 +17,7 @@ class RemoveCartItemUseCase extends BaseUseCase<bool, RemoveCartItemParams> {
 
   @override
   Future<Either<Failure, bool>> call(RemoveCartItemParams params) async {
-    return await repository.removeCartItem(params.cartItemId);
+    return repository.removeCartItem(params.cartItemId);
   }
 }
 

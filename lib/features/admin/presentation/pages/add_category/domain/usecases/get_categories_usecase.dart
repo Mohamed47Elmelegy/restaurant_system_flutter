@@ -1,7 +1,8 @@
 import 'package:dartz/dartz.dart';
+
 import '../../../../../../../core/base/base_usecase.dart';
-import '../../../../../../../core/error/failures.dart';
 import '../../../../../../../core/entities/main_category.dart';
+import '../../../../../../../core/error/failures.dart';
 import '../repositories/category_repository.dart';
 
 /// 🟦 GetCategoriesUseCase - مبدأ المسؤولية الواحدة (SRP)

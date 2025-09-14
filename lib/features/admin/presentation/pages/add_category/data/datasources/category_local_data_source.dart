@@ -1,8 +1,10 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+
 import '../../../../../../../core/models/main_category_model.dart';
-import 'dart:developer';
-import 'dart:convert';
 
 /// 🟦 CategoryLocalDataSource - للتخزين المحلي للفئات باستخدام Hive
 ///
@@ -38,7 +40,6 @@ abstract class CategoryLocalDataSource {
 
   /// حذف فئة رئيسية واحدة
   Future<void> deleteMainCategory(String id);
-
 }
 
 class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
@@ -122,7 +123,6 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
         return category.name.toLowerCase().contains(searchQuery) ||
             (category.description?.toLowerCase().contains(searchQuery) ??
                 false);
-
       }).toList();
 
       log(
@@ -228,6 +228,4 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
       rethrow;
     }
   }
-
-
 }

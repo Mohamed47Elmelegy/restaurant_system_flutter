@@ -10,6 +10,6 @@ class UpdateMealTime {
     : _repository = repository;
 
   Future<Either<Failure, MealTime>> call(MealTime mealTime) async {
-    return await _repository.updateMealTime(mealTime);
+    return _repository.updateMealTime(mealTime);
   }
 }

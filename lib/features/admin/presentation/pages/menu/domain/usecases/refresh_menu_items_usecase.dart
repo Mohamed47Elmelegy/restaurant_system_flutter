@@ -1,8 +1,9 @@
-import '../repositories/menu_repository.dart';
-import '../entities/menu_item.dart';
+import 'package:dartz/dartz.dart';
+
 import '../../../../../../../core/base/base_usecase.dart';
 import '../../../../../../../core/error/failures.dart';
-import 'package:dartz/dartz.dart';
+import '../entities/menu_item.dart';
+import '../repositories/menu_repository.dart';
 
 class RefreshMenuItemsUseCase extends BaseUseCaseNoParams<List<MenuItem>> {
   final MenuRepository repository;
@@ -11,6 +12,6 @@ class RefreshMenuItemsUseCase extends BaseUseCaseNoParams<List<MenuItem>> {
 
   @override
   Future<Either<Failure, List<MenuItem>>> call() async {
-    return await repository.refreshMenuItems();
+    return repository.refreshMenuItems();
   }
 }

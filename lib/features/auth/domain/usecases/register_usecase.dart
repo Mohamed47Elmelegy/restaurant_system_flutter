@@ -12,7 +12,7 @@ class RegisterUseCase implements UseCase<AuthEntity, RegisterParams> {
 
   @override
   Future<Either<Failure, AuthEntity>> call(RegisterParams params) async {
-    return await repository.register(
+    return repository.register(
       params.name,
       params.email,
       params.password,

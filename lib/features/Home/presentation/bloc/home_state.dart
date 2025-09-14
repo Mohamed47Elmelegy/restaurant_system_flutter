@@ -2,7 +2,6 @@ import 'package:equatable/equatable.dart';
 import '../../../../core/entities/main_category.dart';
 import '../../../../core/entities/product.dart';
 
-
 abstract class HomeState extends Equatable {
   const HomeState();
 

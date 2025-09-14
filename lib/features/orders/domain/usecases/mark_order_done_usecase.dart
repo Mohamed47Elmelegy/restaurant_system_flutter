@@ -6,6 +6,6 @@ class MarkOrderDoneUseCase {
   MarkOrderDoneUseCase(this.repository);
 
   Future<bool> call(int orderId) async {
-    return await repository.markOrderAsDone(orderId);
+    return repository.markOrderAsDone(orderId);
   }
-} 
+}

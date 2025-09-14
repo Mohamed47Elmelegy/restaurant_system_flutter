@@ -182,19 +182,19 @@
 //       return Left(ServerFailure(message: 'حدث خطأ أثناء جلب تتبع الطلب'));
 //     }
 //   }
-  
+
 //   @override
 //   Future<List<OrderEntity>> getNewOrders() {
 //     // TODO: implement getNewOrders
 //     throw UnimplementedError();
 //   }
-  
+
 //   @override
 //   Future<List<OrderEntity>> getRunningOrders() {
 //     // TODO: implement getRunningOrders
 //     throw UnimplementedError();
 //   }
-  
+
 //   @override
 //   Future<bool> markOrderAsDone(int orderId) {
 //     // TODO: implement markOrderAsDone

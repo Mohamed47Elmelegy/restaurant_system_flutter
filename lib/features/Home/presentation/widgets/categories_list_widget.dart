@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import '../../../../core/entities/main_category.dart';
+import '../../../../core/routes/app_routes.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/widgets/category_card.dart';
-import '../../../../core/routes/app_routes.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
 import '../bloc/home_state.dart';
@@ -62,7 +63,7 @@ class CategoriesListWidget extends StatelessWidget {
                 arguments: {'categoryId': id, 'categoryName': category.name},
               );
             },
-            setSelected: (bool selected) {
+            setSelected: (selected) {
               context.read<HomeBloc>().add(
                 SelectCategory(int.parse(category.id)),
               );

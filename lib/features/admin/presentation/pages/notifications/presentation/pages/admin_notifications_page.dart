@@ -13,7 +13,7 @@ class AdminNotificationsPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'الإشعارات',
                 style: TextStyle(
                   fontSize: 24,

@@ -1,13 +1,14 @@
-import 'package:dio/dio.dart';
 import 'dart:developer';
+
+import 'package:dio/dio.dart';
 
 import '../../../../core/error/api_response.dart';
 import '../../../../core/network/api_path.dart';
 import '../model/address_model.dart';
 import 'address_remote_data_source.dart';
 
-/// 🟦 AddressRemoteDataSourceImpl - تطبيق مصدر البيانات البعيد للعناوين
-/// يطبق مبدأ قلب الاعتماديات (DIP)
+/// AddressRemoteDataSourceImpl - Implementation of remote data source for addresses
+/// Implements Dependency Inversion Principle (DIP)
 class AddressRemoteDataSourceImpl implements AddressRemoteDataSource {
   final Dio dio;
 
@@ -39,9 +40,7 @@ class AddressRemoteDataSourceImpl implements AddressRemoteDataSource {
   }
 
   @override
-  Future<ApiResponse<AddressModel>> addAddress(
-    AddressModel request,
-  ) async {
+  Future<ApiResponse<AddressModel>> addAddress(AddressModel request) async {
     try {
       log('🔄 AddressRemoteDataSourceImpl: Adding address');
       log('📤 Request data: ${request.toJson()}');
@@ -122,11 +121,8 @@ class AddressRemoteDataSourceImpl implements AddressRemoteDataSource {
     try {
       log('🔄 AddressRemoteDataSourceImpl: Setting default address $addressId');
 
-      // Using PUT request to update the address with is_default: true
-      final response = await dio.put(
-        ApiPath.addressUD(addressId),
-        data: {'is_default': true},
-      );
+      // Using PATCH request with the new set-default endpoint
+      final response = await dio.patch(ApiPath.addressSetDefault(addressId));
 
       log('✅ AddressRemoteDataSourceImpl: Default address set successfully');
       log('📄 Response data: ${response.data}');

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../widgets/food_items_grid_view.dart';
+import '../../../../core/di/service_locator.dart';
 import '../../../../core/entities/main_category.dart';
 import '../../../../core/theme/text_styles.dart';
-import '../../../../core/di/service_locator.dart';
-import '../cubit/category_items_cubit.dart';
-import '../cubit/category_items_state.dart';
 import '../../../cart/presentation/bloc/cart_cubit.dart';
 import '../../../cart/presentation/bloc/cart_event.dart';
+import '../cubit/category_items_cubit.dart';
+import '../cubit/category_items_state.dart';
+import '../widgets/food_items_grid_view.dart';
 
 class CategoryItemsPage extends StatefulWidget {
   final int categoryId;

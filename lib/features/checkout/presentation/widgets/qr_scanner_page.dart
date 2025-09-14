@@ -1,14 +1,10 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
-import '../../../../core/di/service_locator.dart';
+import '../../../../core/routes/app_routes.dart';
 import '../../../cart/domain/entities/cart_entity.dart';
 import '../../../orders/domain/entities/order_entity.dart';
-import '../../../orders/presentation/cubit/table_cubit.dart';
-import 'table_info_page.dart';
-import '../../../../core/routes/app_routes.dart';
 
 class QrScannerPage extends StatefulWidget {
   final CartEntity cart;

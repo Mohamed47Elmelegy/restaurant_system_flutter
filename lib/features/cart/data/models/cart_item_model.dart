@@ -17,7 +17,7 @@ class CartItemModel extends CartItemEntity {
       productModel = ProductModel(
         id: productData['id']?.toString() ?? '',
         name: productData['name'] ?? '',
-        price: productData['price']?.toString() ?? '0',
+        price: _parseDouble(productData['price']),
         imageUrl: productData['image_url'] ?? productData['image'],
         mainCategoryId: productData['main_category_id']?.toString() ?? '',
         isAvailable: productData['is_available'] ?? false,
@@ -69,6 +69,7 @@ class CartItemModel extends CartItemEntity {
     return data;
   }
 
+  @override
   CartItemModel copyWith({
     int? id,
     int? quantity,

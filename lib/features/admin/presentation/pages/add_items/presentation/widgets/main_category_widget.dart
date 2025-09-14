@@ -93,25 +93,26 @@ class _MainCategoryWidgetState extends State<MainCategoryWidget> {
                 );
               }
 
-            if (state is CategoriesLoaded) {
-  final categories = state.categories;
+              if (state is CategoriesLoaded) {
+                final categories = state.categories;
 
-  // قائمة أسماء الفئات
-  final categoryNames = categories.map((c) => c.name).toList();
+                // قائمة أسماء الفئات
+                final categoryNames = categories.map((c) => c.name).toList();
 
-  return CustomAnimatedDropdown<String>(
-    items: categoryNames,  // هنا بنستخدم الأسماء مش الـ ids
-    itemLabel: (name) => name, // الاسم نفسه يتعرض
-    selectedValue: widget.selectedCategory, // خليها اسم مش id
-    onChanged: (selectedName) {
-      if (selectedName != null) {
-        widget.onCategoryChanged(selectedName); // هترجع الاسم مباشرة
-      }
-    },
-    hintText: 'Select main category',
-  );
-}
-
+                return CustomAnimatedDropdown<String>(
+                  items: categoryNames, // هنا بنستخدم الأسماء مش الـ ids
+                  itemLabel: (name) => name, // الاسم نفسه يتعرض
+                  selectedValue: widget.selectedCategory, // خليها اسم مش id
+                  onChanged: (selectedName) {
+                    if (selectedName != null) {
+                      widget.onCategoryChanged(
+                        selectedName,
+                      ); // هترجع الاسم مباشرة
+                    }
+                  },
+                  hintText: 'Select main category',
+                );
+              }
 
               return CustomAnimatedDropdown<String>(
                 items: const [],

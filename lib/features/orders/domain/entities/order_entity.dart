@@ -24,7 +24,7 @@ class OrderEntity extends Equatable {
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  const OrderEntity({ 
+  const OrderEntity({
     required this.id,
     required this.userId,
     required this.type,
@@ -80,7 +80,7 @@ class OrderEntity extends Equatable {
 enum OrderType { dineIn, delivery }
 
 /// Order Status Enum
-enum OrderStatus { pending, preparing, ready, completed, cancelled }
+enum OrderStatus { pending, paid, preparing, delivering, completed, cancelled }
 
 /// Payment Status Enum
 enum PaymentStatus { unpaid, paid, refunded }

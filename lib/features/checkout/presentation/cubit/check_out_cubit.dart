@@ -5,7 +5,6 @@ import '../../../orders/data/models/place_order_request_model.dart';
 import '../../domain/usecases/check_out_place_order_usecase.dart';
 import 'check_out_state.dart';
 
-
 class CheckOutCubit extends Cubit<CheckOutState> {
   final CheckOutPlaceOrderUseCase checkOutUseCase;
   CheckOutCubit(this.checkOutUseCase) : super(CheckOutInitial());

@@ -185,7 +185,7 @@ class AppTheme {
           color: AppColors.darkTextPrimary,
           fontFamily: 'Sen',
         ),
-        hintStyle: TextStyle(
+        hintStyle: const TextStyle(
           color: AppColors.darkTextSecondary,
           fontFamily: 'Sen',
         ),

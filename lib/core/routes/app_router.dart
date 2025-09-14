@@ -15,15 +15,17 @@ import '../../features/admin/presentation/pages/meal_times/presentation/pages/me
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/signup_page.dart';
 import '../../features/cart/presentation/bloc/cart_cubit.dart';
+import '../../features/address/presentation/pages/add_address_page.dart';
+import '../../features/address/presentation/pages/address_page.dart';
 import '../../features/cart/presentation/bloc/cart_event.dart';
 import '../../features/cart/presentation/pages/cart_page.dart';
-import '../../features/menu/presentation/pages/product_details_page.dart';
-import '../../features/splash/presentation/pages/splash_page.dart';
-import 'app_routes.dart';
+import '../../features/checkout/presentation/pages/checkout_page.dart';
 import '../../features/checkout/presentation/widgets/qr_scanner_page.dart';
 import '../../features/checkout/presentation/widgets/table_info_page.dart';
-import '../../features/checkout/presentation/pages/checkout_page.dart';
+import '../../features/menu/presentation/pages/product_details_page.dart';
 import '../../features/orders/presentation/cubit/table_cubit.dart';
+import '../../features/splash/presentation/pages/splash_page.dart';
+import 'app_routes.dart';
 
 Route<dynamic>? appRouter(RouteSettings settings) {
   switch (settings.name) {

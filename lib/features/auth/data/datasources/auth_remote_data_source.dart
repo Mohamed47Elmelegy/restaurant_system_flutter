@@ -1,7 +1,9 @@
-import 'package:dio/dio.dart';
-import '../../../../core/network/api_path.dart';
-import '../../../../core/error/simple_error.dart';
 import 'dart:developer';
+
+import 'package:dio/dio.dart';
+
+import '../../../../core/error/simple_error.dart';
+import '../../../../core/network/api_path.dart';
 
 abstract class AuthRemoteDataSource {
   Future<Map<String, dynamic>> login(String email, String password);

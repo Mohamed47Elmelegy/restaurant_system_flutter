@@ -1,7 +1,8 @@
 import 'package:dartz/dartz.dart';
+
 import '../../../../../../../core/base/base_repository.dart';
-import '../../../../../../../core/error/failures.dart';
 import '../../../../../../../core/entities/main_category.dart';
+import '../../../../../../../core/error/failures.dart';
 
 /// 🟦 CategoryRepository - مبدأ المسؤولية الواحدة (SRP)
 /// مسؤول عن إدارة بيانات الفئات فقط

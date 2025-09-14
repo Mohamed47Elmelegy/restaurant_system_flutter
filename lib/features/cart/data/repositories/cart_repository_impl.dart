@@ -1,5 +1,6 @@
-import 'package:dartz/dartz.dart';
 import 'dart:developer';
+
+import 'package:dartz/dartz.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../domain/entities/cart_entity.dart';
@@ -35,7 +36,7 @@ class CartRepositoryImpl implements CartRepository {
       }
     } catch (e) {
       log('❌ CartRepositoryImpl: Exception getting cart - $e');
-      return Left(ServerFailure(message: 'حدث خطأ أثناء تحميل السلة'));
+      return const Left(ServerFailure(message: 'حدث خطأ أثناء تحميل السلة'));
     }
   }
 
@@ -68,7 +69,7 @@ class CartRepositoryImpl implements CartRepository {
       }
     } catch (e) {
       log('❌ CartRepositoryImpl: Exception adding item to cart - $e');
-      return Left(
+      return const Left(
         ServerFailure(message: 'حدث خطأ أثناء إضافة المنتج إلى السلة'),
       );
     }
@@ -103,7 +104,7 @@ class CartRepositoryImpl implements CartRepository {
       }
     } catch (e) {
       log('❌ CartRepositoryImpl: Exception updating cart item - $e');
-      return Left(ServerFailure(message: 'حدث خطأ أثناء تحديث عنصر السلة'));
+      return const Left(ServerFailure(message: 'حدث خطأ أثناء تحديث عنصر السلة'));
     }
   }
 
@@ -125,7 +126,7 @@ class CartRepositoryImpl implements CartRepository {
       }
     } catch (e) {
       log('❌ CartRepositoryImpl: Exception removing cart item - $e');
-      return Left(ServerFailure(message: 'حدث خطأ أثناء حذف عنصر السلة'));
+      return const Left(ServerFailure(message: 'حدث خطأ أثناء حذف عنصر السلة'));
     }
   }
 
@@ -145,7 +146,7 @@ class CartRepositoryImpl implements CartRepository {
       }
     } catch (e) {
       log('❌ CartRepositoryImpl: Exception clearing cart - $e');
-      return Left(ServerFailure(message: 'حدث خطأ أثناء تفريغ السلة'));
+      return const Left(ServerFailure(message: 'حدث خطأ أثناء تفريغ السلة'));
     }
   }
 }

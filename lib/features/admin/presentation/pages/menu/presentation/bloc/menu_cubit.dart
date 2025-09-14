@@ -1,15 +1,17 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:developer';
+
+import 'package:dartz/dartz.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../../../../core/error/failures.dart';
 import '../../domain/entities/menu_item.dart';
 import '../../domain/repositories/menu_repository.dart';
-import '../../domain/usecases/load_menu_items_usecase.dart';
-import '../../domain/usecases/load_menu_items_by_category_usecase.dart';
-import '../../domain/usecases/search_menu_items_usecase.dart';
 import '../../domain/usecases/delete_menu_item_usecase.dart';
-import '../../domain/usecases/toggle_menu_item_availability_usecase.dart';
+import '../../domain/usecases/load_menu_items_by_category_usecase.dart';
+import '../../domain/usecases/load_menu_items_usecase.dart';
 import '../../domain/usecases/refresh_menu_items_usecase.dart';
-import '../../../../../../../core/error/failures.dart';
-import 'package:dartz/dartz.dart';
+import '../../domain/usecases/search_menu_items_usecase.dart';
+import '../../domain/usecases/toggle_menu_item_availability_usecase.dart';
 import 'menu_events.dart';
 import 'menu_states.dart';
 
@@ -52,7 +54,7 @@ class MenuCubit extends Bloc<MenuEvent, MenuState> {
 
   /// Get categories from repository
   Future<Either<Failure, List<String>>> getCategories() async {
-    return await menuRepository.getCategories();
+    return menuRepository.getCategories();
   }
 
   Future<void> _onLoadMenuItems(

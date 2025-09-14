@@ -93,7 +93,7 @@ class ApiResponse<T> {
 
   /// الحصول على جميع رسائل الأخطاء
   List<String> get allErrorMessages {
-    List<String> messages = [];
+    final List<String> messages = [];
 
     if (errors != null) {
       for (var errorList in errors!.values) {

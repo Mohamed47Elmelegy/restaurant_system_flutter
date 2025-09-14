@@ -1,6 +1,6 @@
-   import '../models/table_model.dart';
+import '../models/table_model.dart';
 
-   abstract class TableRemoteDataSource {
-     Future<TableModel> getTableByQr(String qrCode);
-     Future<void> occupyTable(int tableId);
-   }
+abstract class TableRemoteDataSource {
+  Future<TableModel> getTableByQr(String qrCode);
+  Future<void> occupyTable(int tableId);
+}

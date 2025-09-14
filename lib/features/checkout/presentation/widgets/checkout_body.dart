@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../core/theme/app_colors.dart';
+import '../../../address/presentation/cubit/address_cubit.dart';
+import '../../../address/presentation/cubit/address_event.dart';
+import '../../../address/presentation/cubit/address_state.dart';
 import '../../../cart/domain/entities/cart_entity.dart';
 import '../../../orders/data/models/order_item_model.dart';
 import '../../../orders/data/models/place_order_request_model.dart';
@@ -8,10 +13,6 @@ import '../../../orders/presentation/cubit/table_cubit.dart';
 import '../cubit/check_out_cubit.dart';
 import '../cubit/check_out_state.dart';
 import 'checkout_listener.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../address/presentation/cubit/address_cubit.dart';
-import '../../../address/presentation/cubit/address_state.dart';
-import '../../../address/presentation/cubit/address_event.dart';
 
 class CheckoutBody extends StatefulWidget {
   final CartEntity cart;
@@ -230,7 +231,7 @@ class _CheckoutBodyState extends State<CheckoutBody> {
                   'Table Number: \t${table.id}',
                   style: const TextStyle(color: Colors.grey, fontSize: 14),
                 ),
-                if (table.name != null && table.name.isNotEmpty)
+                if (table.name.isNotEmpty)
                   Text(
                     'Table Name: ${table.name}',
                     style: const TextStyle(color: Colors.grey, fontSize: 14),
@@ -282,8 +283,14 @@ class _CheckoutBodyState extends State<CheckoutBody> {
               style: TextStyle(color: Colors.white),
             );
           }
-          _selectedAddressId ??=
-              state.defaultAddress?.id ?? state.addresses.first.id;
+          if (state.addresses.isNotEmpty) {
+            _selectedAddressId ??= state.addresses
+                .firstWhere(
+                  (a) => a.isDefault,
+                  orElse: () => state.addresses.first,
+                )
+                .id;
+          }
           return Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -498,13 +505,6 @@ class _CheckoutBodyState extends State<CheckoutBody> {
               .firstWhere((a) => a.id == _selectedAddressId)
               .fullAddress;
         }
-      }
-      // تحقق من أن type ليس null
-      if (widget.orderType == null) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('يرجى اختيار نوع الطلب')));
-        return;
       }
       final request = PlaceOrderRequestModel(
         type: widget.orderType,

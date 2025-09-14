@@ -42,36 +42,24 @@ class _AddAddressPageContent extends StatefulWidget {
 
 class _AddAddressPageContentState extends State<_AddAddressPageContent> {
   final _formKey = GlobalKey<FormState>();
-  final _labelController = TextEditingController();
   final _nameController = TextEditingController();
-  final _addressController = TextEditingController();
   final _cityController = TextEditingController();
-  final _districtController = TextEditingController();
-  final _phoneController = TextEditingController();
+  final _phoneNumberController = TextEditingController();
+  final _addressController = TextEditingController();
+  final _buildingController = TextEditingController();
   final _apartmentController = TextEditingController();
-  final _postalCodeController = TextEditingController();
-  final _countryController = TextEditingController();
+  bool _isDefault = false;
 
   bool _isLoading = false;
 
   @override
-  void initState() {
-    super.initState();
-    // تعيين قيمة افتراضية للبلد
-    _countryController.text = 'مصر';
-  }
-
-  @override
   void dispose() {
-    _labelController.dispose();
     _nameController.dispose();
-    _addressController.dispose();
     _cityController.dispose();
-    _districtController.dispose();
-    _phoneController.dispose();
+    _phoneNumberController.dispose();
+    _addressController.dispose();
+    _buildingController.dispose();
     _apartmentController.dispose();
-    _postalCodeController.dispose();
-    _countryController.dispose();
     super.dispose();
   }
 
@@ -85,7 +73,7 @@ class _AddAddressPageContentState extends State<_AddAddressPageContent> {
     });
 
     try {
-      // الحصول على user ID من SecureStorage
+      // Get user ID from SecureStorage
       const secureStorage = FlutterSecureStorage();
       int userId = 1; // default value
 
@@ -96,111 +84,79 @@ class _AddAddressPageContentState extends State<_AddAddressPageContent> {
           userId = userData['id'] ?? 1;
         }
       } catch (e) {
-        // في حالة فشل قراءة البيانات، نستخدم القيمة الافتراضية
+        // In case of failure reading data, use default value
         // Error reading user data: $e
       }
 
-      final newAddress = AddressEntity(
-        id: 0, // Will be set by the server
-        userId: userId, // Get from current user session
-        label: _labelController.text.trim().isNotEmpty
-            ? _labelController.text.trim()
-            : _nameController.text
-                  .trim(), // Use label if provided, otherwise use name
-        addressLine1: _addressController.text.trim(),
-        addressLine2: _apartmentController.text.trim().isNotEmpty
+      // Create address entity
+      final address = AddressEntity(
+        id: 0, // Will be set by backend
+        userId: userId,
+        name: _nameController.text.trim(),
+        city: _cityController.text.trim(),
+        phoneNumber: _phoneNumberController.text.trim(),
+        address: _addressController.text.trim(),
+        building: _buildingController.text.trim().isNotEmpty
+            ? _buildingController.text.trim()
+            : null,
+        apartment: _apartmentController.text.trim().isNotEmpty
             ? _apartmentController.text.trim()
             : null,
-        city: _cityController.text.trim(),
-        state: _districtController.text.trim(),
-        postalCode: _postalCodeController.text.trim(),
-        country: _countryController.text.trim(),
-        phone: _phoneController.text.trim().isNotEmpty
-            ? _phoneController.text.trim()
-            : null,
-        isDefault: false,
+        isDefault: _isDefault,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );
 
-      // استخدام AddressCubit لإضافة العنوان
-      context.read<AddressCubit>().add(AddAddress(address: newAddress));
-
-      // لا نحتاج للـ Navigator.pop هنا لأن BlocListener سيتعامل مع النجاح
+      // Add address using cubit
+      context.read<AddressCubit>().add(AddAddress(address: address));
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'حدث خطأ أثناء إضافة العنوان',
-              style: AppTextStyles.senBold14(
-                context,
-              ).copyWith(color: Colors.white),
-            ),
-            backgroundColor: AppColors.error,
-            duration: const Duration(seconds: 3),
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.r),
-            ),
+      setState(() {
+        _isLoading = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'An error occurred: $e',
+            style: AppTextStyles.senBold14(
+              context,
+            ).copyWith(color: Colors.white),
           ),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+          backgroundColor: AppColors.error,
+          duration: const Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ThemeHelper.getBackgroundColor(context),
       appBar: AppBar(
-        backgroundColor: ThemeHelper.getAppBarColor(context),
-        elevation: 0,
-        centerTitle: true,
         title: Text(
-          'إضافة عنوان جديد',
+          'Add Address',
           style: AppTextStyles.senBold18(
             context,
           ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
         ),
+        backgroundColor: ThemeHelper.getAppBarColor(context),
+        elevation: 0,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back_ios,
             color: ThemeHelper.getPrimaryTextColor(context),
-            size: 20.w,
           ),
           onPressed: () => Navigator.pop(context),
         ),
-        actions: [
-          TextButton.icon(
-            onPressed: () {
-              Navigator.pushNamed(context, AppRoutes.address);
-            },
-            icon: Icon(
-              Icons.location_on_outlined,
-              color: AppColors.lightPrimary,
-              size: 20.w,
-            ),
-            label: Text(
-              'العناوين',
-              style: AppTextStyles.senRegular14(
-                context,
-              ).copyWith(color: AppColors.lightPrimary),
-            ),
-          ),
-          SizedBox(width: 8.w),
-        ],
       ),
       body: BlocListener<AddressCubit, AddressState>(
         listener: (context, state) {
           if (state is AddressAdded) {
-            // إظهار رسالة نجاح
+            // Show success message
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
@@ -218,15 +174,15 @@ class _AddAddressPageContentState extends State<_AddAddressPageContent> {
               ),
             );
 
-            // إرجاع العنوان المضاف إذا كان هناك callback
+            // Return added address if there's a callback
             if (widget.onAddressAdded != null) {
               widget.onAddressAdded!(state.address);
             }
 
-            // العودة للصفحة السابقة
+            // Go back to previous page
             Navigator.pop(context);
           } else if (state is AddressError) {
-            // إظهار رسالة خطأ
+            // Show error message
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
@@ -255,49 +211,23 @@ class _AddAddressPageContentState extends State<_AddAddressPageContent> {
                 children: [
                   // Page Title
                   Text(
-                    'تفاصيل العنوان',
+                    'Address Details',
                     style: AppTextStyles.senExtraBold24(
                       context,
                     ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
                   ),
                   SizedBox(height: 8.h),
                   Text(
-                    'يرجى ملء البيانات التالية لإضافة عنوان جديد',
+                    'Please fill in the following information to add a new address',
                     style: AppTextStyles.senRegular16(context).copyWith(
                       color: ThemeHelper.getSecondaryTextColor(context),
                     ),
                   ),
                   SizedBox(height: 32.h),
 
-                  // Label Field
-                  Text(
-                    'اسم العنوان *',
-                    style: AppTextStyles.senBold16(
-                      context,
-                    ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
-                  ),
-                  SizedBox(height: 8.h),
-                  CustomTextField(
-                    controller: _labelController,
-                    hint: 'مثال: المنزل، العمل، الجامعة',
-                    keyboardType: TextInputType.text,
-                    textStyle: AppTextStyles.senRegular14(context),
-                    hintTextStyle: AppTextStyles.senRegular14(context).copyWith(
-                      color: ThemeHelper.getSecondaryTextColor(context),
-                    ),
-                    fillColor: ThemeHelper.getInputBackgroundColor(context),
-                    borderColor: ThemeHelper.getDividerColor(context),
-                    focusedBorderColor: AppColors.lightPrimary,
-                    borderRadius: 12.r,
-                    contentPadding: EdgeInsets.all(16.w),
-                    onValidate: (value) =>
-                        FormValidator.validateRequired(value, 'اسم العنوان'),
-                  ),
-                  SizedBox(height: 20.h),
-
                   // Name Field
                   Text(
-                    'اسم المستلم *',
+                    'Full Name *',
                     style: AppTextStyles.senBold16(
                       context,
                     ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
@@ -305,7 +235,7 @@ class _AddAddressPageContentState extends State<_AddAddressPageContent> {
                   SizedBox(height: 8.h),
                   CustomTextField(
                     controller: _nameController,
-                    hint: 'أدخل اسم المستلم',
+                    hint: 'Enter your full name',
                     keyboardType: TextInputType.name,
                     textStyle: AppTextStyles.senRegular14(context),
                     hintTextStyle: AppTextStyles.senRegular14(context).copyWith(
@@ -317,39 +247,13 @@ class _AddAddressPageContentState extends State<_AddAddressPageContent> {
                     borderRadius: 12.r,
                     contentPadding: EdgeInsets.all(16.w),
                     onValidate: (value) =>
-                        FormValidator.validateRequired(value, 'اسم المستلم'),
-                  ),
-                  SizedBox(height: 20.h),
-
-                  // Address Field
-                  Text(
-                    'العنوان *',
-                    style: AppTextStyles.senBold16(
-                      context,
-                    ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
-                  ),
-                  SizedBox(height: 8.h),
-                  CustomTextField(
-                    controller: _addressController,
-                    hint: 'أدخل العنوان التفصيلي',
-                    keyboardType: TextInputType.streetAddress,
-                    textStyle: AppTextStyles.senRegular14(context),
-                    hintTextStyle: AppTextStyles.senRegular14(context).copyWith(
-                      color: ThemeHelper.getSecondaryTextColor(context),
-                    ),
-                    fillColor: ThemeHelper.getInputBackgroundColor(context),
-                    borderColor: ThemeHelper.getDividerColor(context),
-                    focusedBorderColor: AppColors.lightPrimary,
-                    borderRadius: 12.r,
-                    contentPadding: EdgeInsets.all(16.w),
-                    onValidate: (value) =>
-                        FormValidator.validateRequired(value, 'العنوان'),
+                        FormValidator.validateRequired(value, 'Full Name'),
                   ),
                   SizedBox(height: 20.h),
 
                   // City Field
                   Text(
-                    'المدينة *',
+                    'City *',
                     style: AppTextStyles.senBold16(
                       context,
                     ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
@@ -357,7 +261,7 @@ class _AddAddressPageContentState extends State<_AddAddressPageContent> {
                   SizedBox(height: 8.h),
                   CustomTextField(
                     controller: _cityController,
-                    hint: 'أدخل اسم المدينة',
+                    hint: 'Enter city name',
                     keyboardType: TextInputType.text,
                     textStyle: AppTextStyles.senRegular14(context),
                     hintTextStyle: AppTextStyles.senRegular14(context).copyWith(
@@ -369,47 +273,21 @@ class _AddAddressPageContentState extends State<_AddAddressPageContent> {
                     borderRadius: 12.r,
                     contentPadding: EdgeInsets.all(16.w),
                     onValidate: (value) =>
-                        FormValidator.validateRequired(value, 'المدينة'),
+                        FormValidator.validateRequired(value, 'City'),
                   ),
                   SizedBox(height: 20.h),
 
-                  // District Field
+                  // Phone Number Field
                   Text(
-                    'الحي/المنطقة *',
+                    'Phone Number *',
                     style: AppTextStyles.senBold16(
                       context,
                     ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
                   ),
                   SizedBox(height: 8.h),
                   CustomTextField(
-                    controller: _districtController,
-                    hint: 'أدخل اسم الحي أو المنطقة',
-                    keyboardType: TextInputType.text,
-                    textStyle: AppTextStyles.senRegular14(context),
-                    hintTextStyle: AppTextStyles.senRegular14(context).copyWith(
-                      color: ThemeHelper.getSecondaryTextColor(context),
-                    ),
-                    fillColor: ThemeHelper.getInputBackgroundColor(context),
-                    borderColor: ThemeHelper.getDividerColor(context),
-                    focusedBorderColor: AppColors.lightPrimary,
-                    borderRadius: 12.r,
-                    contentPadding: EdgeInsets.all(16.w),
-                    onValidate: (value) =>
-                        FormValidator.validateRequired(value, 'الحي/المنطقة'),
-                  ),
-                  SizedBox(height: 20.h),
-
-                  // Phone Field
-                  Text(
-                    'رقم الهاتف',
-                    style: AppTextStyles.senBold16(
-                      context,
-                    ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
-                  ),
-                  SizedBox(height: 8.h),
-                  CustomTextField(
-                    controller: _phoneController,
-                    hint: 'أدخل رقم الهاتف (اختياري)',
+                    controller: _phoneNumberController,
+                    hint: 'Enter phone number',
                     keyboardType: TextInputType.phone,
                     textStyle: AppTextStyles.senRegular14(context),
                     hintTextStyle: AppTextStyles.senRegular14(context).copyWith(
@@ -420,21 +298,23 @@ class _AddAddressPageContentState extends State<_AddAddressPageContent> {
                     focusedBorderColor: AppColors.lightPrimary,
                     borderRadius: 12.r,
                     contentPadding: EdgeInsets.all(16.w),
+                    onValidate: (value) =>
+                        FormValidator.validateRequired(value, 'Phone Number'),
                   ),
                   SizedBox(height: 20.h),
 
-                  // Postal Code Field
+                  // Address Field
                   Text(
-                    'الرمز البريدي',
+                    'Address *',
                     style: AppTextStyles.senBold16(
                       context,
                     ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
                   ),
                   SizedBox(height: 8.h),
                   CustomTextField(
-                    controller: _postalCodeController,
-                    hint: 'أدخل الرمز البريدي',
-                    keyboardType: TextInputType.number,
+                    controller: _addressController,
+                    hint: 'Enter street address and details',
+                    keyboardType: TextInputType.streetAddress,
                     textStyle: AppTextStyles.senRegular14(context),
                     hintTextStyle: AppTextStyles.senRegular14(context).copyWith(
                       color: ThemeHelper.getSecondaryTextColor(context),
@@ -444,20 +324,23 @@ class _AddAddressPageContentState extends State<_AddAddressPageContent> {
                     focusedBorderColor: AppColors.lightPrimary,
                     borderRadius: 12.r,
                     contentPadding: EdgeInsets.all(16.w),
+                    maxLines: 3,
+                    onValidate: (value) =>
+                        FormValidator.validateRequired(value, 'Address'),
                   ),
                   SizedBox(height: 20.h),
 
-                  // Country Field
+                  // Building Field
                   Text(
-                    'البلد *',
+                    'Building',
                     style: AppTextStyles.senBold16(
                       context,
                     ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
                   ),
                   SizedBox(height: 8.h),
                   CustomTextField(
-                    controller: _countryController,
-                    hint: 'أدخل اسم البلد',
+                    controller: _buildingController,
+                    hint: 'Enter building number/name (optional)',
                     keyboardType: TextInputType.text,
                     textStyle: AppTextStyles.senRegular14(context),
                     hintTextStyle: AppTextStyles.senRegular14(context).copyWith(
@@ -468,14 +351,12 @@ class _AddAddressPageContentState extends State<_AddAddressPageContent> {
                     focusedBorderColor: AppColors.lightPrimary,
                     borderRadius: 12.r,
                     contentPadding: EdgeInsets.all(16.w),
-                    onValidate: (value) =>
-                        FormValidator.validateRequired(value, 'البلد'),
                   ),
                   SizedBox(height: 20.h),
 
                   // Apartment Field
                   Text(
-                    'رقم الشقة',
+                    'Apartment',
                     style: AppTextStyles.senBold16(
                       context,
                     ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
@@ -483,7 +364,7 @@ class _AddAddressPageContentState extends State<_AddAddressPageContent> {
                   SizedBox(height: 8.h),
                   CustomTextField(
                     controller: _apartmentController,
-                    hint: 'أدخل رقم الشقة (اختياري)',
+                    hint: 'Enter apartment number (optional)',
                     keyboardType: TextInputType.text,
                     textStyle: AppTextStyles.senRegular14(context),
                     hintTextStyle: AppTextStyles.senRegular14(context).copyWith(
@@ -495,11 +376,35 @@ class _AddAddressPageContentState extends State<_AddAddressPageContent> {
                     borderRadius: 12.r,
                     contentPadding: EdgeInsets.all(16.w),
                   ),
+                  SizedBox(height: 20.h),
+
+                  // Default Address Checkbox
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: _isDefault,
+                        onChanged: (value) {
+                          setState(() {
+                            _isDefault = value ?? false;
+                          });
+                        },
+                        activeColor: AppColors.lightPrimary,
+                      ),
+                      Expanded(
+                        child: Text(
+                          'Set as default address',
+                          style: AppTextStyles.senRegular14(context).copyWith(
+                            color: ThemeHelper.getPrimaryTextColor(context),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   SizedBox(height: 40.h),
 
                   // Save Button
                   CustomButton(
-                    text: 'حفظ العنوان',
+                    text: 'Save Address',
                     onPressed: _saveAddress,
                     isLoading: _isLoading,
                     width: double.infinity,

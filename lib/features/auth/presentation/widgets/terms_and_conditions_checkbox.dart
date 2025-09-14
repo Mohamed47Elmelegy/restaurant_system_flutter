@@ -38,8 +38,8 @@ class TermsAndConditionsCheckboxState
                 color: ThemeHelper.getSecondaryTextColor(context),
                 fontSize: 14.sp,
               ),
-              children: [
-                const TextSpan(text: 'أوافق على '),
+              children: const [
+                TextSpan(text: 'أوافق على '),
                 TextSpan(
                   text: 'الشروط والأحكام',
                   style: TextStyle(
@@ -47,7 +47,7 @@ class TermsAndConditionsCheckboxState
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const TextSpan(text: ' و '),
+                TextSpan(text: ' و '),
                 TextSpan(
                   text: 'سياسة الخصوصية',
                   style: TextStyle(

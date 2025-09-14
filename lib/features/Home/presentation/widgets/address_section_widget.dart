@@ -66,7 +66,7 @@ class AddressSectionWidget extends StatelessWidget {
   }
 
   Widget _buildLoadingState() {
-    return  SizedBox(
+    return SizedBox(
       height: 80.h,
       child: const Center(
         child: CircularProgressIndicator(
@@ -95,13 +95,10 @@ class AddressSectionWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: ThemeHelper.getCardBackgroundColor(context),
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(
-          color: AppColors.lightPrimary,
-          width: 1,
-        ),
+        border: Border.all(color: AppColors.lightPrimary, width: 1),
       ),
       child: AddressOption(
-        title: defaultAddress.label ?? 'عنوان افتراضي',
+        title: defaultAddress.name,
         subtitle: _formatAddress(defaultAddress),
         isSelected: true,
         onTap: () =>
@@ -198,17 +195,12 @@ class AddressSectionWidget extends StatelessWidget {
   String _formatAddress(AddressEntity address) {
     final parts = <String>[];
 
-    if (address.addressLine1.isNotEmpty) {
-      parts.add(address.addressLine1);
-    }
 
     if (address.city.isNotEmpty) {
       parts.add(address.city);
     }
 
-    if (address.state.isNotEmpty) {
-      parts.add(address.state);
-    }
+   
 
     return parts.take(2).join(', '); // أخذ أول عنصرين فقط لتجنب النص الطويل
   }
@@ -231,7 +223,7 @@ class AddressSectionWidget extends StatelessWidget {
             // عرض جميع العناوين
             ...addresses.map(
               (address) => AddressOption(
-                title: address.label ?? 'عنوان',
+                title: address.name,
                 subtitle: _formatAddress(address),
                 isSelected: address.id == currentAddress.id,
                 onTap: () {

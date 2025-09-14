@@ -249,7 +249,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             Icon(Icons.star_outline, color: Colors.grey[600], size: 16.sp),
             SizedBox(width: 4.w),
             Text(
-              '${widget.product.rating?.toStringAsFixed(1) ?? '4.7'}',
+              widget.product.rating?.toStringAsFixed(1) ?? '4.7',
               style: AppTextStyles.senRegular14(
                 context,
               ).copyWith(color: Colors.grey[700]),
@@ -422,7 +422,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 child: Container(
                   width: 30.w,
                   height: 30.h,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Colors.white,
                     shape: BoxShape.circle,
                   ),
@@ -454,7 +454,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 child: Container(
                   width: 30.w,
                   height: 30.h,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Colors.white,
                     shape: BoxShape.circle,
                   ),

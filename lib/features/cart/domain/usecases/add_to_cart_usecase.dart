@@ -38,7 +38,7 @@ class AddToCartUseCase extends BaseUseCase<CartItemEntity, AddToCartParams> {
         print(
           '🔍 AddToCartUseCase: Product EXISTS - updating quantity from ${existingItem.quantity} to $newQuantity',
         );
-        return await repository.updateCartItem(
+        return repository.updateCartItem(
           cartItemId: existingItem.id,
           quantity: newQuantity,
         );
@@ -47,7 +47,7 @@ class AddToCartUseCase extends BaseUseCase<CartItemEntity, AddToCartParams> {
         print(
           '🔍 AddToCartUseCase: Product NEW - adding with quantity ${params.quantity}',
         );
-        return await repository.addToCart(
+        return repository.addToCart(
           productId: params.productId,
           quantity: params.quantity,
         );

@@ -21,7 +21,7 @@ class UpdateCartItemUseCase
   Future<Either<Failure, CartItemEntity>> call(
     UpdateCartItemParams params,
   ) async {
-    return await repository.updateCartItem(
+    return repository.updateCartItem(
       cartItemId: params.cartItemId,
       quantity: params.quantity,
     );

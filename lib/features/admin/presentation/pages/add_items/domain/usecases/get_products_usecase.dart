@@ -1,8 +1,9 @@
-import '../../../../../../../core/entities/product.dart';
-import '../repositories/product_repository.dart';
-import '../../../../../../../core/base/base_usecase.dart';
-import '../../../../../../../core/error/failures.dart';
 import 'package:dartz/dartz.dart';
+
+import '../../../../../../../core/base/base_usecase.dart';
+import '../../../../../../../core/entities/product.dart';
+import '../../../../../../../core/error/failures.dart';
+import '../repositories/product_repository.dart';
 
 /// 🟦 GetProductsUseCase - مبدأ المسؤولية الواحدة (SRP)
 /// مسؤول عن جلب المنتجات فقط
@@ -16,6 +17,6 @@ class GetProductsUseCase extends BaseUseCaseNoParams<List<ProductEntity>> {
 
   @override
   Future<Either<Failure, List<ProductEntity>>> call() async {
-    return await repository.getProducts();
+    return repository.getProducts();
   }
 }

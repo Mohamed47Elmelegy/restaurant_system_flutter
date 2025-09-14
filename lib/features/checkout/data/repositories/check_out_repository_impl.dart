@@ -16,6 +16,3 @@ class CheckOutRepositoryImpl implements CheckOutRepository {
     return remoteDataSource.placeOrder(request, items);
   }
 }
-
-
-

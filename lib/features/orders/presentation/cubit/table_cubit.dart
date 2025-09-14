@@ -16,7 +16,6 @@ class TableCubit extends Cubit<TableState> {
       (table) => emit(TableLoaded(table)),
     );
   }
-  
 
   Future<void> occupyTable(int tableId) async {
     emit(TableOccupying());

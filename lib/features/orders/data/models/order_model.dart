@@ -128,14 +128,19 @@ class OrderModel extends OrderEntity {
     switch (status.toLowerCase()) {
       case 'pending':
         return OrderStatus.pending;
+      case 'paid':
+        return OrderStatus.paid;
       case 'preparing':
         return OrderStatus.preparing;
-      case 'ready':
-        return OrderStatus.ready;
+      case 'delivering':
+        return OrderStatus.delivering;
       case 'completed':
         return OrderStatus.completed;
       case 'cancelled':
         return OrderStatus.cancelled;
+      // Legacy support for 'ready' -> 'delivering'
+      case 'ready':
+        return OrderStatus.delivering;
       default:
         throw ArgumentError('Unknown order status: $status');
     }
@@ -170,10 +175,12 @@ class OrderModel extends OrderEntity {
     switch (status) {
       case OrderStatus.pending:
         return 'pending';
+      case OrderStatus.paid:
+        return 'paid';
       case OrderStatus.preparing:
         return 'preparing';
-      case OrderStatus.ready:
-        return 'ready';
+      case OrderStatus.delivering:
+        return 'delivering';
       case OrderStatus.completed:
         return 'completed';
       case OrderStatus.cancelled:

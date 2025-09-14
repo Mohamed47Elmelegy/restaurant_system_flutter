@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
-import 'home_custom_app_bar.dart';
 import 'home_content.dart';
+import 'home_custom_app_bar.dart';
 
 class HomeViewBody extends StatefulWidget {
   const HomeViewBody({super.key});

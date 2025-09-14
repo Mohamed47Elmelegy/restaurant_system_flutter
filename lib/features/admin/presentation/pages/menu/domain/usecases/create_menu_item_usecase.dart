@@ -1,8 +1,9 @@
-import '../entities/menu_item.dart';
-import '../repositories/menu_repository.dart';
+import 'package:dartz/dartz.dart';
+
 import '../../../../../../../core/base/base_usecase.dart';
 import '../../../../../../../core/error/failures.dart';
-import 'package:dartz/dartz.dart';
+import '../entities/menu_item.dart';
+import '../repositories/menu_repository.dart';
 
 class CreateMenuItemParams {
   final String name;
@@ -48,7 +49,7 @@ class CreateMenuItemUseCase
           description: params.description,
           isAvailable: params.isAvailable,
         );
-        return await repository.addMenuItem(menuItem);
+        return repository.addMenuItem(menuItem);
       });
     } catch (e) {
       return Left(ServerFailure(message: 'Failed to create menu item: $e'));

@@ -1,8 +1,10 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+
 import '../../../../../../../core/models/product_model.dart';
-import 'dart:developer';
-import 'dart:convert';
 
 /// 🟦 ProductLocalDataSource - للتخزين المحلي للمنتجات باستخدام Hive
 ///
@@ -249,11 +251,12 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
         final updatedProduct = ProductModel.fromIntId(
           id: int.tryParse(id),
           name: products[productIndex].name,
-         
+
           description: products[productIndex].description,
-          
+
           price: products[productIndex].price,
-          mainCategoryId: int.tryParse(products[productIndex].mainCategoryId) ?? 0,
+          mainCategoryId:
+              int.tryParse(products[productIndex].mainCategoryId) ?? 0,
           imageUrl: products[productIndex].imageUrl,
           isAvailable: isAvailable,
           rating: products[productIndex].rating,

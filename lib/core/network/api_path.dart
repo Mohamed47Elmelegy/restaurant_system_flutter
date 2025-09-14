@@ -85,15 +85,25 @@ class ApiPath {
   static String order(int orderId) =>
       Endpoints.getUrlWithId(Endpoints.order, orderId);
   static String placeOrder() => Endpoints.getUrl(Endpoints.placeOrder);
+  static String cancelOrder(int orderId) =>
+      Endpoints.getUrlWithIdAndAction(Endpoints.orders, orderId, 'cancel');
 
   // ==================== FAVORITES PATHS (يتطلب توكن) ====================
   static String favorites() => Endpoints.getUrl(Endpoints.favorites);
   static String toggleFavorite() => Endpoints.getUrl(Endpoints.toggleFavorite);
 
+  // ... existing code ...
   // ==================== ADDRESSES PATHS (يتطلب توكن) ====================
   static String addresses() => Endpoints.getUrl(Endpoints.addresses);
   static String addressUD(int addressId) =>
       Endpoints.getUrlWithId(Endpoints.addressUD, addressId);
+  static String addressSetDefault(int addressId) =>
+      Endpoints.getUrlWithIdAndAction(
+        Endpoints.addressSetDefault,
+        addressId,
+        'set-default',
+      );
+  // ... existing code ...
 
   // ==================== ADMIN CATEGORIES PATHS (يتطلب role:admin) ====================
   static String adminCategories() =>

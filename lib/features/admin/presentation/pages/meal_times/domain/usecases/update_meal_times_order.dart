@@ -10,6 +10,6 @@ class UpdateMealTimesOrder {
     : _repository = repository;
 
   Future<Either<Failure, List<MealTime>>> call(List<MealTime> mealTimes) async {
-    return await _repository.updateMealTimesOrder(mealTimes);
+    return _repository.updateMealTimesOrder(mealTimes);
   }
 }

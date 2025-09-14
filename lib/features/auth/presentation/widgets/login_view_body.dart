@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:restaurant_system_flutter/core/theme/text_styles.dart';
+
+import '../../../../core/routes/app_routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/validation/form_validator.dart';
-import '../../../../core/routes/app_routes.dart';
-import '../../../../core/widgets/custom_text_field.dart';
 import '../../../../core/widgets/custom_button.dart';
+import '../../../../core/widgets/custom_text_field.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import 'account_creation_prompt.dart';
@@ -22,8 +23,8 @@ class LoginViewBody extends StatefulWidget {
 
 class _LoginViewBodyState extends State<LoginViewBody> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  var emailController = TextEditingController();
-  var passwordController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
   AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
   late String email, password;
 
@@ -95,7 +96,7 @@ class _LoginViewBodyState extends State<LoginViewBody> {
                     textStyle: AppTextStyles.senBold14(
                       context,
                     ).copyWith(color: Colors.white),
-                    gradientColors: [
+                    gradientColors: const [
                       AppColors.lightPrimary,
                       AppColors.lightSecondary,
                     ],

@@ -10,6 +10,6 @@ class GetCategoriesUseCase {
   GetCategoriesUseCase(this._repository);
 
   Future<Either<Failure, List<CategoryEntity>>> call() async {
-    return await _repository.getCategories();
+    return _repository.getCategories();
   }
 }

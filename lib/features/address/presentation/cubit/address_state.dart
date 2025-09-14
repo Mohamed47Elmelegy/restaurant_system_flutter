@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import '../../domain/entitiy/address_entity.dart';
 
-/// 🟦 AddressState - مبدأ المسؤولية الواحدة (SRP)
-/// مسؤول عن تمثيل حالات العناوين فقط
+/// AddressState - Single Responsibility Principle (SRP)
+/// Responsible for representing address states only
 abstract class AddressState extends Equatable {
   const AddressState();
 
@@ -10,26 +10,17 @@ abstract class AddressState extends Equatable {
   List<Object?> get props => [];
 }
 
-/// الحالة الأولية للعناوين
+/// Initial address state
 class AddressInitial extends AddressState {}
 
-/// حالة تحميل العناوين
+/// Loading addresses state
 class AddressLoading extends AddressState {}
 
-/// حالة تحميل العناوين بنجاح
+/// Addresses loaded successfully state
 class AddressLoaded extends AddressState {
   final List<AddressEntity> addresses;
 
   const AddressLoaded(this.addresses);
-
-  /// Get default address if any
-  AddressEntity? get defaultAddress {
-    try {
-      return addresses.firstWhere((address) => address.isDefault);
-    } catch (e) {
-      return null;
-    }
-  }
 
   /// Check if addresses list is empty
   bool get isEmpty => addresses.isEmpty;
@@ -38,66 +29,66 @@ class AddressLoaded extends AddressState {
   List<Object?> get props => [addresses];
 }
 
-/// حالة العناوين فارغة
+/// Empty addresses state
 class AddressEmpty extends AddressState {}
 
-/// حالة إضافة عنوان بنجاح
+/// Address added successfully state
 class AddressAdded extends AddressState {
   final AddressEntity address;
   final String message;
 
   const AddressAdded({
     required this.address,
-    this.message = 'تم إضافة العنوان بنجاح',
+    this.message = 'Address added successfully',
   });
 
   @override
   List<Object?> get props => [address, message];
 }
 
-/// حالة تحديث عنوان بنجاح
+/// Address updated successfully state
 class AddressUpdated extends AddressState {
   final AddressEntity address;
   final String message;
 
   const AddressUpdated({
     required this.address,
-    this.message = 'تم تحديث العنوان بنجاح',
+    this.message = 'Address updated successfully',
   });
 
   @override
   List<Object?> get props => [address, message];
 }
 
-/// حالة حذف عنوان بنجاح
+/// Address deleted successfully state
 class AddressDeleted extends AddressState {
   final int addressId;
   final String message;
 
   const AddressDeleted({
     required this.addressId,
-    this.message = 'تم حذف العنوان بنجاح',
+    this.message = 'Address deleted successfully',
   });
 
   @override
   List<Object?> get props => [addressId, message];
 }
 
-/// حالة تعيين عنوان افتراضي بنجاح
+/// Address set as default successfully state
 class AddressSetAsDefault extends AddressState {
   final AddressEntity address;
   final String message;
 
   const AddressSetAsDefault({
     required this.address,
-    this.message = 'تم تعيين العنوان كافتراضي',
+    this.message = 'Address set as default successfully',
   });
 
   @override
   List<Object?> get props => [address, message];
 }
 
-/// حالة خطأ في العناوين
+/// Address error state
 class AddressError extends AddressState {
   final String message;
 

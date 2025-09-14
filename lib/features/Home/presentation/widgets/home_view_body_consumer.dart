@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../core/services/snack_bar_service.dart';
 import '../../../../core/widgets/skeleton_wrapper.dart';
+import '../../../cart/presentation/bloc/cart_cubit.dart';
+import '../../../cart/presentation/bloc/cart_state.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_state.dart';
 import 'home_view_body.dart';
-import '../../../../core/services/snack_bar_service.dart';
-import '../../../cart/presentation/bloc/cart_cubit.dart';
-import '../../../cart/presentation/bloc/cart_state.dart';
 
 class HomeViewBodyBuilder extends StatelessWidget {
   const HomeViewBodyBuilder({super.key});

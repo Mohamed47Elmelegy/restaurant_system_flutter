@@ -1,10 +1,11 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:restaurant_system_flutter/core/network/endpoints.dart';
+
 import '../utils/debug_console_messages.dart';
 import 'simple_interceptor.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 class DioClient {
   final Dio dio;

@@ -1,5 +1,6 @@
-import 'package:dartz/dartz.dart';
 import 'dart:developer';
+
+import 'package:dartz/dartz.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../domain/entitiy/address_entity.dart';
@@ -35,7 +36,7 @@ class AddressRepositoryImpl implements AddressRepository {
       }
     } catch (e) {
       log('❌ AddressRepositoryImpl: Exception getting addresses - $e');
-      return Left(ServerFailure(message: 'حدث خطأ أثناء تحميل العناوين'));
+      return const Left(ServerFailure(message: 'حدث خطأ أثناء تحميل العناوين'));
     }
   }
 
@@ -48,12 +49,6 @@ class AddressRepositoryImpl implements AddressRepository {
       log('📤 Address: ${address.fullAddress}');
 
       // التحقق من صحة البيانات
-      if (address.addressLine1.isEmpty ||
-          address.city.isEmpty ||
-          address.state.isEmpty) {
-        log('❌ AddressRepositoryImpl: Invalid address data');
-        return Left(ValidationFailure(message: 'بيانات العنوان غير صحيحة'));
-      }
 
       final addressModel = AddressModel.fromEntity(address);
       final response = await remoteDataSource.addAddress(addressModel);
@@ -71,7 +66,7 @@ class AddressRepositoryImpl implements AddressRepository {
       }
     } catch (e) {
       log('❌ AddressRepositoryImpl: Exception adding address - $e');
-      return Left(ServerFailure(message: 'حدث خطأ أثناء إضافة العنوان'));
+      return const Left(ServerFailure(message: 'حدث خطأ أثناء إضافة العنوان'));
     }
   }
 
@@ -102,7 +97,7 @@ class AddressRepositoryImpl implements AddressRepository {
       }
     } catch (e) {
       log('❌ AddressRepositoryImpl: Exception updating address - $e');
-      return Left(ServerFailure(message: 'حدث خطأ أثناء تحديث العنوان'));
+      return const Left(ServerFailure(message: 'حدث خطأ أثناء تحديث العنوان'));
     }
   }
 
@@ -124,7 +119,7 @@ class AddressRepositoryImpl implements AddressRepository {
       }
     } catch (e) {
       log('❌ AddressRepositoryImpl: Exception deleting address - $e');
-      return Left(ServerFailure(message: 'حدث خطأ أثناء حذف العنوان'));
+      return const Left(ServerFailure(message: 'حدث خطأ أثناء حذف العنوان'));
     }
   }
 
@@ -150,8 +145,10 @@ class AddressRepositoryImpl implements AddressRepository {
       }
     } catch (e) {
       log('❌ AddressRepositoryImpl: Exception setting default address - $e');
-      return Left(
-        ServerFailure(message: 'حدث خطأ أثناء تعيين العنوان الافتراضي'),
+      return const Left(
+        ServerFailure(
+          message: 'An error occurred while setting default address',
+        ),
       );
     }
   }

@@ -7,6 +7,6 @@ class GetRunningOrdersUseCase {
   GetRunningOrdersUseCase(this.repository);
 
   Future<List<OrderEntity>> call() async {
-    return await repository.getRunningOrders();
+    return repository.getRunningOrders();
   }
 }

@@ -13,7 +13,7 @@ class MenuButton extends StatelessWidget {
     return Container(
       width: 40.w,
       height: 40.h,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.transparent,
         shape: BoxShape.circle,
       ),

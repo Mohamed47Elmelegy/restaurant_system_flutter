@@ -52,7 +52,9 @@ class CategoryRepositoryImpl implements CategoryRepository {
           final categoryModels = categories
               .map((entity) => MainCategoryModel.fromEntity(entity))
               .toList();
-          await localDataSource.saveMainCategories(categoryModels.cast<MainCategoryModel>());
+          await localDataSource.saveMainCategories(
+            categoryModels.cast<MainCategoryModel>(),
+          );
           log(
             '💾 CategoryRepository: Saved ${categories.length} categories to local storage',
           );
@@ -72,7 +74,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
   Future<Either<Failure, List<CategoryEntity>>> getCategoriesByMealTime(
     int mealTimeId,
   ) async {
-    try { 
+    try {
       // 1. محاولة جلب الفئات من الـ local أولاً
       final localCategories = await localDataSource.getMainCategories();
       if (localCategories.isNotEmpty) {
@@ -101,7 +103,9 @@ class CategoryRepositoryImpl implements CategoryRepository {
           final categoryModels = categories
               .map((entity) => MainCategoryModel.fromEntity(entity))
               .toList();
-          await localDataSource.saveMainCategories(categoryModels .cast<MainCategoryModel>());
+          await localDataSource.saveMainCategories(
+            categoryModels.cast<MainCategoryModel>(),
+          );
           log(
             '💾 CategoryRepository: Saved ${categories.length} categories to local storage',
           );
@@ -146,7 +150,9 @@ class CategoryRepositoryImpl implements CategoryRepository {
           final categoryModels = categories
               .map((entity) => MainCategoryModel.fromEntity(entity))
               .toList();
-          await localDataSource.saveMainCategories(categoryModels.cast<MainCategoryModel>());
+          await localDataSource.saveMainCategories(
+            categoryModels.cast<MainCategoryModel>(),
+          );
           log(
             '💾 CategoryRepository: Saved ${categories.length} active categories to local storage',
           );
@@ -334,7 +340,9 @@ class CategoryRepositoryImpl implements CategoryRepository {
           final categoryModels = categories
               .map((entity) => MainCategoryModel.fromEntity(entity))
               .toList();
-          await localDataSource.saveMainCategories(categoryModels.cast<MainCategoryModel>());
+          await localDataSource.saveMainCategories(
+            categoryModels.cast<MainCategoryModel>(),
+          );
           log('💾 CategoryRepository: Saved search results to local storage');
         }
 
@@ -396,7 +404,9 @@ class CategoryRepositoryImpl implements CategoryRepository {
           final categoryModels = categories
               .map((entity) => MainCategoryModel.fromEntity(entity))
               .toList();
-          await localDataSource.saveMainCategories(categoryModels.cast<MainCategoryModel>());
+          await localDataSource.saveMainCategories(
+            categoryModels.cast<MainCategoryModel>(),
+          );
           log('💾 CategoryRepository: Saved paginated data to local storage');
         }
 

@@ -1,8 +1,8 @@
 import '../../../../core/error/api_response.dart';
 import '../model/address_model.dart';
 
-/// 🟦 AddressRemoteDataSource - مبدأ المسؤولية الواحدة (SRP)
-/// مسؤول عن التعامل مع API الخاص بالعناوين فقط
+/// AddressRemoteDataSource - Single Responsibility Principle (SRP)
+/// Responsible for handling address API operations only
 abstract class AddressRemoteDataSource {
   /// Get all user addresses
   /// GET /api/v1/addresses
@@ -24,6 +24,6 @@ abstract class AddressRemoteDataSource {
   Future<ApiResponse<bool>> deleteAddress(int addressId);
 
   /// Set address as default
-  /// PATCH /api/v1/addresses/{address}/default
+  /// PUT /api/v1/addresses/{address}
   Future<ApiResponse<AddressModel>> setDefaultAddress(int addressId);
 }

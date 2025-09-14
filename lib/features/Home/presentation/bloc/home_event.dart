@@ -8,7 +8,6 @@ abstract class HomeEvent extends Equatable {
 }
 
 class LoadHomeData extends HomeEvent {
-  
   const LoadHomeData();
 }
 

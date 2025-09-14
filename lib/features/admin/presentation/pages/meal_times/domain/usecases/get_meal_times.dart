@@ -10,6 +10,6 @@ class GetMealTimes {
     : _repository = repository;
 
   Future<Either<Failure, List<MealTime>>> call({bool? isActive}) async {
-    return await _repository.getMealTimes(isActive: isActive);
+    return _repository.getMealTimes(isActive: isActive);
   }
 }

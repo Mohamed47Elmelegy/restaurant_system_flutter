@@ -116,7 +116,7 @@ class MenuItem extends BaseEntity {
 
   // Business logic methods
   String get formattedPrice => '\$$price';
-  String get ratingText => '$rating (${reviewCount} reviews)';
+  String get ratingText => '$rating ($reviewCount reviews)';
   bool get isExpensive => (double.tryParse(price) ?? 0) > 20;
   bool get isPopular => rating >= 4.0 && reviewCount >= 10;
 

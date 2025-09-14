@@ -22,7 +22,7 @@ class ProductItem extends StatelessWidget {
             height: 100.h,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.vertical(top: Radius.circular(10.r)),
-              image: DecorationImage(
+              image: const DecorationImage(
                 image: AssetImage(AppImages.pizza), // Example image
                 fit: BoxFit.cover,
               ),
@@ -43,7 +43,7 @@ class ProductItem extends StatelessWidget {
                 Row(
                   children: [
                     Icon(Icons.star, color: Colors.orange, size: 16.sp),
-                    Text('4.5'),
+                    const Text('4.5'),
                   ],
                 ),
                 Text(

@@ -1,8 +1,9 @@
-import '../../../../../../../core/entities/product.dart';
-import '../repositories/product_repository.dart';
-import '../../../../../../../core/base/base_usecase.dart';
-import '../../../../../../../core/error/failures.dart';
 import 'package:dartz/dartz.dart';
+
+import '../../../../../../../core/base/base_usecase.dart';
+import '../../../../../../../core/entities/product.dart';
+import '../../../../../../../core/error/failures.dart';
+import '../repositories/product_repository.dart';
 
 /// 🟦 UpdateProductUseCase - مبدأ المسؤولية الواحدة (SRP)
 /// مسؤول عن تحديث المنتج فقط
@@ -16,6 +17,6 @@ class UpdateProductUseCase extends BaseUseCase<ProductEntity, ProductEntity> {
 
   @override
   Future<Either<Failure, ProductEntity>> call(ProductEntity product) async {
-    return await repository.updateProduct(product);
+    return repository.updateProduct(product);
   }
 }

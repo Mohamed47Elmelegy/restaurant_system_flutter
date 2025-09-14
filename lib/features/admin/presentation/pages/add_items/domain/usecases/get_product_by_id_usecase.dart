@@ -1,8 +1,9 @@
-import '../../../../../../../core/entities/product.dart';
-import '../repositories/product_repository.dart';
-import '../../../../../../../core/base/base_usecase.dart';
-import '../../../../../../../core/error/failures.dart';
 import 'package:dartz/dartz.dart';
+
+import '../../../../../../../core/base/base_usecase.dart';
+import '../../../../../../../core/entities/product.dart';
+import '../../../../../../../core/error/failures.dart';
+import '../repositories/product_repository.dart';
 
 /// 🟦 GetProductByIdUseCase - مبدأ المسؤولية الواحدة (SRP)
 /// مسؤول عن جلب منتج واحد فقط
@@ -16,6 +17,6 @@ class GetProductByIdUseCase extends BaseUseCase<ProductEntity?, int> {
 
   @override
   Future<Either<Failure, ProductEntity?>> call(int id) async {
-    return await repository.getProductById(id);
+    return repository.getProductById(id);
   }
 }

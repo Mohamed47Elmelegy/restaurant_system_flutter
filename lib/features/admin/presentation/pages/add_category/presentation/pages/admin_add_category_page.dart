@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:restaurant_system_flutter/core/widgets/custom_text_field.dart';
 import 'package:restaurant_system_flutter/core/validation/form_validator.dart';
+import 'package:restaurant_system_flutter/core/widgets/custom_text_field.dart';
+
+import '../../../../../../../core/di/service_locator.dart';
 import '../../../../../../../core/entities/main_category.dart';
+import '../../../menu/presentation/bloc/menu_cubit.dart';
+import '../../../menu/presentation/bloc/menu_events.dart';
 import '../cubit/category_cubit.dart';
 import '../cubit/category_events.dart';
 import '../cubit/category_states.dart';
-import '../../../menu/presentation/bloc/menu_cubit.dart';
-import '../../../menu/presentation/bloc/menu_events.dart';
-import '../../../../../../../core/di/service_locator.dart';
 
 /// 🟦 AdminAddCategoryPage - مبدأ المسؤولية الواحدة (SRP)
 /// مسؤول عن عرض واجهة إضافة الفئات
@@ -101,7 +102,7 @@ class _AdminAddCategoryPageState extends State<AdminAddCategoryPage> {
             _refreshCategories();
             _refreshMenu();
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
+              const SnackBar(
                 content: Text('تم حذف الفئة بنجاح'),
                 backgroundColor: Colors.red,
               ),

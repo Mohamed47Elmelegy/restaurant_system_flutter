@@ -1,4 +1,3 @@
-import 'package:equatable/equatable.dart';
 import '../../../../../../../core/entities/product.dart';
 
 abstract class ProductEvent {}

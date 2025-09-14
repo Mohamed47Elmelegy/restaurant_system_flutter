@@ -1,4 +1,3 @@
-
 import '../base/base_model.dart';
 import '../entities/product.dart';
 import 'main_category_model.dart';
@@ -11,18 +10,18 @@ class ProductModel extends BaseModel<ProductEntity> {
   final String? nameAr;
   final String? description;
   final String? descriptionAr;
-  final String price;
+  final double price;
   final String mainCategoryId;
   final String? subCategoryId;
   final String? imageUrl;
   final bool isAvailable;
-  final String? rating;
+  final double? rating;
   final int? reviewCount;
   final int? preparationTime;
   final List<String>? ingredients;
   final List<String>? allergens;
   final bool isFeatured;
-  final int sortOrder;
+  final int? sortOrder;
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final MainCategoryModel? mainCategory;
@@ -37,14 +36,14 @@ class ProductModel extends BaseModel<ProductEntity> {
     required this.mainCategoryId,
     this.subCategoryId,
     this.imageUrl,
-    required this.isAvailable,
+    this.isAvailable = true,
     this.rating,
     this.reviewCount,
     this.preparationTime,
     this.ingredients,
     this.allergens,
-    required this.isFeatured,
-    required this.sortOrder,
+    this.isFeatured = false,
+    this.sortOrder,
     this.createdAt,
     this.updatedAt,
     this.mainCategory,
@@ -57,18 +56,18 @@ class ProductModel extends BaseModel<ProductEntity> {
     String? nameAr,
     String? description,
     String? descriptionAr,
-    required String price,
+    required double price,
     required int mainCategoryId,
     int? subCategoryId,
     String? imageUrl,
-    required bool isAvailable,
-    String? rating,
+    bool isAvailable = true,
+    double? rating,
     int? reviewCount,
     int? preparationTime,
     List<String>? ingredients,
     List<String>? allergens,
-    required bool isFeatured,
-    required int sortOrder,
+    bool isFeatured = false,
+    int? sortOrder,
     DateTime? createdAt,
     DateTime? updatedAt,
     MainCategoryModel? mainCategory,
@@ -114,12 +113,12 @@ class ProductModel extends BaseModel<ProductEntity> {
 
   /// Get price as double
   double get priceAsDouble {
-    return double.tryParse(price) ?? 0.0;
+    return double.tryParse(price.toString()) ?? 0.0;
   }
 
   /// Get rating as double
   double get ratingAsDouble {
-    return rating != null ? double.tryParse(rating!) ?? 0.0 : 0.0;
+    return rating ?? 0.0;
   }
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
@@ -129,12 +128,14 @@ class ProductModel extends BaseModel<ProductEntity> {
       nameAr: json['name_ar'],
       description: json['description'],
       descriptionAr: json['description_ar'],
-      price: json['price']?.toString() ?? '0',
+      price: (json['price'] is num) ? (json['price'] as num).toDouble() : 0.0,
       mainCategoryId: json['main_category_id']?.toString() ?? '',
       subCategoryId: json['sub_category_id']?.toString(),
       imageUrl: json['image_url'],
       isAvailable: json['is_available'] ?? true,
-      rating: json['rating']?.toString(),
+      rating: (json['rating'] is num)
+          ? (json['rating'] as num).toDouble()
+          : null,
       reviewCount: json['review_count'],
       preparationTime: json['preparation_time'],
       ingredients: json['ingredients'] != null
@@ -144,7 +145,7 @@ class ProductModel extends BaseModel<ProductEntity> {
           ? List<String>.from(json['allergens'])
           : null,
       isFeatured: json['is_featured'] ?? false,
-      sortOrder: json['sort_order'] ?? 0,
+      sortOrder: json['sort_order'],
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
           : null,
@@ -202,12 +203,13 @@ class ProductModel extends BaseModel<ProductEntity> {
     return ProductEntity(
       id: id,
       name: name,
-      
+      nameAr: nameAr,
       description: description,
-      price: priceAsDouble,
+      descriptionAr: descriptionAr,
+      price: price,
       imageUrl: imageUrl,
       isAvailable: isAvailable,
-      rating: rating != null ? double.tryParse(rating!) : null,
+      rating: rating,
       reviewCount: reviewCount,
       preparationTime: preparationTime,
       ingredients: ingredients,
@@ -217,7 +219,7 @@ class ProductModel extends BaseModel<ProductEntity> {
       createdAt: createdAt,
       updatedAt: updatedAt,
       mainCategory: mainCategory?.toEntity(),
-      mainCategoryId: intMainCategoryId.toString(),
+      mainCategoryId: mainCategoryId,
     );
   }
 
@@ -266,21 +268,22 @@ class ProductModel extends BaseModel<ProductEntity> {
     return ProductModel(
       id: entity.id,
       name: entity.name,
+      nameAr: entity.nameAr,
       description: entity.description,
-      price: entity.price.toString(), // Convert double to string
+      descriptionAr: entity.descriptionAr,
+      price: entity.price,
       mainCategoryId: entity.mainCategoryId,
       imageUrl: entity.imageUrl,
-      isAvailable: entity.isAvailable ,
-      rating: entity.rating?.toString(),
+      isAvailable: entity.isAvailable,
+      rating: entity.rating,
       reviewCount: entity.reviewCount,
       preparationTime: entity.preparationTime,
       ingredients: entity.ingredients,
       allergens: entity.allergens,
-      isFeatured: entity.isFeatured ,
-      sortOrder: entity.sortOrder ?? 0,
+      isFeatured: entity.isFeatured,
+      sortOrder: entity.sortOrder,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
-
     );
   }
 }

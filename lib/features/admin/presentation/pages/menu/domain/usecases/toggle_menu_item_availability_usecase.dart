@@ -1,8 +1,9 @@
-import '../repositories/menu_repository.dart';
-import '../entities/menu_item.dart';
+import 'package:dartz/dartz.dart';
+
 import '../../../../../../../core/base/base_usecase.dart';
 import '../../../../../../../core/error/failures.dart';
-import 'package:dartz/dartz.dart';
+import '../entities/menu_item.dart';
+import '../repositories/menu_repository.dart';
 
 class ToggleMenuItemAvailabilityParams {
   final String id;
@@ -30,7 +31,7 @@ class ToggleMenuItemAvailabilityUseCase
   ) async {
     try {
       if (params.id.isEmpty) {
-        return Left(ServerFailure(message: 'معرف المنتج مطلوب'));
+        return const Left(ServerFailure(message: 'معرف المنتج مطلوب'));
       }
 
       // First get the current menu item
@@ -40,7 +41,7 @@ class ToggleMenuItemAvailabilityUseCase
         currentItem,
       ) async {
         if (currentItem == null) {
-          return Left(ServerFailure(message: 'المنتج غير موجود'));
+          return const Left(ServerFailure(message: 'المنتج غير موجود'));
         }
 
         // Create updated menu item with new availability
@@ -49,7 +50,7 @@ class ToggleMenuItemAvailabilityUseCase
         );
 
         // Update the menu item
-        return await repository.updateMenuItem(updatedItem);
+        return repository.updateMenuItem(updatedItem);
       });
     } catch (e) {
       return Left(ServerFailure(message: 'فشل في تغيير حالة التوفر: $e'));

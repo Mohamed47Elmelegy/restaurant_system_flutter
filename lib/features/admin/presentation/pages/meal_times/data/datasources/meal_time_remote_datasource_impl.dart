@@ -1,9 +1,11 @@
-import 'package:dio/dio.dart';
 import 'dart:developer';
-import '../../../../../../../core/network/dio_client.dart';
-import '../../../../../../../core/network/api_path.dart';
+
+import 'package:dio/dio.dart';
+
 import '../../../../../../../core/error/api_response.dart';
 import '../../../../../../../core/error/simple_error.dart';
+import '../../../../../../../core/network/api_path.dart';
+import '../../../../../../../core/network/dio_client.dart';
 import '../models/meal_time_model.dart';
 import 'meal_time_remote_datasource.dart';
 
@@ -61,9 +63,13 @@ class MealTimeRemoteDataSourceImpl implements MealTimeRemoteDataSource {
   @override
   Future<ApiResponse<MealTimeModel?>> getCurrentMealTime() async {
     try {
-      log('🔵 CurrentMealTime Request - URL: ${ApiPath.publicCurrentMealTime()}');
+      log(
+        '🔵 CurrentMealTime Request - URL: ${ApiPath.publicCurrentMealTime()}',
+      );
 
-      final response = await _dioClient.dio.get(ApiPath.publicCurrentMealTime());
+      final response = await _dioClient.dio.get(
+        ApiPath.publicCurrentMealTime(),
+      );
 
       log('🟢 CurrentMealTime Response Status: ${response.statusCode}');
       log('🟢 CurrentMealTime Response Data: ${response.data}');
@@ -123,7 +129,7 @@ class MealTimeRemoteDataSourceImpl implements MealTimeRemoteDataSource {
       );
     } catch (e) {
       log('🔴 CreateMealTime Unexpected Error: $e');
-      return ApiResponse<MealTimeModel>(
+      return const ApiResponse<MealTimeModel>(
         status: false,
         message: 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.',
       );
@@ -164,7 +170,7 @@ class MealTimeRemoteDataSourceImpl implements MealTimeRemoteDataSource {
       );
     } catch (e) {
       log('🔴 UpdateMealTime Unexpected Error: $e');
-      return ApiResponse<MealTimeModel>(
+      return const ApiResponse<MealTimeModel>(
         status: false,
         message: 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.',
       );
@@ -240,7 +246,7 @@ class MealTimeRemoteDataSourceImpl implements MealTimeRemoteDataSource {
       );
     } catch (e) {
       log('🔴 ToggleMealTimeStatus Unexpected Error: $e');
-      return ApiResponse<MealTimeModel>(
+      return const ApiResponse<MealTimeModel>(
         status: false,
         message: 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.',
       );
@@ -263,7 +269,7 @@ class MealTimeRemoteDataSourceImpl implements MealTimeRemoteDataSource {
       log('🔵 UpdateMealTimesOrder Request Data: $data');
 
       final response = await _dioClient.dio.post(
-            ApiPath.adminMealTimesReorder(),
+        ApiPath.adminMealTimesReorder(),
         data: data,
       );
 
@@ -288,7 +294,7 @@ class MealTimeRemoteDataSourceImpl implements MealTimeRemoteDataSource {
       );
     } catch (e) {
       log('🔴 UpdateMealTimesOrder Unexpected Error: $e');
-      return ApiResponse<List<MealTimeModel>>(
+      return const ApiResponse<List<MealTimeModel>>(
         status: false,
         message: 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.',
       );

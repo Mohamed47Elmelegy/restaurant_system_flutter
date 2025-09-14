@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import '../../../../core/constants/app_images.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_helper.dart';
-import 'plus_button_widget.dart';
+import '../pages/Profile/presentation/pages/admin_profile_page.dart';
 import '../pages/menu/presentation/pages/admin_menu_page.dart';
 import '../pages/notifications/presentation/pages/admin_notifications_page.dart';
-import '../pages/Profile/presentation/pages/admin_profile_page.dart';
-import '../pages/dashbord/presentation/pages/seller_dashboard_home.dart';
+import 'plus_button_widget.dart';
 
 class PersistentBottomNavBarWidget extends StatefulWidget {
   const PersistentBottomNavBarWidget({super.key});
@@ -41,7 +41,7 @@ class _PersistentBottomNavBarWidgetState
       height: 65.h,
       decoration: ShapeDecoration(
         color: ThemeHelper.getSurfaceColor(context),
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(30),
             topRight: Radius.circular(30),

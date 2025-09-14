@@ -17,6 +17,6 @@ class ToggleMealTimeStatus {
     : _repository = repository;
 
   Future<Either<Failure, MealTime>> call(ToggleMealTimeParams params) async {
-    return await _repository.toggleMealTimeStatus(params.id, params.isActive);
+    return _repository.toggleMealTimeStatus(params.id, params.isActive);
   }
 }

@@ -1,7 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../domain/usecases/cancel_order_usecase.dart';
 import '../../domain/usecases/get_running_orders_usecase.dart';
 import '../../domain/usecases/mark_order_done_usecase.dart';
-import '../../domain/usecases/cancel_order_usecase.dart';
 import 'order_event.dart';
 import 'order_state.dart';
 

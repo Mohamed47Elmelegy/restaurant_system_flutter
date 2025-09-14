@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 class ResponsiveHelper {
   static Widget responsiveLayout({
@@ -98,8 +98,8 @@ class ResponsiveHelper {
   }) {
     if (isWeb()) {
       return Container(
-        width: width != null ? width : null,
-        height: height != null ? height : null,
+        width: width,
+        height: height,
         padding: padding,
         margin: margin,
         decoration: decoration,

@@ -1,8 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/usecases/place_order_usecase.dart';
-import '../../data/models/place_order_request_model.dart';
+
 import '../../data/models/order_item_model.dart';
+import '../../data/models/place_order_request_model.dart';
 import '../../domain/entities/order_entity.dart';
+import '../../domain/usecases/place_order_usecase.dart';
 
 part 'order_state.dart';
 
@@ -23,8 +24,3 @@ class OrderCubit extends Cubit<OrderState> {
     }
   }
 }
-
-
-
-
-

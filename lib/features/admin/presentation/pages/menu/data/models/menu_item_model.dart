@@ -1,5 +1,5 @@
-import '../../domain/entities/menu_item.dart';
 import '../../../../../../../core/base/base_model.dart';
+import '../../domain/entities/menu_item.dart';
 
 class MenuItemModel extends BaseModel<MenuItem> {
   MenuItemModel({

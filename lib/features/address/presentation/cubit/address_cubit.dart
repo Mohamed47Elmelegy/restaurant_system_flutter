@@ -1,5 +1,6 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:developer';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/usecases/add_address_usecase.dart';
 import '../../domain/usecases/delete_address_usecase.dart';
@@ -9,11 +10,11 @@ import '../../domain/usecases/update_address_usecase.dart';
 import 'address_event.dart';
 import 'address_state.dart';
 
-/// 🟦 AddressCubit - مبدأ المسؤولية الواحدة (SRP)
-/// مسؤول عن إدارة حالة العناوين فقط
+/// AddressCubit - Single Responsibility Principle (SRP)
+/// Responsible for managing address state only
 ///
-/// 🟦 مبدأ قلب الاعتماديات (DIP)
-/// يعتمد على abstractions (use cases) وليس implementations
+/// Dependency Inversion Principle (DIP)
+/// Depends on abstractions (use cases) not implementations
 class AddressCubit extends Bloc<AddressEvent, AddressState> {
   final GetAddressesUseCase getAddressesUseCase;
   final AddAddressUseCase addAddressUseCase;
@@ -21,7 +22,7 @@ class AddressCubit extends Bloc<AddressEvent, AddressState> {
   final DeleteAddressUseCase deleteAddressUseCase;
   final SetDefaultAddressUseCase setDefaultAddressUseCase;
 
-  AddressCubit(param0, {
+  AddressCubit({
     required this.getAddressesUseCase,
     required this.addAddressUseCase,
     required this.updateAddressUseCase,
@@ -37,7 +38,7 @@ class AddressCubit extends Bloc<AddressEvent, AddressState> {
     on<ResetAddressState>(_onResetAddressState);
   }
 
-  /// تحميل العناوين
+  /// Load addresses
   Future<void> _onLoadAddresses(
     LoadAddresses event,
     Emitter<AddressState> emit,
@@ -66,11 +67,15 @@ class AddressCubit extends Bloc<AddressEvent, AddressState> {
       );
     } catch (e) {
       log('❌ AddressCubit: Failed to load addresses - $e');
-      emit(const AddressError('حدث خطأ غير متوقع أثناء تحميل العناوين'));
+      emit(
+        const AddressError(
+          'An unexpected error occurred while loading addresses',
+        ),
+      );
     }
   }
 
-  /// إضافة عنوان جديد
+  /// Add new address
   Future<void> _onAddAddress(
     AddAddress event,
     Emitter<AddressState> emit,
@@ -91,17 +96,21 @@ class AddressCubit extends Bloc<AddressEvent, AddressState> {
         (address) {
           log('✅ AddressCubit: Address added successfully');
           emit(AddressAdded(address: address));
-          // إعادة تحميل العناوين لعرض التحديثات
-          add(LoadAddresses());
+          // Reload addresses to show updates
+          if (!isClosed) {
+            add(LoadAddresses());
+          }
         },
       );
     } catch (e) {
       log('❌ AddressCubit: Failed to add address - $e');
-      emit(const AddressError('حدث خطأ غير متوقع أثناء إضافة العنوان'));
+      emit(
+        const AddressError('An unexpected error occurred while adding address'),
+      );
     }
   }
 
-  /// تحديث عنوان موجود
+  /// Update existing address
   Future<void> _onUpdateAddress(
     UpdateAddress event,
     Emitter<AddressState> emit,
@@ -122,17 +131,23 @@ class AddressCubit extends Bloc<AddressEvent, AddressState> {
         (address) {
           log('✅ AddressCubit: Address updated successfully');
           emit(AddressUpdated(address: address));
-          // إعادة تحميل العناوين لعرض التحديثات
-          add(LoadAddresses());
+          // Reload addresses to show updates
+          if (!isClosed) {
+            add(LoadAddresses());
+          }
         },
       );
     } catch (e) {
       log('❌ AddressCubit: Failed to update address - $e');
-      emit(const AddressError('حدث خطأ غير متوقع أثناء تحديث العنوان'));
+      emit(
+        const AddressError(
+          'An unexpected error occurred while updating address',
+        ),
+      );
     }
   }
 
-  /// حذف عنوان
+  /// Delete address
   Future<void> _onDeleteAddress(
     DeleteAddress event,
     Emitter<AddressState> emit,
@@ -152,17 +167,23 @@ class AddressCubit extends Bloc<AddressEvent, AddressState> {
         (success) {
           log('✅ AddressCubit: Address deleted successfully');
           emit(AddressDeleted(addressId: event.addressId));
-          // إعادة تحميل العناوين لعرض التحديثات
-          add(LoadAddresses());
+          // Reload addresses to show updates
+          if (!isClosed) {
+            add(LoadAddresses());
+          }
         },
       );
     } catch (e) {
       log('❌ AddressCubit: Failed to delete address - $e');
-      emit(const AddressError('حدث خطأ غير متوقع أثناء حذف العنوان'));
+      emit(
+        const AddressError(
+          'An unexpected error occurred while deleting address',
+        ),
+      );
     }
   }
 
-  /// تعيين عنوان كافتراضي
+  /// Set address as default
   Future<void> _onSetDefaultAddress(
     SetDefaultAddress event,
     Emitter<AddressState> emit,
@@ -182,19 +203,23 @@ class AddressCubit extends Bloc<AddressEvent, AddressState> {
         (address) {
           log('✅ AddressCubit: Default address set successfully');
           emit(AddressSetAsDefault(address: address));
-          // إعادة تحميل العناوين لعرض التحديثات
-          add(LoadAddresses());
+          // Reload addresses to show updates
+          if (!isClosed) {
+            add(LoadAddresses());
+          }
         },
       );
     } catch (e) {
       log('❌ AddressCubit: Failed to set default address - $e');
       emit(
-        const AddressError('حدث خطأ غير متوقع أثناء تعيين العنوان الافتراضي'),
+        const AddressError(
+          'An unexpected error occurred while setting default address',
+        ),
       );
     }
   }
 
-  /// إعادة تحميل العناوين
+  /// Refresh addresses
   Future<void> _onRefreshAddresses(
     RefreshAddresses event,
     Emitter<AddressState> emit,
@@ -202,7 +227,7 @@ class AddressCubit extends Bloc<AddressEvent, AddressState> {
     add(LoadAddresses());
   }
 
-  /// إعادة تعيين حالة العناوين
+  /// Reset address state
   Future<void> _onResetAddressState(
     ResetAddressState event,
     Emitter<AddressState> emit,

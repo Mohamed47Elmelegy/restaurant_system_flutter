@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/theme/app_colors.dart';
+
 import '../../../../core/services/snack_bar_service.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../../orders/domain/entities/order_entity.dart';
 import '../bloc/cart_cubit.dart';
 import '../bloc/cart_event.dart';
 import '../bloc/cart_state.dart';
 import '../widgets/cart_app_bar.dart';
 import '../widgets/cart_item_widget.dart';
-import '../widgets/empty_cart_widget.dart';
 import '../widgets/cart_summary_widget.dart';
+import '../widgets/empty_cart_widget.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -91,13 +92,13 @@ class _CartPageState extends State<CartPage> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.error_outline,
                               size: 64,
                               color: AppColors.error,
                             ),
                             const SizedBox(height: 16),
-                            Text(
+                            const Text(
                               'حدث خطأ في تحميل السلة',
                               style: TextStyle(
                                 color: Colors.white,

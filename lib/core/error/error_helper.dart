@@ -1,8 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+
+import 'api_response.dart';
 import 'failures.dart';
 import 'simple_error.dart';
-import 'api_response.dart';
 
 /// مساعد لمعالجة الأخطاء - يوفر وظائف شائعة لمعالجة الأخطاء
 class ErrorHelper {
@@ -14,7 +15,7 @@ class ErrorHelper {
   /// تحويل ApiResponse إلى Either
   static Either<Failure, T> apiResponseToEither<T>(ApiResponse<T> response) {
     if (response.isSuccess) {
-      return Right(response.data!);
+      return Right(response.data as T);
     } else {
       return Left(Failure.fromAppError(response.toAppError()));
     }

@@ -17,7 +17,7 @@ class PopularItemsSection extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 10,
-            offset: Offset(0, 5),
+            offset: const Offset(0, 5),
           ),
         ],
       ),
@@ -47,11 +47,11 @@ class PopularItemsSection extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           GridView.builder(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
@@ -59,7 +59,7 @@ class PopularItemsSection extends StatelessWidget {
             ),
             itemCount: 4, // Example item count
             itemBuilder: (context, index) {
-              return ProductItem();
+              return const ProductItem();
             },
           ),
         ],

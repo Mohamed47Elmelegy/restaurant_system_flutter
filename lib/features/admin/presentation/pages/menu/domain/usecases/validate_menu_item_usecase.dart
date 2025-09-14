@@ -1,7 +1,8 @@
-import '../entities/menu_item.dart';
+import 'package:dartz/dartz.dart';
+
 import '../../../../../../../core/base/base_usecase.dart';
 import '../../../../../../../core/error/failures.dart';
-import 'package:dartz/dartz.dart';
+import '../entities/menu_item.dart';
 
 class ValidateMenuItemParams {
   final MenuItem item;
@@ -23,7 +24,7 @@ class ValidateMenuItemUseCase
       if (isValid) {
         return const Right(true);
       } else {
-        return Left(ServerFailure(message: 'Menu item validation failed'));
+        return const Left(ServerFailure(message: 'Menu item validation failed'));
       }
     } catch (e) {
       return Left(ServerFailure(message: 'Validation error: $e'));

@@ -1,11 +1,12 @@
-import 'package:dio/dio.dart';
 import 'dart:developer';
+
+import 'package:dio/dio.dart';
 
 import '../../../../core/error/api_response.dart';
 import '../../../../core/network/api_path.dart';
-import '../models/cart_model.dart';
-import '../models/cart_item_model.dart';
 import '../models/add_to_cart_request.dart';
+import '../models/cart_item_model.dart';
+import '../models/cart_model.dart';
 import '../models/update_cart_item_request.dart';
 import 'cart_remote_data_source.dart';
 
@@ -44,10 +45,7 @@ class CartRemoteDataSourceImpl implements CartRemoteDataSource {
       log('🔄 CartRemoteDataSourceImpl: Adding item to cart');
       log('📤 Request data: ${request.toJson()}');
 
-      final response = await dio.post(
-        ApiPath.cart(),
-        data: request.toJson(),
-      );
+      final response = await dio.post(ApiPath.cart(), data: request.toJson());
 
       log('✅ CartRemoteDataSourceImpl: Item added to cart successfully');
       log('📄 Response data: ${response.data}');

@@ -13,7 +13,7 @@ class AdminProfilePage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'الملف الشخصي',
                 style: TextStyle(
                   fontSize: 24,
@@ -93,14 +93,14 @@ class AdminProfilePage extends StatelessWidget {
               color: Colors.blue,
               borderRadius: BorderRadius.circular(40),
             ),
-            child: Icon(Icons.person, size: 40, color: Colors.white),
+            child: const Icon(Icons.person, size: 40, color: Colors.white),
           ),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'أحمد محمد',
                   style: TextStyle(
                     fontSize: 20,
@@ -125,7 +125,7 @@ class AdminProfilePage extends StatelessWidget {
             onPressed: () {
               // تعديل الملف الشخصي
             },
-            icon: Icon(Icons.edit, color: Colors.blue),
+            icon: const Icon(Icons.edit, color: Colors.blue),
           ),
         ],
       ),
@@ -152,7 +152,7 @@ class AdminProfilePage extends StatelessWidget {
         ),
         title: Text(
           title,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,
             color: Colors.black87,
@@ -169,7 +169,7 @@ class AdminProfilePage extends StatelessWidget {
   }
 
   Widget _buildLogoutButton() {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () {
@@ -180,11 +180,11 @@ class AdminProfilePage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
-        child: Row(
+        child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.logout, color: Colors.white),
-            const SizedBox(width: 8),
+            SizedBox(width: 8),
             Text(
               'تسجيل الخروج',
               style: TextStyle(

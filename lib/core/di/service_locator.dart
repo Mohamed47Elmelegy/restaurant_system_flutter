@@ -83,19 +83,17 @@ import '../../features/checkout/domain/usecases/check_out_place_order_usecase.da
 import '../../features/checkout/presentation/cubit/check_out_cubit.dart';
 import '../../features/orders/data/datasources/order_remote_data_source.dart';
 import '../../features/orders/data/datasources/order_remote_data_source_implementation.dart';
+import '../../features/orders/data/datasources/table_remote_data_source_impl.dart';
 import '../../features/orders/data/datasources/table_remote_datasource.dart';
-import '../../features/orders/data/repositories/order_repository_impl.dart';
+import '../../features/orders/data/repositories/table_repository_impl.dart';
 import '../../features/orders/domain/repositories/order_repository.dart';
-import '../../features/orders/domain/usecases/place_order_usecase.dart';
-import '../../features/orders/presentation/cubit/order_cubit.dart';
-import '../../features/orders/domain/repositories/order_repository.dart';
+import '../../features/orders/domain/repositories/table_repository.dart';
 import '../../features/orders/domain/usecases/cancel_order_usecase.dart';
 import '../../features/orders/domain/usecases/get_running_orders_usecase.dart';
 import '../../features/orders/domain/usecases/mark_order_done_usecase.dart';
+import '../../features/orders/domain/usecases/place_order_usecase.dart';
 import '../../features/orders/presentation/bloc/order_bloc.dart';
-import '../../features/orders/data/datasources/table_remote_data_source_impl.dart';
-import '../../features/orders/data/repositories/table_repository_impl.dart';
-import '../../features/orders/domain/repositories/table_repository.dart';
+import '../../features/orders/presentation/cubit/order_cubit.dart';
 import '../../features/orders/presentation/cubit/table_cubit.dart';
 
 final getIt = GetIt.instance;
@@ -381,9 +379,8 @@ Future<void> setup() async {
   );
 
   // Address cubit
-  getIt.registerLazySingleton<AddressCubit>(
+  getIt.registerFactory<AddressCubit>(
     () => AddressCubit(
-      getIt<GetAddressesUseCase>(),
       getAddressesUseCase: getIt<GetAddressesUseCase>(),
       addAddressUseCase: getIt<AddAddressUseCase>(),
       updateAddressUseCase: getIt<UpdateAddressUseCase>(),

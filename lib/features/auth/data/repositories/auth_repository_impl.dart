@@ -1,14 +1,16 @@
-import 'package:dartz/dartz.dart';
-import 'dart:developer';
 import 'dart:convert';
+import 'dart:developer';
+
+import 'package:dartz/dartz.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 import '../../../../core/error/failures.dart';
 import '../../domain/entities/auth_entity.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
+import '../datasources/auth_remote_data_source.dart';
 import '../models/auth_model.dart';
 import '../models/user_model.dart';
-import '../datasources/auth_remote_data_source.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
@@ -117,7 +119,7 @@ class AuthRepositoryImpl implements AuthRepository {
       final token = await secureStorage.read(key: 'token');
       if (token == null) {
         log('❌ Repository: No token found in secure storage');
-        return Left(
+        return const Left(
           AuthFailure(
             message: 'لم يتم العثور على بيانات تسجيل الدخول',
             code: 'NO_TOKEN_FOUND',
@@ -166,7 +168,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, AuthEntity>> refreshToken() async {
     // TODO: Implement token refresh
-    return Left(
+    return const Left(
       AuthFailure(
         message: 'Token refresh not implemented yet',
         code: 'REFRESH_TOKEN_NOT_IMPLEMENTED',

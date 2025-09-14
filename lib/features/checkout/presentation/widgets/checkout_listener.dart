@@ -8,7 +8,6 @@ import '../../../cart/presentation/bloc/cart_cubit.dart';
 import '../../../orders/presentation/cubit/table_cubit.dart';
 import '../cubit/check_out_cubit.dart';
 import '../cubit/check_out_state.dart';
-import 'checkout_body.dart' hide ThankYouPage;
 import 'thank_you_page.dart';
 
 class CheckoutBodyListener extends StatelessWidget {
@@ -40,9 +39,12 @@ class CheckoutBodyListener extends StatelessWidget {
             final addressState = context.read<AddressCubit>().state;
             if (addressState is AddressLoaded &&
                 addressState.addresses.isNotEmpty) {
-              deliveryAddress =
-                  addressState.defaultAddress?.fullAddress ??
-                  addressState.addresses.first.fullAddress;
+              deliveryAddress = addressState.addresses
+                  .firstWhere(
+                    (a) => a.isDefault,
+                    orElse: () => addressState.addresses.first,
+                  )
+                  .fullAddress;
             }
           } else if (orderType == 'dineIn') {
             final tableState = context.read<TableCubit>().state;

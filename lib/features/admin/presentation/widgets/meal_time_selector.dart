@@ -197,7 +197,7 @@ class MealTimeSelector extends StatelessWidget {
                     '${mealTime.categoryIds.length} فئة',
                     style: TextStyle(
                       fontSize: 11.sp,
-                      color: textColor?.withOpacity(0.7),
+                      color: textColor.withOpacity(0.7),
                     ),
                   ),
               ],

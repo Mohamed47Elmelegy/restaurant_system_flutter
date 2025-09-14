@@ -227,7 +227,7 @@ class AppError {
 
   /// الحصول على جميع رسائل أخطاء التحقق
   List<String> get allValidationErrors {
-    List<String> errors = [];
+    final List<String> errors = [];
     if (hasValidationErrors) {
       for (var errorList in validationErrors!.values) {
         errors.addAll(errorList);

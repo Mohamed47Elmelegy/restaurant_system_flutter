@@ -1,8 +1,9 @@
-import '../repositories/menu_repository.dart';
-import '../entities/menu_item.dart';
+import 'package:dartz/dartz.dart';
+
 import '../../../../../../../core/base/base_usecase.dart';
 import '../../../../../../../core/error/failures.dart';
-import 'package:dartz/dartz.dart';
+import '../entities/menu_item.dart';
+import '../repositories/menu_repository.dart';
 
 class SearchMenuItemsParams {
   final String query;
@@ -25,11 +26,11 @@ class SearchMenuItemsUseCase
   ) async {
     try {
       if (params.query.isEmpty) {
-        return Left(ServerFailure(message: 'نص البحث مطلوب'));
+        return const Left(ServerFailure(message: 'نص البحث مطلوب'));
       }
 
       if (params.query.length < 2) {
-        return Left(
+        return const Left(
           ServerFailure(message: 'نص البحث يجب أن يكون أكثر من حرفين'),
         );
       }

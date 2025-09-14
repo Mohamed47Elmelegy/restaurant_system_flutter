@@ -18,8 +18,8 @@ class EmptyCartWidget extends StatelessWidget {
             Container(
               width: 120,
               height: 120,
-              decoration: BoxDecoration(
-                color: const Color(0xFF3A3A4A),
+              decoration: const BoxDecoration(
+                color: Color(0xFF3A3A4A),
                 shape: BoxShape.circle,
               ),
               child: SvgPicture.asset(AppIcons.shoppingBag),

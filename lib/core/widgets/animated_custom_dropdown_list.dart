@@ -42,7 +42,6 @@ class CustomAnimatedDropdown<T> extends StatelessWidget {
     }
 
     return CustomDropdown<T>(
-      
       hintText: hintText,
       items: items,
       initialItem: selectedValue,

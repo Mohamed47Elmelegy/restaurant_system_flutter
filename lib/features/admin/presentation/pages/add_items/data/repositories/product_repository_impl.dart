@@ -1,10 +1,11 @@
-import '../../../../../../../core/entities/product.dart';
-import '../../domain/repositories/product_repository.dart';
-import '../../../../../../../core/models/product_model.dart';
-import '../datasources/remoteDataSource/product_remote_data_source.dart';
-import '../datasources/product_local_data_source.dart';
-import '../../../../../../../core/error/failures.dart';
 import 'package:dartz/dartz.dart';
+
+import '../../../../../../../core/entities/product.dart';
+import '../../../../../../../core/error/failures.dart';
+import '../../../../../../../core/models/product_model.dart';
+import '../../domain/repositories/product_repository.dart';
+import '../datasources/product_local_data_source.dart';
+import '../datasources/remoteDataSource/product_remote_data_source.dart';
 
 /// 🟦 ProductRepositoryImpl - مبدأ المسؤولية الواحدة (SRP)
 /// مسؤول عن تنفيذ عمليات المنتجات فقط
@@ -333,7 +334,7 @@ class ProductRepositoryImpl implements ProductRepository {
       // 2. البحث في الـ API
       print('🌐 ProductRepository: Searching in API...');
       // TODO: Implement searchProducts method in ProductRemoteDataSource
-      return Left(
+      return const Left(
         ServerFailure(message: 'Search products not implemented yet'),
       );
     } catch (e) {
@@ -376,7 +377,7 @@ class ProductRepositoryImpl implements ProductRepository {
       // 2. جلب البيانات من الـ API
       print('🌐 ProductRepository: Fetching paginated data from API...');
       // TODO: Implement getProductsPaginated method in ProductRemoteDataSource
-      return Left(
+      return const Left(
         ServerFailure(message: 'Paginated products not implemented yet'),
       );
     } catch (e) {

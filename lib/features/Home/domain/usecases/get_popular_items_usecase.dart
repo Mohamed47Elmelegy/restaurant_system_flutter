@@ -10,6 +10,6 @@ class GetPopularItemsUseCase {
   GetPopularItemsUseCase(this._repository);
 
   Future<Either<Failure, List<ProductEntity>>> call() async {
-    return await _repository.getPopularItems();
+    return _repository.getPopularItems();
   }
 }

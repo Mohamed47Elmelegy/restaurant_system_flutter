@@ -31,7 +31,7 @@ class AccountCreationPrompt extends StatelessWidget {
           onTap: onPressed,
           child: Text(
             buttonText,
-            style: TextStyle(
+            style: const TextStyle(
               color: AppColors.lightPrimary,
               fontSize: 14,
               fontWeight: FontWeight.w600,

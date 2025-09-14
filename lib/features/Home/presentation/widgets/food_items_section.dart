@@ -44,7 +44,8 @@ class FoodItemsSection extends StatelessWidget {
                     shrinkWrap: true,
                   ),
                 )
-              else FoodItemsGridView(
+              else
+                FoodItemsGridView(
                   items: state is HomeLoaded
                       ? getItems(state)
                       : _generatePlaceholderItems(),
@@ -53,8 +54,6 @@ class FoodItemsSection extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   padding: EdgeInsets.zero,
                 ),
-               
-          
             ],
           ),
         );
@@ -62,8 +61,7 @@ class FoodItemsSection extends StatelessWidget {
     );
   }
 
-  
-// Fake Data Placeholder for Skeleton Wrapper  This Data will come from the API
+  // Fake Data Placeholder for Skeleton Wrapper  This Data will come from the API
   List<ProductEntity> _generatePlaceholderItems() {
     return List.generate(6, (index) {
       return ProductEntity(

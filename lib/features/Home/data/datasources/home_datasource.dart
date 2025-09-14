@@ -98,6 +98,7 @@ class HomeDataSourceImpl implements HomeDataSource {
   }
 
   /// Get new products
+  @override
   Future<ApiResponse<List<ProductModel>>> getNewProducts() async {
     try {
       log('🔄 HomeDataSourceImpl: Getting new products');

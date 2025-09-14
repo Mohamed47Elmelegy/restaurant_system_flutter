@@ -10,6 +10,6 @@ class GetRecommendedItemsUseCase {
   GetRecommendedItemsUseCase(this._repository);
 
   Future<Either<Failure, List<ProductEntity>>> call() async {
-    return await _repository.getRecommendedItems();
+    return _repository.getRecommendedItems();
   }
 }

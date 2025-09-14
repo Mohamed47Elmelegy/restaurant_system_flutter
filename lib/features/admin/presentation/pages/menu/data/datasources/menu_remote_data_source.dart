@@ -1,6 +1,8 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'dart:developer';
+
 import '../../../../../../../core/network/api_path.dart';
 import '../models/menu_item_model.dart';
 
@@ -20,7 +22,7 @@ class MenuRemoteDataSourceImpl implements MenuRemoteDataSource {
   final FlutterSecureStorage storage;
 
   MenuRemoteDataSourceImpl({required this.dio})
-    : storage = FlutterSecureStorage();
+    : storage = const FlutterSecureStorage();
 
   @override
   Future<List<MenuItemModel>> getMenuItems() async {

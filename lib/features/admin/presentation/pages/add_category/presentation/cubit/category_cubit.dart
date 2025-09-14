@@ -1,10 +1,12 @@
 import 'dart:developer';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../domain/repositories/category_repository.dart';
 import '../../domain/usecases/create_category_usecase.dart';
 import '../../domain/usecases/get_categories_usecase.dart';
-import '../../domain/usecases/update_category_usecase.dart';
 import '../../domain/usecases/get_category_by_id_usecase.dart';
-import '../../domain/repositories/category_repository.dart';
+import '../../domain/usecases/update_category_usecase.dart';
 import 'category_events.dart';
 import 'category_states.dart';
 
@@ -93,9 +95,7 @@ class CategoryCubit extends Bloc<CategoryEvent, CategoryState> {
           log(
             '✅ CategoryCubit: Category created successfully - ${createdCategory.name}',
           );
-          log(
-            '✅ CategoryCubit: Created category ID - ${createdCategory.id}',
-          );
+          log('✅ CategoryCubit: Created category ID - ${createdCategory.id}');
           emit(CategoryCreated(createdCategory));
         },
       );
@@ -131,9 +131,7 @@ class CategoryCubit extends Bloc<CategoryEvent, CategoryState> {
           log(
             '✅ CategoryCubit: Category updated successfully - ${updatedCategory.name}',
           );
-          log(
-            '✅ CategoryCubit: Updated category ID - ${updatedCategory.id}',
-          );
+          log('✅ CategoryCubit: Updated category ID - ${updatedCategory.id}');
           emit(CategoryUpdated(updatedCategory));
         },
       );

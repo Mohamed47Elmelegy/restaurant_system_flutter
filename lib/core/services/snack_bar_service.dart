@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:toastification/toastification.dart';
 import 'package:lottie/lottie.dart';
+import 'package:toastification/toastification.dart';
+
 import '../theme/theme_helper.dart';
 
 class Toast {

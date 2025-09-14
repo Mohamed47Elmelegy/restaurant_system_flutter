@@ -31,7 +31,6 @@ abstract class BaseCubit<Event extends BaseEvent, State extends BaseState>
     extends Bloc<Event, State> {
   BaseCubit(super.initialState);
 
-
   /// إرسال event
   void emitEvent(Event event) {
     add(event);
