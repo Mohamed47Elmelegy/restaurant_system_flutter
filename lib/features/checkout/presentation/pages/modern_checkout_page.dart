@@ -10,6 +10,8 @@ import '../../../../core/theme/theme_helper.dart';
 import '../../../../core/utils/cubit_initializer.dart';
 import '../../../address/presentation/cubit/address_cubit.dart';
 import '../../../cart/domain/entities/cart_entity.dart';
+import '../../../cart/presentation/bloc/cart_cubit.dart';
+import '../../../cart/presentation/bloc/cart_event.dart';
 import '../../../orders/domain/entities/order_entity.dart';
 import '../../../orders/presentation/cubit/table_cubit.dart';
 import '../../domain/entities/checkout_step_entity.dart';
@@ -51,6 +53,9 @@ class ModernCheckoutPage extends StatelessWidget {
           value: CubitInitializer.getAddressCubitWithData(),
         ),
         BlocProvider<TableCubit>(create: (context) => getIt<TableCubit>()),
+        BlocProvider<CartCubit>.value(
+          value: CubitInitializer.getCartCubitWithData(),
+        ),
       ],
       child: const _ModernCheckoutView(),
     );
@@ -68,7 +73,11 @@ class _ModernCheckoutView extends StatelessWidget {
       body: BlocConsumer<CheckoutProcessBloc, CheckoutProcessState>(
         listener: (context, state) {
           if (state is CheckoutCompleted) {
-            _showOrderSuccessDialog(context, state.order);
+            _showOrderSuccessDialog(
+              context,
+              state.order,
+              context.read<CartCubit>(),
+            );
           } else if (state is CheckoutProcessError) {
             _showErrorSnackBar(context, state.message);
           }
@@ -382,7 +391,11 @@ class _ModernCheckoutView extends StatelessWidget {
     }
   }
 
-  void _showOrderSuccessDialog(BuildContext context, OrderEntity order) {
+  void _showOrderSuccessDialog(
+    BuildContext context,
+    OrderEntity order,
+    CartCubit cartCubit,
+  ) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -408,8 +421,16 @@ class _ModernCheckoutView extends StatelessWidget {
         actions: [
           ElevatedButton(
             onPressed: () {
+              // Clear cart after successful order
+              cartCubit.add(ClearCart());
+
               Navigator.of(context).pop(); // Close dialog
               Navigator.of(context).pop(); // Close checkout page
+
+              // Navigate to home and clear stack
+              Navigator.of(
+                context,
+              ).pushNamedAndRemoveUntil(AppRoutes.home, (route) => false);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.lightPrimary,

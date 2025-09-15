@@ -171,6 +171,40 @@ class MyOrdersPage extends StatelessWidget {
                 ),
               ],
             ),
+            if (_canEditOrder(order)) ...[
+              SizedBox(height: 12.h),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => _editOrder(context, order),
+                      icon: Icon(
+                        order.type == OrderType.dineIn
+                            ? Icons.add_shopping_cart
+                            : Icons.edit,
+                        color: AppColors.lightPrimary,
+                        size: 16.sp,
+                      ),
+                      label: Text(
+                        order.type == OrderType.dineIn
+                            ? 'إضافة منتجات'
+                            : 'تعديل الطلب',
+                        style: AppTextStyles.senMedium14(
+                          context,
+                        ).copyWith(color: AppColors.lightPrimary),
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: AppColors.lightPrimary),
+                        padding: EdgeInsets.symmetric(vertical: 8.h),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ),
@@ -252,6 +286,45 @@ class MyOrdersPage extends StatelessWidget {
               context,
             ).copyWith(color: ThemeHelper.getSecondaryTextColor(context)),
             textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Check if order can be edited
+  bool _canEditOrder(OrderEntity order) {
+    if (order.type == OrderType.delivery) {
+      // For delivery orders: can edit if pending or paid (not preparing or delivering yet)
+      return order.status == OrderStatus.pending ||
+          order.status == OrderStatus.paid;
+    } else {
+      // For dine-in orders: can edit until being prepared
+      // They can keep adding items before preparation starts
+      return order.status == OrderStatus.pending ||
+          order.status == OrderStatus.paid;
+    }
+  }
+
+  /// Navigate to edit order page
+  void _editOrder(BuildContext context, OrderEntity order) {
+    final String title = order.type == OrderType.dineIn
+        ? 'إضافة منتجات للطلب #${order.id}'
+        : 'تعديل الطلب #${order.id}';
+
+    final String content = order.type == OrderType.dineIn
+        ? 'يمكنك إضافة المزيد من المنتجات لطلبك قبل الدفع النهائي.\nميزة إضافة المنتجات قيد التطوير...'
+        : 'يمكنك تعديل طلب التوصيل قبل خروجه للتوصيل.\nميزة تعديل الطلب قيد التطوير...';
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('حسناً'),
           ),
         ],
       ),
