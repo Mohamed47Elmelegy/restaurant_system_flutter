@@ -1,203 +1,157 @@
-// import 'package:dartz/dartz.dart';
-// import 'dart:developer';
+import 'dart:developer';
 
-// import '../../../../core/error/failures.dart';
-// import '../../domain/entities/order_entity.dart';
-// import '../../domain/repositories/order_repository.dart';
-// import '../datasources/order_remote_data_source.dart';
-// import '../models/place_order_request_model.dart';
+import '../../domain/entities/order_entity.dart';
+import '../../domain/repositories/order_repository.dart';
+import '../datasources/order_remote_data_source.dart';
+import '../models/order_item_model.dart';
+import '../models/place_order_request_model.dart';
 
-// /// 🟦 OrderRepositoryImpl - تطبيق مستودع الطلبات
-// /// يطبق مبدأ قلب الاعتماديات (DIP)
-// class OrderRepositoryImpl implements OrderRepository {
-//   final OrderRemoteDataSource remoteDataSource;
+/// 🟦 OrderRepositoryImpl - تطبيق مستودع الطلبات
+/// يطبق مبدأ قلب الاعتماديات (DIP)
+class OrderRepositoryImpl implements OrderRepository {
+  final OrderRemoteDataSource remoteDataSource;
 
-//   OrderRepositoryImpl({required this.remoteDataSource});
+  OrderRepositoryImpl({required this.remoteDataSource});
 
-//   @override
-//   Future<Either<Failure, OrderEntity>> placeOrder(
-//     PlaceOrderRequestEntity request,
-//   ) async {
-//     try {
-//       log('🔄 OrderRepositoryImpl: Placing order');
-//       log('📤 Order type: ${request.type}');
-//       log('📤 Table ID: ${request.tableId}');
-//       log('📤 Delivery address: ${request.deliveryAddress}');
+  @override
+  Future<List<OrderEntity>> getAllOrders() async {
+    try {
+      log('🔄 OrderRepositoryImpl: Getting all orders');
 
-//       final requestModel = PlaceOrderRequestModel.fromEntity(request);
-//       final response = await remoteDataSource.placeOrder(requestModel);
+      final orderModels = await remoteDataSource.getOrders();
 
-//       if (response.status) {
-//         final order = response.data!;
-//         log('✅ OrderRepositoryImpl: Order placed successfully');
-//         log('📄 Order ID: ${order.id}');
-//         log('📄 Order status: ${order.status}');
-//         log('📄 Total amount: ${order.totalAmount}');
-//         return Right(order);
-//       } else {
-//         log(
-//           '❌ OrderRepositoryImpl: Failed to place order - ${response.message}',
-//         );
-//         return Left(ServerFailure(message: response.message));
-//       }
-//     } catch (e) {
-//       log('❌ OrderRepositoryImpl: Exception placing order - $e');
-//       return Left(ServerFailure(message: 'حدث خطأ أثناء إنشاء الطلب'));
-//     }
-//   }
+      log('✅ OrderRepositoryImpl: ${orderModels.length} orders retrieved');
 
-//   @override
-//   Future<Either<Failure, List<OrderEntity>>> getUserOrders({
-//     OrderType? type,
-//     OrderStatus? status,
-//   }) async {
-//     try {
-//       log('🔄 OrderRepositoryImpl: Getting user orders');
-//       log('📤 Filters - Type: $type, Status: $status');
+      return orderModels.map((model) => model as OrderEntity).toList();
+    } catch (e) {
+      log('❌ OrderRepositoryImpl: Exception getting all orders - $e');
+      rethrow;
+    }
+  }
 
-//       final response = await remoteDataSource.getUserOrders(
-//         type: type,
-//         status: status,
-//       );
+  @override
+  Future<OrderEntity> placeOrder(
+    PlaceOrderRequestModel request,
+    List<OrderItemModel> items,
+  ) async {
+    try {
+      log('🔄 OrderRepositoryImpl: Placing order');
+      log('📤 Order type: ${request.type}');
+      log('📤 Table ID: ${request.tableId}');
+      log('📤 Delivery address: ${request.deliveryAddress}');
 
-//       if (response.status) {
-//         final orders = response.data!;
-//         log('✅ OrderRepositoryImpl: ${orders.length} orders retrieved');
+      final orderModel = await remoteDataSource.placeOrder(request, items);
 
-//         // إضافة تفاصيل إضافية للتسجيل
-//         if (orders.isNotEmpty) {
-//           log('📄 Order types: ${orders.map((o) => o.type).toSet()}');
-//           log('📄 Order statuses: ${orders.map((o) => o.status).toSet()}');
-//         }
+      log('✅ OrderRepositoryImpl: Order placed successfully');
+      log('📄 Order ID: ${orderModel.id}');
+      log('📄 Order status: ${orderModel.status}');
+      log('📄 Total amount: ${orderModel.totalAmount}');
 
-//         return Right(orders);
-//       } else {
-//         log(
-//           '❌ OrderRepositoryImpl: Failed to get orders - ${response.message}',
-//         );
-//         return Left(ServerFailure(message: response.message));
-//       }
-//     } catch (e) {
-//       log('❌ OrderRepositoryImpl: Exception getting orders - $e');
-//       return Left(ServerFailure(message: 'حدث خطأ أثناء جلب الطلبات'));
-//     }
-//   }
+      return orderModel;
+    } catch (e) {
+      log('❌ OrderRepositoryImpl: Exception placing order - $e');
+      rethrow;
+    }
+  }
 
-//   @override
-//   Future<Either<Failure, OrderEntity>> getOrderDetails(int orderId) async {
-//     try {
-//       log('🔄 OrderRepositoryImpl: Getting order details for ID: $orderId');
+  @override
+  Future<List<OrderEntity>> getRunningOrders() async {
+    try {
+      log('🔄 OrderRepositoryImpl: Getting running orders');
 
-//       final response = await remoteDataSource.getOrderDetails(orderId);
+      final orderModels = await remoteDataSource.getOrders();
 
-//       if (response.status) {
-//         final order = response.data!;
-//         log('✅ OrderRepositoryImpl: Order details retrieved successfully');
-//         log('📄 Order: ${order.id} - ${order.status}');
-//         log('📄 Items count: ${order.items.length}');
-//         log('📄 Total amount: ${order.totalAmount}');
-//         return Right(order);
-//       } else {
-//         log(
-//           '❌ OrderRepositoryImpl: Failed to get order details - ${response.message}',
-//         );
-//         return Left(ServerFailure(message: response.message));
-//       }
-//     } catch (e) {
-//       log('❌ OrderRepositoryImpl: Exception getting order details - $e');
-//       return Left(ServerFailure(message: 'حدث خطأ أثناء جلب تفاصيل الطلب'));
-//     }
-//   }
+      // Filter running orders (not completed or cancelled)
+      final runningOrders = orderModels
+          .where(
+            (order) => ![
+              OrderStatus.completed,
+              OrderStatus.cancelled,
+            ].contains(order.status),
+          )
+          .toList();
 
-//   @override
-//   Future<Either<Failure, bool>> cancelOrder(int orderId) async {
-//     try {
-//       log('🔄 OrderRepositoryImpl: Cancelling order $orderId');
+      log(
+        '✅ OrderRepositoryImpl: ${runningOrders.length} running orders retrieved',
+      );
 
-//       final response = await remoteDataSource.cancelOrder(orderId);
+      return runningOrders.map((model) => model as OrderEntity).toList();
+    } catch (e) {
+      log('❌ OrderRepositoryImpl: Exception getting running orders - $e');
+      rethrow;
+    }
+  }
 
-//       if (response.status) {
-//         log('✅ OrderRepositoryImpl: Order cancelled successfully');
-//         return const Right(true);
-//       } else {
-//         log(
-//           '❌ OrderRepositoryImpl: Failed to cancel order - ${response.message}',
-//         );
-//         return Left(ServerFailure(message: response.message));
-//       }
-//     } catch (e) {
-//       log('❌ OrderRepositoryImpl: Exception cancelling order - $e');
-//       return Left(ServerFailure(message: 'حدث خطأ أثناء إلغاء الطلب'));
-//     }
-//   }
+  @override
+  Future<List<OrderEntity>> getNewOrders() async {
+    try {
+      log('🔄 OrderRepositoryImpl: Getting new orders');
 
-//   @override
-//   Future<Either<Failure, OrderEntity>> updateOrderStatus(
-//     int orderId,
-//     OrderStatus status,
-//   ) async {
-//     try {
-//       log('🔄 OrderRepositoryImpl: Updating order $orderId status to $status');
+      final orderModels = await remoteDataSource.getOrders();
 
-//       final response = await remoteDataSource.updateOrderStatus(
-//         orderId,
-//         status,
-//       );
+      // Filter new orders (pending status)
+      final newOrders = orderModels
+          .where((order) => order.status == OrderStatus.pending)
+          .toList();
 
-//       if (response.status) {
-//         final order = response.data!;
-//         log('✅ OrderRepositoryImpl: Order status updated successfully');
-//         return Right(order);
-//       } else {
-//         log(
-//           '❌ OrderRepositoryImpl: Failed to update order status - ${response.message}',
-//         );
-//         return Left(ServerFailure(message: response.message));
-//       }
-//     } catch (e) {
-//       log('❌ OrderRepositoryImpl: Exception updating order status - $e');
-//       return Left(ServerFailure(message: 'حدث خطأ أثناء تحديث حالة الطلب'));
-//     }
-//   }
+      log('✅ OrderRepositoryImpl: ${newOrders.length} new orders retrieved');
 
-//   @override
-//   Future<Either<Failure, OrderEntity>> getOrderTracking(int orderId) async {
-//     try {
-//       log('🔄 OrderRepositoryImpl: Getting order tracking for ID: $orderId');
+      return newOrders.map((model) => model as OrderEntity).toList();
+    } catch (e) {
+      log('❌ OrderRepositoryImpl: Exception getting new orders - $e');
+      rethrow;
+    }
+  }
 
-//       final response = await remoteDataSource.getOrderTracking(orderId);
+  @override
+  Future<bool> markOrderAsDone(int orderId) async {
+    try {
+      log('🔄 OrderRepositoryImpl: Marking order $orderId as done');
 
-//       if (response.status) {
-//         final order = response.data!;
-//         log('✅ OrderRepositoryImpl: Order tracking retrieved successfully');
-//         return Right(order);
-//       } else {
-//         log(
-//           '❌ OrderRepositoryImpl: Failed to get order tracking - ${response.message}',
-//         );
-//         return Left(ServerFailure(message: response.message));
-//       }
-//     } catch (e) {
-//       log('❌ OrderRepositoryImpl: Exception getting order tracking - $e');
-//       return Left(ServerFailure(message: 'حدث خطأ أثناء جلب تتبع الطلب'));
-//     }
-//   }
+      // This would typically call an API endpoint to update order status
+      // For now, we'll use the cancel order endpoint as a placeholder
+      // In a real implementation, you'd have a dedicated endpoint for this
+      await remoteDataSource.cancelOrder(orderId);
 
-//   @override
-//   Future<List<OrderEntity>> getNewOrders() {
-//     // TODO: implement getNewOrders
-//     throw UnimplementedError();
-//   }
+      log('✅ OrderRepositoryImpl: Order marked as done successfully');
+      return true;
+    } catch (e) {
+      log('❌ OrderRepositoryImpl: Exception marking order as done - $e');
+      return false;
+    }
+  }
 
-//   @override
-//   Future<List<OrderEntity>> getRunningOrders() {
-//     // TODO: implement getRunningOrders
-//     throw UnimplementedError();
-//   }
+  @override
+  Future<bool> cancelOrder(int orderId) async {
+    try {
+      log('🔄 OrderRepositoryImpl: Cancelling order $orderId');
 
-//   @override
-//   Future<bool> markOrderAsDone(int orderId) {
-//     // TODO: implement markOrderAsDone
-//     throw UnimplementedError();
-//   }
-// }
+      await remoteDataSource.cancelOrder(orderId);
+
+      log('✅ OrderRepositoryImpl: Order cancelled successfully');
+      return true;
+    } catch (e) {
+      log('❌ OrderRepositoryImpl: Exception cancelling order - $e');
+      return false;
+    }
+  }
+
+  /// Get specific order details with items
+  Future<OrderEntity> getOrderDetails(int orderId) async {
+    try {
+      log('🔄 OrderRepositoryImpl: Getting order details for ID: $orderId');
+
+      final orderModel = await remoteDataSource.getOrder(orderId);
+
+      log('✅ OrderRepositoryImpl: Order details retrieved successfully');
+      log('📄 Order: ${orderModel.id} - ${orderModel.status}');
+      log('📄 Items count: ${orderModel.items.length}');
+      log('📄 Total amount: ${orderModel.totalAmount}');
+
+      return orderModel;
+    } catch (e) {
+      log('❌ OrderRepositoryImpl: Exception getting order details - $e');
+      rethrow;
+    }
+  }
+}

@@ -3,10 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/di/service_locator.dart';
+import '../../../../core/utils/cubit_initializer.dart';
 import '../../../../core/entities/main_category.dart';
 import '../../../../core/theme/text_styles.dart';
-import '../../../cart/presentation/bloc/cart_cubit.dart';
-import '../../../cart/presentation/bloc/cart_event.dart';
 import '../cubit/category_items_cubit.dart';
 import '../cubit/category_items_state.dart';
 import '../widgets/food_items_grid_view.dart';
@@ -34,7 +33,8 @@ class _CategoryItemsPageState extends State<CategoryItemsPage> {
           create: (_) =>
               getIt<CategoryItemsCubit>()..loadCategory(widget.categoryId),
         ),
-        BlocProvider(create: (_) => getIt<CartCubit>()..add(LoadCart())),
+        // Use the same CartCubit instance from service locator (singleton)
+        BlocProvider.value(value: CubitInitializer.getCartCubitWithData()),
       ],
       child: Scaffold(
         appBar: AppBar(title: Text(widget.categoryName ?? 'Items')),

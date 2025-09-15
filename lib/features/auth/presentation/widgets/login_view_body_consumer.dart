@@ -28,7 +28,7 @@ class LoginViewBodyConsumer extends StatelessWidget {
           if (userRole == 'admin') {
             Navigator.pushReplacementNamed(context, AppRoutes.admin);
           } else {
-            Navigator.pushReplacementNamed(context, AppRoutes.home);
+            Navigator.pushReplacementNamed(context, AppRoutes.mainLayout);
           }
         } else if (state is AuthFailure) {
           SnackBarService.showErrorMessage(context, state.message);

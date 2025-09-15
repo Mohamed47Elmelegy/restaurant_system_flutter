@@ -127,10 +127,35 @@ class AddressRemoteDataSourceImpl implements AddressRemoteDataSource {
       log('✅ AddressRemoteDataSourceImpl: Default address set successfully');
       log('📄 Response data: ${response.data}');
 
+      // Check if response contains address data
       final addressData = response.data['data'];
-      final address = AddressModel.fromJson(addressData);
+      if (addressData != null && addressData is Map<String, dynamic>) {
+        // API returned the updated address
+        final address = AddressModel.fromJson(addressData);
+        return ApiResponse.success(address);
+      } else {
+        // API only returned success message without address data
+        // This is common for set default operations
+        // Return a minimal address model indicating success
+        log(
+          'ℹ️ AddressRemoteDataSourceImpl: API returned success without address data, creating placeholder',
+        );
 
-      return ApiResponse.success(address);
+        final address = AddressModel(
+          id: addressId,
+          userId: 0, // Will be updated when addresses are reloaded
+          name: 'Updated Address',
+          city: '',
+          phoneNumber: '',
+          address: '',
+          building: null,
+          apartment: null,
+          isDefault: true,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+        return ApiResponse.success(address);
+      }
     } on DioException catch (e) {
       log('❌ AddressRemoteDataSourceImpl: Failed to set default address - $e');
       return ApiResponse.fromDioException(e);

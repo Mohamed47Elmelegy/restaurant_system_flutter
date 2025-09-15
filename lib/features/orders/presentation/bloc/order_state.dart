@@ -12,6 +12,15 @@ class OrderInitial extends OrderState {}
 
 class OrderLoading extends OrderState {}
 
+class AllOrdersLoaded extends OrderState {
+  final List<OrderEntity> orders;
+
+  const AllOrdersLoaded(this.orders);
+
+  @override
+  List<Object?> get props => [orders];
+}
+
 class RunningOrdersLoaded extends OrderState {
   final List<OrderEntity> orders;
 

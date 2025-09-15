@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../../../../core/di/service_locator.dart';
-import '../../../../core/routes/app_routes.dart';
+import '../../../../core/utils/cubit_initializer.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_helper.dart';
@@ -24,8 +23,8 @@ class AddAddressPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => getIt<AddressCubit>(),
+    return BlocProvider.value(
+      value: CubitInitializer.getAddressCubitWithData(),
       child: _AddAddressPageContent(onAddressAdded: onAddressAdded),
     );
   }

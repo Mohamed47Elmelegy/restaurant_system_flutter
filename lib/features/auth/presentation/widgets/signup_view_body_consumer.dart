@@ -23,7 +23,7 @@ class SignupViewBodyConsumer extends StatelessWidget {
             'تم إنشاء حسابك بنجاح',
             title: "مرحبا بك $username",
           );
-          Navigator.pushReplacementNamed(context, AppRoutes.home);
+          Navigator.pushReplacementNamed(context, AppRoutes.mainLayout);
         } else if (state is AuthFailure) {
           SnackBarService.showErrorMessage(context, state.message);
         }

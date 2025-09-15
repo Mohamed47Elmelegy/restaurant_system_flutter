@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/routes/app_routes.dart';
-import '../../../../core/utils/app_bar_helper.dart';
+import '../../../../core/theme/theme_helper.dart';
+import '../../../../core/theme/text_styles.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../../cart/presentation/bloc/cart_cubit.dart';
 import '../../../cart/presentation/bloc/cart_state.dart';
-import 'address_selection_dialog.dart';
 
 class HomeCustomAppBar extends StatelessWidget {
-  final String currentAddress;
-  final Function(String) onAddressChanged;
-
-  const HomeCustomAppBar({
-    super.key,
-    required this.currentAddress,
-    required this.onAddressChanged,
-  });
+  const HomeCustomAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,28 +22,74 @@ class HomeCustomAppBar extends StatelessWidget {
           cartItemCount = cartState.cart.uniqueItemsCount;
         }
 
-        return AppBarHelper.createCustomAppBar(
-          onMenuPressed: () => _handleMenuPressed(context),
-          onAddressPressed: () => _handleAddressPressed(context),
-          onCartPressed: () => _handleCartPressed(context),
-          deliveryAddress: currentAddress,
-          cartItemCount: cartItemCount,
+        return Container(
+          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+          decoration: BoxDecoration(
+            color: ThemeHelper.getSurfaceColor(context),
+          ),
+          child: Row(
+            children: [
+              // App Title
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'مرحباً بك',
+                      style: AppTextStyles.senRegular14(context).copyWith(
+                        color: ThemeHelper.getSecondaryTextColor(context),
+                      ),
+                    ),
+                    Text(
+                      'اختر طعامك المفضل',
+                      style: AppTextStyles.senBold18(context).copyWith(
+                        color: ThemeHelper.getPrimaryTextColor(context),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Cart Icon with Badge
+              Stack(
+                children: [
+                  IconButton(
+                    onPressed: () => _handleCartPressed(context),
+                    icon: Icon(
+                      Icons.shopping_cart_outlined,
+                      color: ThemeHelper.getPrimaryTextColor(context),
+                      size: 24.sp,
+                    ),
+                  ),
+                  if (cartItemCount > 0)
+                    Positioned(
+                      right: 8,
+                      top: 8,
+                      child: Container(
+                        padding: EdgeInsets.all(4.w),
+                        decoration: const BoxDecoration(
+                          color: AppColors.lightPrimary,
+                          shape: BoxShape.circle,
+                        ),
+                        constraints: BoxConstraints(
+                          minWidth: 16.w,
+                          minHeight: 16.h,
+                        ),
+                        child: Text(
+                          cartItemCount.toString(),
+                          style: AppTextStyles.senBold10(
+                            context,
+                          ).copyWith(color: Colors.white),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ],
+          ),
         );
       },
-    );
-  }
-
-  void _handleMenuPressed(BuildContext context) {
-    Scaffold.of(context).openDrawer();
-  }
-
-  void _handleAddressPressed(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AddressSelectionDialog(
-        currentAddress: currentAddress,
-        onAddressSelected: onAddressChanged,
-      ),
     );
   }
 

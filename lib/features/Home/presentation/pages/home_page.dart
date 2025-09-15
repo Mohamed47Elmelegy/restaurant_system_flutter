@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:restaurant_system_flutter/features/address/presentation/cubit/address_cubit.dart';
-import 'package:restaurant_system_flutter/features/address/presentation/cubit/address_event.dart';
 import '../../../../core/di/service_locator.dart';
 import '../../../../core/theme/theme_helper.dart';
-import '../../../cart/presentation/bloc/cart_cubit.dart';
-import '../../../cart/presentation/bloc/cart_event.dart';
+import '../../../../core/utils/cubit_initializer.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
 import '../widgets/home_view_body_consumer.dart';
@@ -20,10 +17,8 @@ class HomePage extends StatelessWidget {
         BlocProvider(
           create: (context) => getIt<HomeBloc>()..add(const LoadHomeData()),
         ),
-        BlocProvider(create: (context) => getIt<CartCubit>()..add(LoadCart())),
-        BlocProvider(
-          create: (context) => getIt<AddressCubit>()..add(LoadAddresses()),
-        ),
+        // Use the same CartCubit instance from service locator (singleton)
+        BlocProvider.value(value: CubitInitializer.getCartCubitWithData()),
       ],
       child: SafeArea(
         child: Scaffold(

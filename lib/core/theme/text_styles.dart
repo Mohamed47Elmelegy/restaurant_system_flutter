@@ -142,4 +142,64 @@ class AppTextStyles {
   static TextStyle senBold52(BuildContext context) {
     return senExtraBold30(context).copyWith(fontSize: 52);
   }
+
+  static TextStyle senBold10(BuildContext context) {
+    return TextStyle(
+      fontFamily: 'Sen',
+      fontWeight: FontWeight.w700,
+      fontSize: 10,
+      height: 1.2,
+      color: Theme.of(context).textTheme.bodyMedium?.color,
+    );
+  }
+
+  static TextStyle senRegular12(BuildContext context) {
+    return TextStyle(
+      fontFamily: 'Sen',
+      fontWeight: FontWeight.w400,
+      fontSize: 12,
+      height: 1.2,
+      color: Theme.of(context).textTheme.bodyMedium?.color,
+    );
+  }
+
+  static TextStyle senMedium12(BuildContext context) {
+    return TextStyle(
+      fontFamily: 'Sen',
+      fontWeight: FontWeight.w500,
+      fontSize: 12,
+      height: 1.2,
+      color: Theme.of(context).textTheme.bodyMedium?.color,
+    );
+  }
+
+  static TextStyle senMedium14(BuildContext context) {
+    return TextStyle(
+      fontFamily: 'Sen',
+      fontWeight: FontWeight.w500,
+      fontSize: 14,
+      height: 1.2,
+      color: Theme.of(context).textTheme.bodyMedium?.color,
+    );
+  }
+
+  static TextStyle senMedium16(BuildContext context) {
+    return TextStyle(
+      fontFamily: 'Sen',
+      fontWeight: FontWeight.w500,
+      fontSize: 16,
+      height: 1.2,
+      color: Theme.of(context).textTheme.bodyMedium?.color,
+    );
+  }
+
+  static TextStyle senRegular10(BuildContext context) {
+    return TextStyle(
+      fontFamily: 'Sen',
+      fontWeight: FontWeight.w400,
+      fontSize: 10,
+      height: 1.2,
+      color: Theme.of(context).textTheme.bodyMedium?.color,
+    );
+  }
 }

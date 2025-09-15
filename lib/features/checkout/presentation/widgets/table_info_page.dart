@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/routes/app_routes.dart';
 import '../../../cart/domain/entities/cart_entity.dart';
-import '../../../orders/domain/entities/order_entity.dart';
 import '../../../orders/domain/entities/table_entity.dart';
 import '../../../orders/presentation/cubit/table_cubit.dart';
 
@@ -34,12 +33,7 @@ class TableInfoPage extends StatelessWidget {
                 Navigator.pushReplacementNamed(
                   context,
                   AppRoutes.checkout,
-                  arguments: {
-                    'cart': cart,
-                    'orderType': OrderType.dineIn,
-                    'tableId': tableId,
-                    'table': table,
-                  },
+                  arguments: {'cart': cart},
                 );
               }
             }

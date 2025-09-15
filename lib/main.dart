@@ -13,6 +13,8 @@ import 'core/routes/app_routes.dart';
 import 'core/services/app_bloc_observer.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_provider.dart';
+import 'features/cart/presentation/bloc/cart_cubit.dart';
+import 'features/cart/presentation/bloc/cart_event.dart';
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -24,6 +26,11 @@ void main() async {
 
   Bloc.observer = AppBlocObserver();
   await setup();
+
+  // Initialize CartCubit to load data once at app startup
+  // Note: AddressCubit will be initialized when first accessed
+  getIt<CartCubit>().add(LoadCart());
+
   runApp(const MyApp());
 }
 

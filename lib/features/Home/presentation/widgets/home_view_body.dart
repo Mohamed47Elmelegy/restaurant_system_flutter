@@ -14,21 +14,12 @@ class HomeViewBody extends StatefulWidget {
 }
 
 class _HomeViewBodyState extends State<HomeViewBody> {
-  String currentAddress = 'Halal Lab office';
-
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         // Custom App Bar
-        HomeCustomAppBar(
-          currentAddress: currentAddress,
-          onAddressChanged: (newAddress) {
-            setState(() {
-              currentAddress = newAddress;
-            });
-          },
-        ),
+        const HomeCustomAppBar(),
 
         // Page Content
         Expanded(

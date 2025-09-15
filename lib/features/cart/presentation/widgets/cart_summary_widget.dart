@@ -231,26 +231,10 @@ class CartSummaryWidget extends StatelessWidget {
   }
 
   void _handlePlaceOrder(BuildContext context) async {
-    final orderType = await showModalBottomSheet<OrderType>(
-      context: context,
-      builder: (context) => _OrderTypeBottomSheet(),
-    );
-
-    if (orderType == null) return;
-
-    if (!context.mounted) return;
-
-    if (orderType == OrderType.delivery) {
-      Navigator.of(context).pushNamed(
-        AppRoutes.checkout,
-        arguments: {'cart': cart, 'orderType': OrderType.delivery},
-      );
-    } else if (orderType == OrderType.dineIn) {
-      Navigator.of(context).pushNamed(
-        AppRoutes.qrScanner,
-        arguments: {'cart': cart, 'orderType': OrderType.dineIn},
-      );
-    }
+    // Navigate directly to modern checkout - it will handle order type selection
+    Navigator.of(
+      context,
+    ).pushNamed(AppRoutes.checkout, arguments: {'cart': cart});
   }
 }
 
@@ -266,26 +250,4 @@ String? extractTableId(String qr) {
     return qr;
   }
   return null;
-}
-
-class _OrderTypeBottomSheet extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Wrap(
-        children: [
-          ListTile(
-            leading: const Icon(Icons.delivery_dining),
-            title: const Text('Delivery'),
-            onTap: () => Navigator.of(context).pop(OrderType.delivery),
-          ),
-          ListTile(
-            leading: const Icon(Icons.qr_code_scanner),
-            title: const Text('Dine In'),
-            onTap: () => Navigator.of(context).pop(OrderType.dineIn),
-          ),
-        ],
-      ),
-    );
-  }
 }

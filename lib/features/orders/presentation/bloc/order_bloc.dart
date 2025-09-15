@@ -1,25 +1,42 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/usecases/cancel_order_usecase.dart';
+import '../../domain/usecases/get_all_orders_usecase.dart';
 import '../../domain/usecases/get_running_orders_usecase.dart';
 import '../../domain/usecases/mark_order_done_usecase.dart';
 import 'order_event.dart';
 import 'order_state.dart';
 
 class OrderBloc extends Bloc<OrderEvent, OrderState> {
+  final GetAllOrdersUseCase getAllOrdersUseCase;
   final GetRunningOrdersUseCase getRunningOrdersUseCase;
   final MarkOrderDoneUseCase markOrderDoneUseCase;
   final CancelOrderUseCase cancelOrderUseCase;
 
   OrderBloc({
+    required this.getAllOrdersUseCase,
     required this.getRunningOrdersUseCase,
     required this.markOrderDoneUseCase,
     required this.cancelOrderUseCase,
   }) : super(OrderInitial()) {
+    on<LoadAllOrders>(_onLoadAllOrders);
     on<LoadRunningOrders>(_onLoadRunningOrders);
     on<LoadNewOrders>(_onLoadNewOrders);
     on<MarkOrderAsDone>(_onMarkOrderAsDone);
     on<CancelOrder>(_onCancelOrder);
+  }
+
+  Future<void> _onLoadAllOrders(
+    LoadAllOrders event,
+    Emitter<OrderState> emit,
+  ) async {
+    emit(OrderLoading());
+    try {
+      final orders = await getAllOrdersUseCase();
+      emit(AllOrdersLoaded(orders));
+    } catch (e) {
+      emit(OrderError(e.toString()));
+    }
   }
 
   Future<void> _onLoadRunningOrders(

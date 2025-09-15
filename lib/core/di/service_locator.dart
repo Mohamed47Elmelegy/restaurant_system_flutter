@@ -80,15 +80,19 @@ import '../../features/checkout/data/datasources/check_out_remote_data_source.da
 import '../../features/checkout/data/repositories/check_out_repository_impl.dart';
 import '../../features/checkout/domain/repositories/check_out_repository.dart';
 import '../../features/checkout/domain/usecases/check_out_place_order_usecase.dart';
-import '../../features/checkout/presentation/cubit/check_out_cubit.dart';
+import '../../features/checkout/domain/usecases/initialize_checkout_usecase.dart';
+import '../../features/checkout/domain/usecases/navigate_checkout_usecase.dart';
+import '../../features/checkout/domain/usecases/update_checkout_step_usecase.dart';
 import '../../features/orders/data/datasources/order_remote_data_source.dart';
 import '../../features/orders/data/datasources/order_remote_data_source_implementation.dart';
 import '../../features/orders/data/datasources/table_remote_data_source_impl.dart';
 import '../../features/orders/data/datasources/table_remote_datasource.dart';
+import '../../features/orders/data/repositories/order_repository_impl.dart';
 import '../../features/orders/data/repositories/table_repository_impl.dart';
 import '../../features/orders/domain/repositories/order_repository.dart';
 import '../../features/orders/domain/repositories/table_repository.dart';
 import '../../features/orders/domain/usecases/cancel_order_usecase.dart';
+import '../../features/orders/domain/usecases/get_all_orders_usecase.dart';
 import '../../features/orders/domain/usecases/get_running_orders_usecase.dart';
 import '../../features/orders/domain/usecases/mark_order_done_usecase.dart';
 import '../../features/orders/domain/usecases/place_order_usecase.dart';
@@ -149,7 +153,9 @@ Future<void> setup() async {
   getIt.registerLazySingleton<HomeRepository>(
     () => HomeRepositoryImpl(getIt<HomeDataSource>()),
   );
-  // getIt.registerLazySingleton<OrderRepository>(() => OrderRepositoryImpl());
+  getIt.registerLazySingleton<OrderRepository>(
+    () => OrderRepositoryImpl(remoteDataSource: getIt<OrderRemoteDataSource>()),
+  );
   getIt.registerLazySingleton<MealTimeRepository>(
     () => MealTimeRepositoryImpl(
       remoteDataSource: getIt<MealTimeRemoteDataSource>(),
@@ -208,6 +214,9 @@ Future<void> setup() async {
     () => GetRecommendedItemsUseCase(getIt<HomeRepository>()),
   );
 
+  getIt.registerLazySingleton<GetAllOrdersUseCase>(
+    () => GetAllOrdersUseCase(getIt<OrderRepository>()),
+  );
   getIt.registerLazySingleton<GetRunningOrdersUseCase>(
     () => GetRunningOrdersUseCase(getIt<OrderRepository>()),
   );
@@ -299,6 +308,7 @@ Future<void> setup() async {
   );
   getIt.registerFactory<OrderBloc>(
     () => OrderBloc(
+      getAllOrdersUseCase: getIt<GetAllOrdersUseCase>(),
       getRunningOrdersUseCase: getIt<GetRunningOrdersUseCase>(),
       markOrderDoneUseCase: getIt<MarkOrderDoneUseCase>(),
       cancelOrderUseCase: getIt<CancelOrderUseCase>(),
@@ -336,8 +346,8 @@ Future<void> setup() async {
     ),
   );
 
-  // Cart cubit
-  getIt.registerFactory<CartCubit>(
+  // Cart cubit - Singleton to maintain cart state across pages
+  getIt.registerLazySingleton<CartCubit>(
     () => CartCubit(
       getCartUseCase: getIt<GetCartUseCase>(),
       addToCartUseCase: getIt<AddToCartUseCase>(),
@@ -378,8 +388,8 @@ Future<void> setup() async {
     () => SetDefaultAddressUseCase(repository: getIt<AddressRepository>()),
   );
 
-  // Address cubit
-  getIt.registerFactory<AddressCubit>(
+  // Address cubit - Singleton to maintain address state across pages
+  getIt.registerLazySingleton<AddressCubit>(
     () => AddressCubit(
       getAddressesUseCase: getIt<GetAddressesUseCase>(),
       addAddressUseCase: getIt<AddAddressUseCase>(),
@@ -399,8 +409,16 @@ Future<void> setup() async {
   getIt.registerLazySingleton<CheckOutPlaceOrderUseCase>(
     () => CheckOutPlaceOrderUseCase(getIt<CheckOutRepository>()),
   );
-  getIt.registerFactory<CheckOutCubit>(
-    () => CheckOutCubit(getIt<CheckOutPlaceOrderUseCase>()),
+
+  // Modern checkout use cases
+  getIt.registerLazySingleton<InitializeCheckoutUseCase>(
+    () => InitializeCheckoutUseCase(),
+  );
+  getIt.registerLazySingleton<UpdateCheckoutStepUseCase>(
+    () => UpdateCheckoutStepUseCase(),
+  );
+  getIt.registerLazySingleton<NavigateCheckoutUseCase>(
+    () => NavigateCheckoutUseCase(),
   );
 
   // ==================== ORDERS FEATURE ====================
