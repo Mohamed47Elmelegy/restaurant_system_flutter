@@ -228,7 +228,7 @@ class ProductEntity extends BaseEntity {
 
   /// Get formatted price with currency
   String getFormattedPrice() {
-    return '${price.toStringAsFixed(2)} ر.س';
+    return '${price.toStringAsFixed(2)} EGP';
   }
 
   /// Get preparation time text

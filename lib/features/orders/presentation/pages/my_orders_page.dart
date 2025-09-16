@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/theme/theme_helper.dart';
-import '../../../../core/theme/text_styles.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/constants/dialog_constants.dart';
+import '../../../../core/constants/empty_page.dart';
 import '../../../../core/di/service_locator.dart';
+import '../../../../core/routes/app_routes.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/text_styles.dart';
+import '../../../../core/theme/theme_helper.dart';
 import '../../domain/entities/order_entity.dart';
 import '../bloc/order_bloc.dart';
 import '../bloc/order_event.dart';
@@ -55,31 +58,11 @@ class MyOrdersPage extends StatelessWidget {
   }
 
   Widget _buildEmptyState(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.receipt_long_outlined,
-            size: 80.sp,
-            color: ThemeHelper.getSecondaryTextColor(context),
-          ),
-          SizedBox(height: 16.h),
-          Text(
-            'لا توجد طلبات حتى الآن',
-            style: AppTextStyles.senBold16(
-              context,
-            ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            'ابدأ بطلب طعامك المفضل',
-            style: AppTextStyles.senRegular14(
-              context,
-            ).copyWith(color: ThemeHelper.getSecondaryTextColor(context)),
-          ),
-        ],
-      ),
+    return EmptyPagePresets.noOrders(
+      context,
+      onAction: () {
+        Navigator.pushNamed(context, AppRoutes.mainLayout);
+      },
     );
   }
 
@@ -267,28 +250,18 @@ class MyOrdersPage extends StatelessWidget {
   }
 
   Widget _buildErrorState(BuildContext context, String message) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.error_outline, size: 80.sp, color: Colors.red),
-          SizedBox(height: 16.h),
-          Text(
-            'حدث خطأ',
-            style: AppTextStyles.senBold16(
-              context,
-            ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            message,
-            style: AppTextStyles.senRegular14(
-              context,
-            ).copyWith(color: ThemeHelper.getSecondaryTextColor(context)),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
+    // استخدام EmptyPageWidget للأخطاء مع إعادة المحاولة
+    return EmptyPageWidget(
+      icon: Icons.error_outline,
+      title: 'حدث خطأ!',
+      subtitle: message,
+      iconColor: AppColors.error,
+      titleColor: AppColors.error,
+      actionButtonText: 'إعادة المحاولة',
+      actionButtonColor: AppColors.error,
+      onActionButtonPressed: () {
+        context.read<OrderBloc>().add(const LoadAllOrders());
+      },
     );
   }
 
@@ -316,18 +289,11 @@ class MyOrdersPage extends StatelessWidget {
         ? 'يمكنك إضافة المزيد من المنتجات لطلبك قبل الدفع النهائي.\nميزة إضافة المنتجات قيد التطوير...'
         : 'يمكنك تعديل طلب التوصيل قبل خروجه للتوصيل.\nميزة تعديل الطلب قيد التطوير...';
 
-    showDialog(
+    DialogConstants.showPlatformAlert(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(title),
-        content: Text(content),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('حسناً'),
-          ),
-        ],
-      ),
+      title: title,
+      content: content,
+      primaryButtonText: 'حسناً',
     );
   }
 }

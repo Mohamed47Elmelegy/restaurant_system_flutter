@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../core/utils/cubit_initializer.dart';
+import '../../../../core/constants/dialog_constants.dart';
+import '../../../../core/constants/empty_page.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_helper.dart';
+import '../../../../core/utils/cubit_initializer.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../domain/entitiy/address_entity.dart';
 import '../cubit/address_cubit.dart';
@@ -88,13 +90,13 @@ class _AddressPageContent extends StatelessWidget {
                     ),
                   );
                 } else if (state is AddressEmpty) {
-                  return _buildEmptyState(context);
+                  return EmptyPagePresets.noAddresses(context);
                 } else if (state is AddressLoaded) {
                   return _buildAddressesList(context, state.addresses);
                 } else if (state is AddressError) {
                   return _buildErrorState(context, state.message);
                 }
-                return _buildEmptyState(context);
+                return EmptyPagePresets.noAddresses(context);
               },
             ),
           ),
@@ -119,36 +121,7 @@ class _AddressPageContent extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.location_off,
-            size: 80.w,
-            color: ThemeHelper.getSecondaryTextColor(context),
-          ),
-          SizedBox(height: 16.h),
-          Text(
-            'No Saved Addresses',
-            style: AppTextStyles.senBold18(
-              context,
-            ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            'Add your first address to make delivery easier',
-            style: AppTextStyles.senRegular14(
-              context,
-            ).copyWith(color: ThemeHelper.getSecondaryTextColor(context)),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
-
+ 
   Widget _buildErrorState(BuildContext context, String message) {
     return Center(
       child: Column(
@@ -208,7 +181,14 @@ class _AddressPageContent extends StatelessWidget {
             );
           },
           onDelete: () {
-            _showDeleteConfirmation(context, address);
+            DialogConstants.showPlatformConfirmation(
+              context: context,
+              title: 'Delete Address',
+              content: 'Are you sure you want to delete this address?',
+              confirmText: 'Delete',
+              cancelText: 'Cancel',
+              isDestructive: true,
+            );
           },
           onSetDefault: address.isDefault
               ? null
@@ -219,50 +199,6 @@ class _AddressPageContent extends StatelessWidget {
                 },
         );
       },
-    );
-  }
-
-  void _showDeleteConfirmation(BuildContext context, AddressEntity address) {
-    showDialog(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        backgroundColor: ThemeHelper.getCardBackgroundColor(context),
-        title: Text(
-          'Delete Address',
-          style: AppTextStyles.senBold18(
-            context,
-          ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
-        ),
-        content: Text(
-          'Are you sure you want to delete this address?',
-          style: AppTextStyles.senRegular14(
-            context,
-          ).copyWith(color: ThemeHelper.getSecondaryTextColor(context)),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: Text(
-              'Cancel',
-              style: TextStyle(
-                color: ThemeHelper.getSecondaryTextColor(context),
-              ),
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(dialogContext);
-              context.read<AddressCubit>().add(
-                DeleteAddress(addressId: address.id),
-              );
-            },
-            child: const Text(
-              'Delete',
-              style: TextStyle(color: AppColors.error),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

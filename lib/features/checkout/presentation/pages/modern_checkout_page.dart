@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../../../core/di/service_locator.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../../../../core/theme/app_colors.dart';
@@ -33,9 +32,9 @@ import '../widgets/steps/table_selection_step.dart';
 
 /// 🟦 ModernCheckoutPage - Modern step-based checkout
 class ModernCheckoutPage extends StatelessWidget {
-  final CartEntity cart;
-
   const ModernCheckoutPage({super.key, required this.cart});
+
+  final CartEntity cart;
 
   @override
   Widget build(BuildContext context) {
@@ -64,55 +63,6 @@ class ModernCheckoutPage extends StatelessWidget {
 
 class _ModernCheckoutView extends StatelessWidget {
   const _ModernCheckoutView();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ThemeHelper.getBackgroundColor(context),
-      appBar: _buildAppBar(context),
-      body: BlocConsumer<CheckoutProcessBloc, CheckoutProcessState>(
-        listener: (context, state) {
-          if (state is CheckoutCompleted) {
-            _showOrderSuccessDialog(
-              context,
-              state.order,
-              context.read<CartCubit>(),
-            );
-          } else if (state is CheckoutProcessError) {
-            _showErrorSnackBar(context, state.message);
-          }
-        },
-        builder: (context, state) {
-          if (state is CheckoutProcessLoading) {
-            return _buildLoadingState(context, state.message);
-          }
-
-          if (state is CheckoutProcessActive ||
-              state is CheckoutStepUpdated ||
-              state is CheckoutNavigationCompleted) {
-            final process = state is CheckoutProcessActive
-                ? state.process
-                : state is CheckoutStepUpdated
-                ? state.process
-                : (state as CheckoutNavigationCompleted).process;
-
-            return Column(
-              children: [
-                CheckoutProgressIndicator(process: process),
-                Expanded(child: _buildCurrentStep(context, process)),
-              ],
-            );
-          }
-
-          if (state is CheckoutProcessError) {
-            return _buildErrorState(context, state.message);
-          }
-
-          return _buildInitialState(context);
-        },
-      ),
-    );
-  }
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
@@ -253,7 +203,8 @@ class _ModernCheckoutView extends StatelessWidget {
             );
           },
           onDineInSelected: () {
-            // For dine-in orders, navigate directly to QR scanner
+            // Navigate to QR scanner directly without duplicate update
+            // (orderType is already updated by onOrderTypeSelected)
             _navigateToQRScanner(context);
           },
         );
@@ -430,7 +381,7 @@ class _ModernCheckoutView extends StatelessWidget {
               // Navigate to home and clear stack
               Navigator.of(
                 context,
-              ).pushNamedAndRemoveUntil(AppRoutes.home, (route) => false);
+              ).pushNamedAndRemoveUntil(AppRoutes.mainLayout, (route) => false);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.lightPrimary,
@@ -483,7 +434,7 @@ class _ModernCheckoutView extends StatelessWidget {
   }
 
   /// Navigate to QR scanner for dine-in orders
-  void _navigateToQRScanner(BuildContext context) {
+  void _navigateToQRScanner(context) {
     final process = _getProcessFromState(context);
     Navigator.of(context)
         .pushNamed(
@@ -494,6 +445,7 @@ class _ModernCheckoutView extends StatelessWidget {
           if (result != null && result is Map<String, dynamic>) {
             final qrCode = result['qrCode'] as String?;
             final tableId = result['tableId'] as int?;
+
             if (qrCode != null) {
               // Update checkout step with QR code and table info
               context.read<CheckoutProcessBloc>().add(
@@ -502,12 +454,66 @@ class _ModernCheckoutView extends StatelessWidget {
                   stepData: {'qrCode': qrCode, 'tableId': tableId},
                 ),
               );
+
               // Navigate to next step (order review) after QR scanning
               context.read<CheckoutProcessBloc>().add(
                 const NavigateToNextStep(),
               );
             }
+          } else {
+            // إذا لم يتم مسح QR code أو تم إلغاؤه، ببساطة لا نفعل شيء
+            // المستخدم سيبقى في نفس الخطوة الحالية
+            print('QR scanning cancelled or failed');
           }
         });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: ThemeHelper.getBackgroundColor(context),
+      appBar: _buildAppBar(context),
+      body: BlocConsumer<CheckoutProcessBloc, CheckoutProcessState>(
+        listener: (context, state) {
+          if (state is CheckoutCompleted) {
+            _showOrderSuccessDialog(
+              context,
+              state.order,
+              context.read<CartCubit>(),
+            );
+          } else if (state is CheckoutProcessError) {
+            _showErrorSnackBar(context, state.message);
+          }
+        },
+        builder: (context, state) {
+          if (state is CheckoutProcessLoading) {
+            return _buildLoadingState(context, state.message);
+          }
+
+          if (state is CheckoutProcessActive ||
+              state is CheckoutStepUpdated ||
+              state is CheckoutNavigationCompleted) {
+            final process = state is CheckoutProcessActive
+                ? state.process
+                : state is CheckoutStepUpdated
+                ? state.process
+                : (state as CheckoutNavigationCompleted).process;
+
+            return Column(
+              children: [
+                CheckoutProgressIndicator(process: process),
+                Expanded(child: _buildCurrentStep(context, process)),
+              ],
+            );
+          }
+
+          if (state is CheckoutProcessError) {
+            return _buildErrorState(context, state.message);
+          }
+
+          return _buildInitialState(context);
+        },
+      ),
+    );
   }
 }

@@ -116,7 +116,7 @@ class _TableSelectionStepState extends State<TableSelectionStep> {
           children: [
             Container(
               padding: EdgeInsets.all(16.w),
-              decoration: BoxDecoration(
+              decoration:const  BoxDecoration(
                 color: AppColors.lightPrimary,
                 shape: BoxShape.circle,
               ),

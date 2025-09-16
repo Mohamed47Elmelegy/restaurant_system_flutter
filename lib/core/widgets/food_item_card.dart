@@ -113,7 +113,7 @@ class FoodItemCard extends StatelessWidget {
                           // Price
                           Flexible(
                             child: Text(
-                              '\$${foodItem.price.toStringAsFixed(0)}',
+                              foodItem.getFormattedPrice(),
                               style: AppTextStyles.senBold14(context).copyWith(
                                 fontSize: 16.sp,
                                 color: ThemeHelper.getPrimaryTextColor(context),

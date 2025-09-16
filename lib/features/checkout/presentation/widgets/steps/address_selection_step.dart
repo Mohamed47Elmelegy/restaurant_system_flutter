@@ -330,7 +330,7 @@ class _AddressSelectionStepState extends State<AddressSelectionStep> {
     );
   }
 
-  void _navigateToAddAddress(BuildContext context) {
+  void _navigateToAddAddress(context) {
     Navigator.of(context).pushNamed(AppRoutes.addAddress).then((_) {
       // Reload addresses after returning from add address page
       context.read<AddressCubit>().add(LoadAddresses());

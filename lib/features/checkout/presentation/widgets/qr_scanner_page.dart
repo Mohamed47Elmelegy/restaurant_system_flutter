@@ -2,9 +2,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
-import '../../../../core/routes/app_routes.dart';
 import '../../../cart/domain/entities/cart_entity.dart';
-import '../../../orders/domain/entities/order_entity.dart';
 
 class QrScannerPage extends StatefulWidget {
   final CartEntity cart;
@@ -48,25 +46,40 @@ class _QrScannerPageState extends State<QrScannerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Scan Table QR')),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            flex: 5,
-            child: QRView(key: qrKey, onQRViewCreated: _onQRViewCreated),
+    return WillPopScope(
+      onWillPop: () async {
+        controller?.dispose(); // تنظيف الكاميرا قبل الرجوع
+        return true; // السماح بالرجوع
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Scan Table QR'),
+          leading: IconButton(
+            onPressed: () {
+              controller?.dispose(); // تنظيف الكاميرا قبل الرجوع
+              Navigator.of(context).pop(null); // إرجاع null بوضوح
+            },
+            icon: const Icon(Icons.arrow_back),
           ),
-          Expanded(
-            flex: 1,
-            child: Center(
-              child: (result != null)
-                  ? Text(
-                      'Barcode Type:  [32m${describeEnum(result!.format)}   Data: ${result!.code}',
-                    )
-                  : const Text('Scan a code'),
+        ),
+        body: Column(
+          children: <Widget>[
+            Expanded(
+              flex: 5,
+              child: QRView(key: qrKey, onQRViewCreated: _onQRViewCreated),
             ),
-          ),
-        ],
+            Expanded(
+              flex: 1,
+              child: Center(
+                child: (result != null)
+                    ? Text(
+                        'Barcode Type:  [32m${describeEnum(result!.format)}   Data: ${result!.code}',
+                      )
+                    : const Text('Scan a code'),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -80,16 +93,17 @@ class _QrScannerPageState extends State<QrScannerPage> {
         });
         final qrString = scanData.code ?? '';
         controller.pauseCamera();
-        // أرسل qrString مباشرة بدلاً من استخراج tableId
+
         if (qrString.isNotEmpty) {
-          Navigator.of(context).pushReplacementNamed(
-            AppRoutes.checkout,
-            arguments: {
-              'cart': widget.cart,
-              'orderType': OrderType.dineIn,
-              'qrCode': qrString,
-            },
-          );
+          // استخراج tableId من QR code إذا كان موجوداً
+          final tableIdString = extractTableId(qrString);
+          int? tableId;
+          if (tableIdString != null) {
+            tableId = int.tryParse(tableIdString);
+          }
+
+          // إرجاع النتيجة إلى الصفحة التي استدعت QR scanner
+          Navigator.of(context).pop({'qrCode': qrString, 'tableId': tableId});
         } else {
           ScaffoldMessenger.of(
             context,
