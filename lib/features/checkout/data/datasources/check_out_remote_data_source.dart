@@ -28,7 +28,9 @@ class CheckOutRemoteDataSourceImpl implements CheckOutRemoteDataSource {
   ) async {
     try {
       final data = request.toJson();
-      data['items'] = items.map((e) => e.toJson()).toList();
+      // Don't send items - Backend will get them from cart
+      // data['items'] = items.map((e) => e.toJson()).toList();
+      
       // Logging
       log(
         DebugConsoleMessages.info('🔄 CheckOutRemoteDataSource: Placing order'),

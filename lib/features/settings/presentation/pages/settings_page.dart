@@ -259,7 +259,7 @@ class SettingsPage extends StatelessWidget {
     return Container(
       padding: Constants.mediumPadding,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
           colors: [AppColors.lightPrimary, AppColors.lightSecondary],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,

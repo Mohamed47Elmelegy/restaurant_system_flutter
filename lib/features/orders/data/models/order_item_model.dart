@@ -22,8 +22,13 @@ class OrderItemModel extends OrderItemEntity {
     return OrderItemModel(
       id: json['id'] as int? ?? 0,
       orderId: json['order_id'] as int? ?? 0,
-      menuItemId: json['menu_item_id'] as int? ?? 0,
-      name: json['name']?.toString() ?? '',
+      // Handle both menu_item_id (frontend) and product_id (backend)
+      menuItemId: (json['menu_item_id'] as int?) ?? 
+                  (json['product_id'] as int?) ?? 0,
+      // Handle both name (frontend) and product_name_ar (backend)
+      name: json['name']?.toString() ?? 
+            json['product_name_ar']?.toString() ?? 
+            json['product_name']?.toString() ?? '',
       description: json['description']?.toString() ?? '',
       image: json['image']?.toString() ?? '',
       unitPrice: double.parse(json['unit_price'].toString()),

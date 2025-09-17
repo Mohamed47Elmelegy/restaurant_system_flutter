@@ -137,7 +137,7 @@ class OrderReceiptTab extends StatelessWidget {
                   item.unitPrice,
                 ),
               )
-              .toList(),
+              ,
         SizedBox(height: 12.h),
         Container(
           height: 1.h,

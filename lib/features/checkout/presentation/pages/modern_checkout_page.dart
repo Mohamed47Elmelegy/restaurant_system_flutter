@@ -203,9 +203,10 @@ class _ModernCheckoutView extends StatelessWidget {
             );
           },
           onDineInSelected: () {
-            // Navigate to QR scanner directly without duplicate update
-            // (orderType is already updated by onOrderTypeSelected)
-            _navigateToQRScanner(context);
+            // Move to table selection step instead of going directly to QR
+            context.read<CheckoutProcessBloc>().add(
+              const NavigateToNextStep(),
+            );
           },
         );
 
@@ -433,40 +434,6 @@ class _ModernCheckoutView extends StatelessWidget {
     throw Exception('Cart not found in checkout process');
   }
 
-  /// Navigate to QR scanner for dine-in orders
-  void _navigateToQRScanner(context) {
-    final process = _getProcessFromState(context);
-    Navigator.of(context)
-        .pushNamed(
-          AppRoutes.qrScanner,
-          arguments: {'cart': process?.cart ?? _getCurrentCart(context)},
-        )
-        .then((result) {
-          if (result != null && result is Map<String, dynamic>) {
-            final qrCode = result['qrCode'] as String?;
-            final tableId = result['tableId'] as int?;
-
-            if (qrCode != null) {
-              // Update checkout step with QR code and table info
-              context.read<CheckoutProcessBloc>().add(
-                UpdateCheckoutStep(
-                  stepType: CheckoutStepType.tableSelection,
-                  stepData: {'qrCode': qrCode, 'tableId': tableId},
-                ),
-              );
-
-              // Navigate to next step (order review) after QR scanning
-              context.read<CheckoutProcessBloc>().add(
-                const NavigateToNextStep(),
-              );
-            }
-          } else {
-            // إذا لم يتم مسح QR code أو تم إلغاؤه، ببساطة لا نفعل شيء
-            // المستخدم سيبقى في نفس الخطوة الحالية
-            print('QR scanning cancelled or failed');
-          }
-        });
-  }
 
   @override
   Widget build(BuildContext context) {

@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/di/service_locator.dart';
-import '../../../../core/utils/cubit_initializer.dart';
 import '../../../../core/entities/main_category.dart';
 import '../../../../core/theme/text_styles.dart';
+import '../../../../core/utils/cubit_initializer.dart';
 import '../cubit/category_items_cubit.dart';
 import '../cubit/category_items_state.dart';
 import '../widgets/food_items_grid_view.dart';

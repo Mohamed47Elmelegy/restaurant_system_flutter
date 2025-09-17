@@ -8,6 +8,8 @@ import '../../../../../core/theme/text_styles.dart';
 import '../../../../../core/theme/theme_helper.dart';
 import '../../../../cart/domain/entities/cart_entity.dart';
 import '../../../../orders/presentation/cubit/table_cubit.dart';
+import '../../bloc/checkout_process_bloc.dart';
+import '../../bloc/checkout_process_event.dart';
 
 /// 🟦 TableSelectionStep - Table selection step for dine-in orders
 class TableSelectionStep extends StatefulWidget {
@@ -41,36 +43,12 @@ class _TableSelectionStepState extends State<TableSelectionStep> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'اختر الطاولة',
-          style: AppTextStyles.senBold18(
-            context,
-          ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
-        ),
-        SizedBox(height: 8.h),
-        Text(
-          'امسح QR الموجود على الطاولة أو أدخل رقم الطاولة يدوياً',
-          style: AppTextStyles.senRegular14(
-            context,
-          ).copyWith(color: ThemeHelper.getSecondaryTextColor(context)),
-        ),
-        SizedBox(height: 24.h),
-        Expanded(
-          child: _selectedTableId != null
-              ? _buildSelectedTableInfo()
-              : _buildTableSelectionOptions(),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSelectedTableInfo() {
     return BlocListener<TableCubit, TableState>(
       listener: (context, state) {
         if (state is TableLoaded) {
+          // Hide any loading snackbars
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
           // Update the selected table information
           setState(() {
             _selectedTableId = state.table.id;
@@ -79,107 +57,174 @@ class _TableSelectionStepState extends State<TableSelectionStep> {
             'tableId': state.table.id,
             'qrCode': _qrCode,
           });
+
+          // Show success message
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Row(
+                children: [
+                  Icon(Icons.check_circle, color: Colors.white, size: 20),
+                  SizedBox(width: 12),
+                  Text('تم تحديد الطاولة بنجاح!'),
+                ],
+              ),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 2),
+            ),
+          );
+
+          // Automatically proceed to next step after successful table selection
+          Future.delayed(const Duration(seconds: 1), () {
+            if (mounted) {
+              context.read<CheckoutProcessBloc>().add(
+                const NavigateToNextStep(),
+              );
+            }
+          });
         } else if (state is TableError) {
+          // Hide loading snackbars
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
           // Show error and reset selection
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.message),
+              content: Row(
+                children: [
+                  Icon(Icons.error_outline, color: Colors.white, size: 20),
+                  SizedBox(width: 12),
+                  Expanded(child: Text(state.message)),
+                ],
+              ),
               backgroundColor: Colors.red,
+              action: SnackBarAction(
+                label: 'إعادة المحاولة',
+                textColor: Colors.white,
+                onPressed: _navigateToQRScanner,
+              ),
+              duration: Duration(seconds: 4),
             ),
           );
           setState(() {
             _selectedTableId = null;
             _qrCode = null;
           });
+        } else if (state is TableLoading) {
+          // Show loading state in UI if needed
         }
       },
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(20.w),
-        decoration: BoxDecoration(
-          color: ThemeHelper.getCardBackgroundColor(context),
-          borderRadius: BorderRadius.circular(12.r),
-          border: Border.all(
-            color: AppColors.lightPrimary,
-            width: 2,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'اختر الطاولة',
+            style: AppTextStyles.senBold18(
+              context,
+            ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.lightPrimary.withOpacity(0.2),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
+          SizedBox(height: 8.h),
+          Text(
+            'امسح QR الموجود على الطاولة أو أدخل رقم الطاولة يدوياً',
+            style: AppTextStyles.senRegular14(
+              context,
+            ).copyWith(color: ThemeHelper.getSecondaryTextColor(context)),
+          ),
+          SizedBox(height: 24.h),
+          Expanded(
+            child: _selectedTableId != null
+                ? _buildSelectedTableInfoContent()
+                : _buildTableSelectionOptions(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSelectedTableInfoContent() {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(20.w),
+      decoration: BoxDecoration(
+        color: ThemeHelper.getCardBackgroundColor(context),
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: AppColors.lightPrimary, width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.lightPrimary.withOpacity(0.2),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: EdgeInsets.all(16.w),
+            decoration: const BoxDecoration(
+              color: AppColors.lightPrimary,
+              shape: BoxShape.circle,
             ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: EdgeInsets.all(16.w),
-              decoration:const  BoxDecoration(
-                color: AppColors.lightPrimary,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.table_restaurant,
-                color: Colors.white,
-                size: 32.sp,
-              ),
+            child: Icon(
+              Icons.table_restaurant,
+              color: Colors.white,
+              size: 32.sp,
             ),
-            SizedBox(height: 16.h),
-            Text(
-              'تم تحديد الطاولة',
-              style: AppTextStyles.senBold18(
+          ),
+          SizedBox(height: 16.h),
+          Text(
+            'تم تحديد الطاولة',
+            style: AppTextStyles.senBold18(
+              context,
+            ).copyWith(color: AppColors.lightPrimary),
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            'رقم الطاولة: $_selectedTableId',
+            style: AppTextStyles.senMedium16(
+              context,
+            ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
+          ),
+          SizedBox(height: 24.h),
+          OutlinedButton.icon(
+            onPressed: () {
+              setState(() {
+                _selectedTableId = null;
+                _qrCode = null;
+              });
+            },
+            icon: Icon(
+              Icons.refresh,
+              color: AppColors.lightPrimary,
+              size: 20.sp,
+            ),
+            label: Text(
+              'اختيار طاولة أخرى',
+              style: AppTextStyles.senMedium16(
                 context,
               ).copyWith(color: AppColors.lightPrimary),
             ),
-            SizedBox(height: 8.h),
-            Text(
-              'رقم الطاولة: $_selectedTableId',
-              style: AppTextStyles.senMedium16(
-                context,
-              ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
-            ),
-            SizedBox(height: 24.h),
-            OutlinedButton.icon(
-              onPressed: () {
-                setState(() {
-                  _selectedTableId = null;
-                  _qrCode = null;
-                });
-              },
-              icon: Icon(
-                Icons.refresh,
-                color: AppColors.lightPrimary,
-                size: 20.sp,
-              ),
-              label: Text(
-                'اختيار طاولة أخرى',
-                style: AppTextStyles.senMedium16(
-                  context,
-                ).copyWith(color: AppColors.lightPrimary),
-              ),
-              style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: AppColors.lightPrimary),
-                padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
+            style: OutlinedButton.styleFrom(
+              side: const BorderSide(color: AppColors.lightPrimary),
+              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.r),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildTableSelectionOptions() {
-    return Column(
-      children: [
-        _buildQRScanOption(),
-        SizedBox(height: 20.h),
-        _buildManualInputOption(),
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          _buildQRScanOption(),
+          SizedBox(height: 20.h),
+          _buildManualInputOption(),
+        ],
+      ),
     );
   }
 
@@ -224,9 +269,9 @@ class _TableSelectionStepState extends State<TableSelectionStep> {
                   SizedBox(height: 4.h),
                   Text(
                     'امسح الكود الموجود على الطاولة',
-                    style: AppTextStyles.senRegular14(
-                      context,
-                    ).copyWith(color: ThemeHelper.getSecondaryTextColor(context)),
+                    style: AppTextStyles.senRegular14(context).copyWith(
+                      color: ThemeHelper.getSecondaryTextColor(context),
+                    ),
                   ),
                 ],
               ),
@@ -277,16 +322,16 @@ class _TableSelectionStepState extends State<TableSelectionStep> {
                   children: [
                     Text(
                       'إدخال يدوي',
-                      style: AppTextStyles.senBold18(
-                        context,
-                      ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
+                      style: AppTextStyles.senBold18(context).copyWith(
+                        color: ThemeHelper.getPrimaryTextColor(context),
+                      ),
                     ),
                     SizedBox(height: 4.h),
                     Text(
                       'أدخل رقم الطاولة يدوياً',
-                      style: AppTextStyles.senRegular14(
-                        context,
-                      ).copyWith(color: ThemeHelper.getSecondaryTextColor(context)),
+                      style: AppTextStyles.senRegular14(context).copyWith(
+                        color: ThemeHelper.getSecondaryTextColor(context),
+                      ),
                     ),
                   ],
                 ),
@@ -304,7 +349,9 @@ class _TableSelectionStepState extends State<TableSelectionStep> {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8.r),
                 borderSide: BorderSide(
-                  color: ThemeHelper.getSecondaryTextColor(context).withOpacity(0.3),
+                  color: ThemeHelper.getSecondaryTextColor(
+                    context,
+                  ).withOpacity(0.3),
                 ),
               ),
               focusedBorder: OutlineInputBorder(
@@ -318,16 +365,60 @@ class _TableSelectionStepState extends State<TableSelectionStep> {
             ),
             onChanged: (value) {
               if (value.isNotEmpty) {
-                final tableId = int.tryParse(value);
-                if (tableId != null) {
+                final tableId = int.tryParse(value.trim());
+                if (tableId != null && tableId > 0) {
+                  // Show loading indicator for manual input
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Row(
+                        children: [
+                          SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          Text('جاري التحقق من الطاولة $tableId...'),
+                        ],
+                      ),
+                      duration: Duration(seconds: 2),
+                      backgroundColor: AppColors.lightPrimary,
+                    ),
+                  );
+
                   setState(() {
                     _selectedTableId = tableId;
+                    _qrCode = null; // Manual input doesn't have QR code
                   });
-                  widget.onTableSelected({
-                    'tableId': tableId,
-                    'qrCode': null,
+
+                  widget.onTableSelected({'tableId': tableId, 'qrCode': null});
+
+                  // Auto-proceed to next step for manual input
+                  Future.delayed(const Duration(seconds: 1), () {
+                    if (mounted) {
+                      context.read<CheckoutProcessBloc>().add(
+                        const NavigateToNextStep(),
+                      );
+                    }
+                  });
+                } else {
+                  // Invalid table number
+                  setState(() {
+                    _selectedTableId = null;
+                    _qrCode = null;
                   });
                 }
+              } else {
+                // Empty input
+                setState(() {
+                  _selectedTableId = null;
+                  _qrCode = null;
+                });
               }
             },
           ),
@@ -337,18 +428,57 @@ class _TableSelectionStepState extends State<TableSelectionStep> {
   }
 
   void _navigateToQRScanner() {
-    Navigator.of(context).pushNamed(
-      AppRoutes.qrScanner,
-      arguments: {'cart': widget.cart},
-    ).then((result) {
+    Navigator.of(
+      context,
+    ).pushNamed(AppRoutes.qrScanner, arguments: {'cart': widget.cart}).then((
+      result,
+    ) {
       if (result != null && result is Map<String, dynamic>) {
+        final success = result['success'] as bool? ?? false;
         final qrCode = result['qrCode'] as String?;
-        if (qrCode != null) {
+
+        if (success && qrCode != null && qrCode.isNotEmpty) {
           setState(() {
             _qrCode = qrCode;
           });
+
+          // Show loading indicator
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  ),
+                  SizedBox(width: 16),
+                  Text('جاري التحقق من الطاولة...'),
+                ],
+              ),
+              duration: Duration(seconds: 3),
+              backgroundColor: AppColors.lightPrimary,
+            ),
+          );
+
           // Trigger table loading with QR code
           context.read<TableCubit>().getTableByQr(qrCode);
+        } else {
+          // Show error message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('فشل في قراءة QR Code. يرجى المحاولة مرة أخرى.'),
+              backgroundColor: Colors.red,
+              action: SnackBarAction(
+                label: 'إعادة المحاولة',
+                textColor: Colors.white,
+                onPressed: _navigateToQRScanner,
+              ),
+            ),
+          );
         }
       }
     });

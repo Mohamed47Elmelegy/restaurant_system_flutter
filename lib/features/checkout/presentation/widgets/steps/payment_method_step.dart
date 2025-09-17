@@ -24,21 +24,21 @@ class _PaymentMethodStepState extends State<PaymentMethodStep> {
   String? _selectedMethod;
 
   final List<PaymentMethodOption> _paymentMethods = [
-    PaymentMethodOption(
+    const PaymentMethodOption(
       id: 'cash',
       title: 'نقداً',
       description: 'ادفع نقداً عند الاستلام',
       icon: Icons.money,
       isEnabled: true,
     ),
-    PaymentMethodOption(
+    const PaymentMethodOption(
       id: 'credit_card',
       title: 'بطاقة ائتمان',
       description: 'ادفع باستخدام بطاقة الائتمان',
       icon: Icons.credit_card,
       isEnabled: true,
     ),
-    PaymentMethodOption(
+    const PaymentMethodOption(
       id: 'digital_wallet',
       title: 'محفظة رقمية',
       description: 'ادفع باستخدام محفظتك الرقمية',

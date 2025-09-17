@@ -11,7 +11,7 @@ class SetDefaultAddressUseCase {
   Future<Either<Failure, AddressEntity>> call(
     SetDefaultAddressParams params,
   ) async {
-    return await repository.setDefaultAddress(params.addressId);
+    return repository.setDefaultAddress(params.addressId);
   }
 }
 

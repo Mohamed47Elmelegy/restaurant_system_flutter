@@ -110,7 +110,7 @@ class OrderTrackingTab extends StatelessWidget {
             final isLast = index == steps.length - 1;
 
             return _buildTimelineStep(context, step, isLast);
-          }).toList(),
+          }),
         ],
       ),
     );

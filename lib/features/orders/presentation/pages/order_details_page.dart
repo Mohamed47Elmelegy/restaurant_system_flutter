@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/theme/theme_helper.dart';
-import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/text_styles.dart';
+import '../../../../core/theme/theme_helper.dart';
 import '../../domain/entities/order_entity.dart';
-import '../widgets/order_items_tab.dart';
 import '../widgets/order_info_tab.dart';
-import '../widgets/order_tracking_tab.dart';
+import '../widgets/order_items_tab.dart';
 import '../widgets/order_receipt_tab.dart';
+import '../widgets/order_tracking_tab.dart';
 
 class OrderDetailsPage extends StatefulWidget {
   final OrderEntity order;
