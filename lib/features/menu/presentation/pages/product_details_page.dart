@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/entities/product.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
+import '../../../../core/widgets/cached_image_widget.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   final ProductEntity product;
@@ -79,25 +80,17 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 topRight: Radius.circular(20.r),
               ),
             ),
-            child: widget.product.imageUrl != null
-                ? ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20.r),
-                      topRight: Radius.circular(20.r),
-                    ),
-                    child: Image.network(
-                      widget.product.imageUrl!,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Icon(
-                          Icons.fastfood,
-                          size: 80.sp,
-                          color: Colors.grey[600],
-                        );
-                      },
-                    ),
-                  )
-                : Icon(Icons.fastfood, size: 80.sp, color: Colors.grey[600]),
+            child: CachedImageDetail(
+              imageUrl: widget.product.imageUrl,
+              width: double.infinity,
+              height: double.infinity,
+              fit: BoxFit.cover,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20.r),
+                topRight: Radius.circular(20.r),
+              ),
+              backgroundColor: Colors.grey[200],
+            ),
           ),
 
           // Back button

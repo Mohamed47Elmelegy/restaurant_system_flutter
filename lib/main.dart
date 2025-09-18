@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import 'core/di/service_locator.dart';
+import 'core/network/custom_cache_manager.dart';
 import 'core/routes/app_router.dart';
 import 'core/routes/app_routes.dart';
 import 'core/services/app_bloc_observer.dart';
@@ -23,6 +24,13 @@ void main() async {
 
   // تهيئة Hive للتخزين المحلي
   await Hive.initFlutter();
+
+  // تهيئة CacheManager المخصص مع معالجة الأخطاء
+  try {
+    await CustomCacheManager.getCachePath();
+  } catch (e) {
+    // تجاهل أخطاء التهيئة - سيتم التعامل معها لاحقاً
+  }
 
   Bloc.observer = AppBlocObserver();
   await setup();

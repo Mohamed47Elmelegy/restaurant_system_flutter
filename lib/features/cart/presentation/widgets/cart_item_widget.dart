@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../../../core/widgets/cached_image_widget.dart';
 import '../../domain/entities/cart_item_entity.dart';
 
 class CartItemWidget extends StatelessWidget {
@@ -30,9 +32,13 @@ class CartItemWidget extends StatelessWidget {
               color: const Color(0xFF4A4A5A),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: item.product.imageUrl != null
-                ? Image.network(item.product.imageUrl!, fit: BoxFit.cover)
-                : const Icon(Icons.fastfood, color: Colors.white54, size: 40),
+            child: CachedImageThumbnail(
+              imageUrl: item.product.imageUrl,
+              width: 60,
+              height: 60,
+              fit: BoxFit.cover,
+              backgroundColor: const Color(0xFF3A3A4A),
+            ),
           ),
           const SizedBox(width: 16),
           // Product details

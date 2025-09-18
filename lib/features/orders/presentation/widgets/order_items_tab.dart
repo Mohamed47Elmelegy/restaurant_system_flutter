@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_helper.dart';
+import '../../../../core/widgets/cached_image_widget.dart';
 import '../../domain/entities/order_entity.dart';
 import '../../domain/entities/order_item_entity.dart';
 
@@ -51,21 +52,15 @@ class OrderItemsTab extends StatelessWidget {
                   context,
                 ).withOpacity(0.1),
               ),
-              child: item.image != null
-                  ? Image.asset(
-                      item.image!,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Icon(
-                        Icons.restaurant,
-                        color: ThemeHelper.getSecondaryTextColor(context),
-                        size: 24.sp,
-                      ),
-                    )
-                  : Icon(
-                      Icons.restaurant,
-                      color: ThemeHelper.getSecondaryTextColor(context),
-                      size: 24.sp,
-                    ),
+              child: CachedImageThumbnail(
+                imageUrl: item.image,
+                width: 50.w,
+                height: 50.h,
+                fit: BoxFit.cover,
+                backgroundColor: ThemeHelper.getSecondaryTextColor(
+                  context,
+                ).withOpacity(0.1),
+              ),
             ),
           ),
           SizedBox(width: 12.w),

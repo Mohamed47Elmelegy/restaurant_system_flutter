@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../core/theme/theme_helper.dart';
-import '../../../../core/theme/text_styles.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/theme_provider.dart';
 import '../../../../core/config/constants.dart';
 import '../../../../core/constants/dialog_constants.dart';
 import '../../../../core/routes/app_routes.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/text_styles.dart';
+import '../../../../core/theme/theme_helper.dart';
+import '../../../../core/theme/theme_provider.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});

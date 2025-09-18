@@ -139,10 +139,10 @@ class ProductModel extends BaseModel<ProductEntity> {
       reviewCount: json['review_count'],
       preparationTime: json['preparation_time'],
       ingredients: json['ingredients'] != null
-          ? List<String>.from(json['ingredients'])
+          ? _parseIngredients(json['ingredients'])
           : null,
       allergens: json['allergens'] != null
-          ? List<String>.from(json['allergens'])
+          ? _parseAllergens(json['allergens'])
           : null,
       isFeatured: json['is_featured'] ?? false,
       sortOrder: json['sort_order'],
@@ -285,5 +285,41 @@ class ProductModel extends BaseModel<ProductEntity> {
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     );
+  }
+
+  /// Parse ingredients from JSON - handles both String and List formats
+  static List<String>? _parseIngredients(dynamic ingredients) {
+    if (ingredients == null) return null;
+
+    if (ingredients is List) {
+      return List<String>.from(ingredients);
+    } else if (ingredients is String) {
+      // Split by newlines and filter out empty strings
+      return ingredients
+          .split('\n')
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toList();
+    }
+
+    return null;
+  }
+
+  /// Parse allergens from JSON - handles both String and List formats
+  static List<String>? _parseAllergens(dynamic allergens) {
+    if (allergens == null) return null;
+
+    if (allergens is List) {
+      return List<String>.from(allergens);
+    } else if (allergens is String) {
+      // Split by commas and filter out empty strings
+      return allergens
+          .split(',')
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toList();
+    }
+
+    return null;
   }
 }

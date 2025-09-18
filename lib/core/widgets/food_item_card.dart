@@ -7,6 +7,7 @@ import '../routes/app_routes.dart';
 import '../theme/text_styles.dart';
 import '../theme/theme_helper.dart';
 import '../utils/category_helper.dart';
+import 'cached_image_widget.dart';
 
 class FoodItemCard extends StatelessWidget {
   final ProductEntity foodItem;
@@ -63,9 +64,17 @@ class FoodItemCard extends StatelessWidget {
                           topLeft: Radius.circular(12.r),
                           topRight: Radius.circular(12.r),
                         ),
-                        child: foodItem.imageUrl?.isNotEmpty == true
-                            ? _buildImageWidget()
-                            : _buildPlaceholderImage(),
+                        child: CachedImageCard(
+                          imageUrl: foodItem.imageUrl,
+                          width: double.infinity,
+                          height: double.infinity,
+                          fit: BoxFit.cover,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(12.r),
+                            topRight: Radius.circular(12.r),
+                          ),
+                          backgroundColor: const Color(0xFF8DA0B3),
+                        ),
                       ),
                     ),
                   ),
@@ -149,57 +158,6 @@ class FoodItemCard extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  /// Build image widget based on URL type
-  Widget _buildImageWidget() {
-    final imageUrl = foodItem.imageUrl!;
-
-    // Check if it's a network URL or local asset
-    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
-      // Network image
-      return Image.network(
-        imageUrl,
-        fit: BoxFit.cover,
-        width: double.infinity,
-        height: double.infinity,
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return Center(
-            child: CircularProgressIndicator(
-              value: loadingProgress.expectedTotalBytes != null
-                  ? loadingProgress.cumulativeBytesLoaded /
-                        loadingProgress.expectedTotalBytes!
-                  : null,
-            ),
-          );
-        },
-        errorBuilder: (context, error, stackTrace) {
-          return _buildPlaceholderImage();
-        },
-      );
-    } else {
-      // Local asset image
-      return Image.asset(
-        imageUrl,
-        fit: BoxFit.cover,
-        width: double.infinity,
-        height: double.infinity,
-        errorBuilder: (context, error, stackTrace) {
-          return _buildPlaceholderImage();
-        },
-      );
-    }
-  }
-
-  /// Build placeholder image when no image is available
-  Widget _buildPlaceholderImage() {
-    return Center(
-      child: Container(
-        color: const Color(0xFF8DA0B3),
-        child: Icon(Icons.fastfood, size: 40.sp, color: Colors.white),
       ),
     );
   }
