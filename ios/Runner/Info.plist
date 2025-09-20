@@ -54,7 +54,9 @@
 		</dict>
 		<key>io.flutter.embedded_views_preview</key>
 		<true/>
-		<key>NSCameraUsageDescription</key>
-		<string>This app needs camera access to scan QR codes</string>
-	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs camera access to scan QR codes</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>This app uses Face ID for secure authentication</string>
+</dict>
 </plist>
