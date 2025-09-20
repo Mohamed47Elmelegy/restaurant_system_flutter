@@ -54,10 +54,7 @@ class OrderTrackingTab extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Icon(
-                  IconData(
-                    OrderUtils.getStatusIcon(order.status),
-                    fontFamily: 'MaterialIcons',
-                  ),
+                  Icons.circle,
                   color: Color(OrderUtils.getStatusColor(order.status)),
                   size: 24.sp,
                 ),

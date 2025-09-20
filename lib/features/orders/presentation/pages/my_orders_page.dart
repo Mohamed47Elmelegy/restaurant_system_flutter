@@ -209,11 +209,7 @@ class MyOrdersPage extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            IconData(order.statusIcon, fontFamily: 'MaterialIcons'),
-            size: 12.sp,
-            color: textColor,
-          ),
+          Icon(Icons.circle, size: 12.sp, color: textColor),
           SizedBox(width: 4.w),
           Text(
             order.statusDisplayName,
