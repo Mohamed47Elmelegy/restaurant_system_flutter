@@ -5,10 +5,12 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_helper.dart';
 import '../../domain/entities/order_entity.dart';
+import '../../domain/entities/order_enums.dart';
 import '../widgets/order_info_tab.dart';
 import '../widgets/order_items_tab.dart';
 import '../widgets/order_receipt_tab.dart';
 import '../widgets/order_tracking_tab.dart';
+import '../widgets/status_chip.dart';
 
 class OrderDetailsPage extends StatefulWidget {
   final OrderEntity order;
@@ -113,7 +115,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
                   ),
                 ],
               ),
-              _buildStatusChip(context, widget.order.status),
+              StatusChip(status: widget.order.status),
             ],
           ),
           SizedBox(height: 12.h),
@@ -174,57 +176,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
           Tab(text: 'التتبع'),
           Tab(text: 'الفاتورة'),
         ],
-      ),
-    );
-  }
-
-  Widget _buildStatusChip(BuildContext context, OrderStatus status) {
-    Color backgroundColor;
-    Color textColor;
-    String text;
-
-    switch (status) {
-      case OrderStatus.pending:
-        backgroundColor = Colors.orange.withOpacity(0.1);
-        textColor = Colors.orange;
-        text = 'في الانتظار';
-        break;
-      case OrderStatus.paid:
-        backgroundColor = Colors.blue.withOpacity(0.1);
-        textColor = Colors.blue;
-        text = 'مدفوع';
-        break;
-      case OrderStatus.preparing:
-        backgroundColor = AppColors.lightPrimary.withOpacity(0.1);
-        textColor = AppColors.lightPrimary;
-        text = 'قيد التحضير';
-        break;
-      case OrderStatus.delivering:
-        backgroundColor = Colors.purple.withOpacity(0.1);
-        textColor = Colors.purple;
-        text = 'في الطريق';
-        break;
-      case OrderStatus.completed:
-        backgroundColor = Colors.green.withOpacity(0.1);
-        textColor = Colors.green;
-        text = 'مكتمل';
-        break;
-      case OrderStatus.cancelled:
-        backgroundColor = Colors.red.withOpacity(0.1);
-        textColor = Colors.red;
-        text = 'ملغي';
-        break;
-    }
-
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(20.r),
-      ),
-      child: Text(
-        text,
-        style: AppTextStyles.senMedium12(context).copyWith(color: textColor),
       ),
     );
   }

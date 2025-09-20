@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/services/snack_bar_service.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../orders/domain/entities/order_entity.dart';
+import '../../../orders/domain/entities/order_enums.dart';
 import '../bloc/cart_cubit.dart';
 import '../bloc/cart_event.dart';
 import '../bloc/cart_state.dart';

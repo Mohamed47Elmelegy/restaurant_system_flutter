@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../cart/domain/entities/cart_entity.dart';
-import '../../../orders/domain/entities/order_entity.dart';
+import '../../../orders/domain/entities/order_enums.dart';
 import 'checkout_step_entity.dart';
 
 /// 🟩 CheckoutProcess Entity - Domain Layer
@@ -139,6 +139,8 @@ class CheckoutDataEntity extends Equatable {
         return hasDeliveryAddress;
       case OrderType.dineIn:
         return hasTableSelection;
+      case OrderType.pickup:
+        return true;
     }
   }
 

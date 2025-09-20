@@ -1,5 +1,7 @@
 import '../../domain/entities/order_entity.dart';
+import '../../domain/entities/order_enums.dart';
 import 'order_item_model.dart';
+import 'order_status_log_model.dart';
 import 'table_model.dart';
 
 /// 🟨 Order Model - Data Layer
@@ -19,48 +21,50 @@ class OrderModel extends OrderEntity {
     super.notes,
     super.paymentMethod,
     super.table,
+    super.tableId,
     required super.items,
+    super.statusLogs = const [],
     required super.createdAt,
     required super.updatedAt,
-    super.tableId, // أضف هذا السطرg
   });
 
   /// Factory constructor from JSON
   factory OrderModel.fromJson(Map<String, dynamic> json) {
-    return OrderModel(
-      id: (json['id'] is int)
-          ? json['id'] as int
-          : int.tryParse(json['id']?.toString() ?? '') ?? 0,
-      userId: (json['user_id'] is int)
-          ? json['user_id'] as int
-          : int.tryParse(json['user_id']?.toString() ?? '') ?? 0,
-      type: _parseOrderType(json['type'] as String),
-      status: _parseOrderStatus(json['status'] as String),
-      paymentStatus: _parsePaymentStatus(json['payment_status'] as String),
-      subtotalAmount: double.parse(json['subtotal_amount'].toString()),
-      taxAmount: double.parse(json['tax_amount'].toString()),
-      deliveryFee: double.parse(json['delivery_fee'].toString()),
-      totalAmount: double.parse(json['total_amount'].toString()),
-      deliveryAddress: json['delivery_address']?.toString() ?? '',
-      specialInstructions: json['special_instructions']?.toString() ?? '',
-      notes: json['notes']?.toString() ?? '',
-      paymentMethod: json['payment_method']?.toString() ?? '',
-      tableId: (json['table_id'] is int)
-          ? json['table_id'] as int
-          : int.tryParse(json['table_id']?.toString() ?? '') ?? 0,
-      table: json['table'] != null
-          ? TableModel.fromJson(json['table'] as Map<String, dynamic>)
-          : null,
-      items:
-          (json['items'] as List<dynamic>?)
-              ?.map(
-                (item) => OrderItemModel.fromJson(item as Map<String, dynamic>),
-              )
-              .toList() ??
-          [],
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
-    );
+    try {
+      return OrderModel(
+        id: (json['id'] is int)
+            ? json['id'] as int
+            : int.tryParse(json['id']?.toString() ?? '') ?? 0,
+        userId: (json['user_id'] is int)
+            ? json['user_id'] as int
+            : int.tryParse(json['user_id']?.toString() ?? '') ?? 0,
+        type: _parseOrderType(json['type']?.toString() ?? 'dine_in'),
+        status: _parseOrderStatus(json['status']?.toString() ?? 'pending'),
+        paymentStatus: _parsePaymentStatus(
+          json['payment_status']?.toString() ?? 'unpaid',
+        ),
+        subtotalAmount: _parseDouble(json['subtotal_amount'], 0.0),
+        taxAmount: _parseDouble(json['tax_amount'], 0.0),
+        deliveryFee: _parseDouble(json['delivery_fee'], 0.0),
+        totalAmount: _parseDouble(json['total_amount'], 0.0),
+        deliveryAddress: _parseString(json['delivery_address']),
+        specialInstructions: _parseString(json['special_instructions']),
+        notes: _parseString(json['notes']),
+        paymentMethod: _parseString(json['payment_method']),
+        tableId: (json['table_id'] is int)
+            ? json['table_id'] as int
+            : int.tryParse(json['table_id']?.toString() ?? '') ?? 0,
+        table: json['table'] != null
+            ? TableModel.fromJson(json['table'] as Map<String, dynamic>)
+            : null,
+        items: _parseOrderItems(json['items']),
+        statusLogs: _parseStatusLogs(json['status_logs']),
+        createdAt: _parseDateTime(json['created_at']),
+        updatedAt: _parseDateTime(json['updated_at']),
+      );
+    } catch (e) {
+      throw FormatException('Error parsing OrderModel from JSON: $e');
+    }
   }
 
   /// Convert to JSON
@@ -81,6 +85,9 @@ class OrderModel extends OrderEntity {
       if (notes != null) 'notes': notes,
       if (table != null) 'table': (table as TableModel).toJson(),
       'items': items.map((item) => (item as OrderItemModel).toJson()).toList(),
+      'status_logs': statusLogs
+          .map((log) => (log as OrderStatusLogModel).toJson())
+          .toList(),
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
     };
@@ -106,6 +113,9 @@ class OrderModel extends OrderEntity {
       items: entity.items
           .map((item) => OrderItemModel.fromEntity(item))
           .toList(),
+      statusLogs: entity.statusLogs
+          .map((log) => OrderStatusLogModel.fromEntity(log))
+          .toList(),
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     );
@@ -118,6 +128,8 @@ class OrderModel extends OrderEntity {
         return OrderType.dineIn;
       case 'delivery':
         return OrderType.delivery;
+      case 'pickup':
+        return OrderType.pickup;
       default:
         throw ArgumentError('Unknown order type: $type');
     }
@@ -128,19 +140,35 @@ class OrderModel extends OrderEntity {
     switch (status.toLowerCase()) {
       case 'pending':
         return OrderStatus.pending;
+      case 'confirmed':
+        return OrderStatus.confirmed;
       case 'paid':
         return OrderStatus.paid;
-      case 'preparing':
-        return OrderStatus.preparing;
-      case 'delivering':
-        return OrderStatus.delivering;
-      case 'completed':
-        return OrderStatus.completed;
       case 'cancelled':
         return OrderStatus.cancelled;
-      // Legacy support for 'ready' -> 'delivering'
+      case 'preparing':
+        return OrderStatus.preparing;
+      case 'ready_to_serve':
+        return OrderStatus.readyToServe;
+      case 'served':
+        return OrderStatus.served;
+      case 'ready_for_pickup':
+        return OrderStatus.readyForPickup;
+      case 'picked_up':
+        return OrderStatus.pickedUp;
+      case 'on_the_way':
+        return OrderStatus.onTheWay;
+      case 'delivered':
+        return OrderStatus.delivered;
+      case 'completed':
+        return OrderStatus.completed;
+      case 'refunded':
+        return OrderStatus.refunded;
+      // Legacy support
+      case 'delivering':
+        return OrderStatus.onTheWay;
       case 'ready':
-        return OrderStatus.delivering;
+        return OrderStatus.onTheWay;
       default:
         throw ArgumentError('Unknown order status: $status');
     }
@@ -167,6 +195,8 @@ class OrderModel extends OrderEntity {
         return 'dine_in';
       case OrderType.delivery:
         return 'delivery';
+      case OrderType.pickup:
+        return 'pickup';
     }
   }
 
@@ -175,16 +205,30 @@ class OrderModel extends OrderEntity {
     switch (status) {
       case OrderStatus.pending:
         return 'pending';
+      case OrderStatus.confirmed:
+        return 'confirmed';
       case OrderStatus.paid:
         return 'paid';
-      case OrderStatus.preparing:
-        return 'preparing';
-      case OrderStatus.delivering:
-        return 'delivering';
-      case OrderStatus.completed:
-        return 'completed';
       case OrderStatus.cancelled:
         return 'cancelled';
+      case OrderStatus.preparing:
+        return 'preparing';
+      case OrderStatus.readyToServe:
+        return 'ready_to_serve';
+      case OrderStatus.served:
+        return 'served';
+      case OrderStatus.readyForPickup:
+        return 'ready_for_pickup';
+      case OrderStatus.pickedUp:
+        return 'picked_up';
+      case OrderStatus.onTheWay:
+        return 'on_the_way';
+      case OrderStatus.delivered:
+        return 'delivered';
+      case OrderStatus.completed:
+        return 'completed';
+      case OrderStatus.refunded:
+        return 'refunded';
     }
   }
 
@@ -197,6 +241,61 @@ class OrderModel extends OrderEntity {
         return 'paid';
       case PaymentStatus.refunded:
         return 'refunded';
+    }
+  }
+
+  /// Safe string parsing with null handling
+  static String? _parseString(dynamic value) {
+    if (value == null) return null;
+    return value.toString().trim().isEmpty ? null : value.toString().trim();
+  }
+
+  /// Safe double parsing with default value
+  static double _parseDouble(dynamic value, double defaultValue) {
+    if (value == null) return defaultValue;
+    try {
+      if (value is num) return value.toDouble();
+      return double.parse(value.toString());
+    } catch (e) {
+      return defaultValue;
+    }
+  }
+
+  /// Safe DateTime parsing
+  static DateTime _parseDateTime(dynamic value) {
+    if (value == null) return DateTime.now();
+    try {
+      return DateTime.parse(value.toString());
+    } catch (e) {
+      return DateTime.now();
+    }
+  }
+
+  /// Safe order items parsing
+  static List<OrderItemModel> _parseOrderItems(dynamic items) {
+    if (items == null || items is! List) return [];
+    try {
+      return items
+          .where((item) => item is Map<String, dynamic>)
+          .map((item) => OrderItemModel.fromJson(item as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
+  /// Safe status logs parsing
+  static List<OrderStatusLogModel> _parseStatusLogs(dynamic logs) {
+    if (logs == null || logs is! List) return [];
+    try {
+      return logs
+          .where((log) => log is Map<String, dynamic>)
+          .map(
+            (log) => OrderStatusLogModel.fromJson(log as Map<String, dynamic>),
+          )
+          .toList();
+    } catch (e) {
+      return [];
     }
   }
 }

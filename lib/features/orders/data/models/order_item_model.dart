@@ -19,25 +19,33 @@ class OrderItemModel extends OrderItemEntity {
 
   /// Factory constructor from JSON
   factory OrderItemModel.fromJson(Map<String, dynamic> json) {
-    return OrderItemModel(
-      id: json['id'] as int? ?? 0,
-      orderId: json['order_id'] as int? ?? 0,
-      // Handle both menu_item_id (frontend) and product_id (backend)
-      menuItemId: (json['menu_item_id'] as int?) ?? 
-                  (json['product_id'] as int?) ?? 0,
-      // Handle both name (frontend) and product_name_ar (backend)
-      name: json['name']?.toString() ?? 
-            json['product_name_ar']?.toString() ?? 
-            json['product_name']?.toString() ?? '',
-      description: json['description']?.toString() ?? '',
-      image: json['image']?.toString() ?? '',
-      unitPrice: double.parse(json['unit_price'].toString()),
-      quantity: json['quantity'] as int? ?? 0,
-      totalPrice: double.parse(json['total_price'].toString()),
-      specialInstructions: json['special_instructions']?.toString() ?? '',
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
-    );
+    try {
+      return OrderItemModel(
+        id: _parseInt(json['id'], 0),
+        orderId: _parseInt(json['order_id'], 0),
+        // Handle both menu_item_id (frontend) and product_id (backend)
+        menuItemId: _parseInt(
+          json['menu_item_id'],
+          _parseInt(json['product_id'], 0),
+        ),
+        // Handle both name (frontend) and product_name_ar (backend)
+        name:
+            _parseString(json['name']) ??
+            _parseString(json['product_name_ar']) ??
+            _parseString(json['product_name']) ??
+            '',
+        description: _parseString(json['description']) ?? '',
+        image: _parseString(json['image']) ?? '',
+        unitPrice: _parseDouble(json['unit_price'], 0.0),
+        quantity: _parseInt(json['quantity'], 0),
+        totalPrice: _parseDouble(json['total_price'], 0.0),
+        specialInstructions: _parseString(json['special_instructions']) ?? '',
+        createdAt: _parseDateTime(json['created_at']),
+        updatedAt: _parseDateTime(json['updated_at']),
+      );
+    } catch (e) {
+      throw FormatException('Error parsing OrderItemModel from JSON: $e');
+    }
   }
 
   /// Convert to JSON
@@ -133,5 +141,44 @@ class OrderItemModel extends OrderItemEntity {
       createdAt: now,
       updatedAt: now,
     );
+  }
+
+  /// Safe string parsing with null handling
+  static String? _parseString(dynamic value) {
+    if (value == null) return null;
+    return value.toString().trim().isEmpty ? null : value.toString().trim();
+  }
+
+  /// Safe int parsing with default value
+  static int _parseInt(dynamic value, int defaultValue) {
+    if (value == null) return defaultValue;
+    try {
+      if (value is int) return value;
+      if (value is double) return value.toInt();
+      return int.parse(value.toString());
+    } catch (e) {
+      return defaultValue;
+    }
+  }
+
+  /// Safe double parsing with default value
+  static double _parseDouble(dynamic value, double defaultValue) {
+    if (value == null) return defaultValue;
+    try {
+      if (value is num) return value.toDouble();
+      return double.parse(value.toString());
+    } catch (e) {
+      return defaultValue;
+    }
+  }
+
+  /// Safe DateTime parsing
+  static DateTime _parseDateTime(dynamic value) {
+    if (value == null) return DateTime.now();
+    try {
+      return DateTime.parse(value.toString());
+    } catch (e) {
+      return DateTime.now();
+    }
   }
 }

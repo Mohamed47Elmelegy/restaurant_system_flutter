@@ -9,12 +9,17 @@ class CartModel extends CartEntity {
 
   /// Create CartModel from JSON response
   factory CartModel.fromJson(Map<String, dynamic> json) {
-    final itemsData = json['items'] as List<dynamic>? ?? [];
-    final items = itemsData
-        .map((item) => CartItemModel.fromJson(item))
-        .toList();
+    try {
+      final itemsData = json['items'] as List<dynamic>? ?? [];
+      final items = itemsData
+          .whereType<Map<String, dynamic>>()
+          .map((item) => CartItemModel.fromJson(item))
+          .toList();
 
-    return CartModel(items: items, subtotal: _parseDouble(json['subtotal']));
+      return CartModel(items: items, subtotal: _parseDouble(json['subtotal']));
+    } catch (e) {
+      throw FormatException('Error parsing CartModel from JSON: $e');
+    }
   }
 
   /// Convert CartModel to JSON

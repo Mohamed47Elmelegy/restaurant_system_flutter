@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../../../core/theme/text_styles.dart';
 import '../../../../../core/theme/theme_helper.dart';
-import '../../../../orders/domain/entities/order_entity.dart';
+import '../../../../orders/domain/entities/order_enums.dart';
 
 /// 🟦 OrderTypeStep - Order type selection step
 class OrderTypeStep extends StatefulWidget {

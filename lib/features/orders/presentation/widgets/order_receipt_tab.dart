@@ -4,7 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_helper.dart';
+import '../../../../core/utils/order_utils.dart';
 import '../../domain/entities/order_entity.dart';
+import '../../domain/entities/order_enums.dart';
 
 class OrderReceiptTab extends StatelessWidget {
   final OrderEntity order;
@@ -91,7 +93,7 @@ class OrderReceiptTab extends StatelessWidget {
         _buildReceiptRow(
           context,
           'نوع الطلب:',
-          order.type == OrderType.delivery ? 'توصيل' : 'داخل المطعم',
+          OrderUtils.getOrderTypeDisplayName(order.type),
         ),
         if (order.type == OrderType.delivery && order.deliveryAddress != null)
           _buildReceiptRow(context, 'عنوان التوصيل:', order.deliveryAddress!),
@@ -128,16 +130,14 @@ class OrderReceiptTab extends StatelessWidget {
             ),
           )
         else
-          ...order.items
-              .map(
-                (item) => _buildReceiptItem(
-                  context,
-                  item.name,
-                  item.quantity,
-                  item.unitPrice,
-                ),
-              )
-              ,
+          ...order.items.map(
+            (item) => _buildReceiptItem(
+              context,
+              item.name,
+              item.quantity,
+              item.unitPrice,
+            ),
+          ),
         SizedBox(height: 12.h),
         Container(
           height: 1.h,

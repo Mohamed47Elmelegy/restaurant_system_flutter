@@ -90,7 +90,11 @@ class _TableSelectionStepState extends State<TableSelectionStep> {
             SnackBar(
               content: Row(
                 children: [
-                  const Icon(Icons.error_outline, color: Colors.white, size: 20),
+                  const Icon(
+                    Icons.error_outline,
+                    color: Colors.white,
+                    size: 20,
+                  ),
                   const SizedBox(width: 12),
                   Expanded(child: Text(state.message)),
                 ],
@@ -470,7 +474,9 @@ class _TableSelectionStepState extends State<TableSelectionStep> {
           // Show error message
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text('فشل في قراءة QR Code. يرجى المحاولة مرة أخرى.'),
+              content: const Text(
+                'فشل في قراءة QR Code. يرجى المحاولة مرة أخرى.',
+              ),
               backgroundColor: Colors.red,
               action: SnackBarAction(
                 label: 'إعادة المحاولة',

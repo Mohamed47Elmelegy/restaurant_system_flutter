@@ -17,6 +17,11 @@ class DioClient {
     dio.options.receiveTimeout = const Duration(seconds: 30);
     dio.options.sendTimeout = const Duration(seconds: 30);
 
+    // إضافة معالج JSON مخصص للتعامل مع النصوص العربية
+    dio.options.responseType = ResponseType.json;
+    dio.options.headers['Accept'] = 'application/json; charset=utf-8';
+    dio.options.headers['Content-Type'] = 'application/json; charset=utf-8';
+
     // إضافة interceptor واحد فقط
     dio.interceptors.add(simpleInterceptor);
     dio.interceptors.add(
@@ -32,7 +37,7 @@ class DioClient {
     );
     log(
       DebugConsoleMessages.success(
-        'DioClient initialized with extended timeout (30s) for better reliability!',
+        'DioClient initialized with extended timeout (30s) and UTF-8 support for better reliability!',
       ),
     );
   }

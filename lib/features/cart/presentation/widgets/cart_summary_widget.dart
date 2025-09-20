@@ -5,7 +5,7 @@ import 'package:restaurant_system_flutter/core/routes/app_routes.dart';
 import 'package:restaurant_system_flutter/core/utils/debug_console_messages.dart';
 
 import '../../../../core/theme/app_colors.dart';
-import '../../../orders/domain/entities/order_entity.dart';
+import '../../../orders/domain/entities/order_enums.dart';
 import '../../domain/entities/cart_entity.dart';
 
 class CartSummaryWidget extends StatelessWidget {

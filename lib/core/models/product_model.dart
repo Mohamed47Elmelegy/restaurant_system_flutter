@@ -122,40 +122,38 @@ class ProductModel extends BaseModel<ProductEntity> {
   }
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
-    return ProductModel(
-      id: json['id']?.toString() ?? '',
-      name: json['name'] ?? '',
-      nameAr: json['name_ar'],
-      description: json['description'],
-      descriptionAr: json['description_ar'],
-      price: (json['price'] is num) ? (json['price'] as num).toDouble() : 0.0,
-      mainCategoryId: json['main_category_id']?.toString() ?? '',
-      subCategoryId: json['sub_category_id']?.toString(),
-      imageUrl: json['image_url'],
-      isAvailable: json['is_available'] ?? true,
-      rating: (json['rating'] is num)
-          ? (json['rating'] as num).toDouble()
-          : null,
-      reviewCount: json['review_count'],
-      preparationTime: json['preparation_time'],
-      ingredients: json['ingredients'] != null
-          ? _parseIngredients(json['ingredients'])
-          : null,
-      allergens: json['allergens'] != null
-          ? _parseAllergens(json['allergens'])
-          : null,
-      isFeatured: json['is_featured'] ?? false,
-      sortOrder: json['sort_order'],
-      createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'])
-          : null,
-      updatedAt: json['updated_at'] != null
-          ? DateTime.parse(json['updated_at'])
-          : null,
-      mainCategory: json['main_category'] != null
-          ? MainCategoryModel.fromJson(json['main_category'])
-          : null,
-    );
+    try {
+      return ProductModel(
+        id: _parseString(json['id']) ?? '',
+        name: _parseString(json['name']) ?? '',
+        nameAr: _parseString(json['name_ar']),
+        description: _parseString(json['description']),
+        descriptionAr: _parseString(json['description_ar']),
+        price: _parseDouble(json['price'], 0.0),
+        mainCategoryId: _parseString(json['main_category_id']) ?? '',
+        subCategoryId: _parseString(json['sub_category_id']),
+        imageUrl: _parseString(json['image_url']),
+        isAvailable: json['is_available'] ?? true,
+        rating: _parseDoubleNullable(json['rating']),
+        reviewCount: _parseIntNullable(json['review_count']),
+        preparationTime: _parseIntNullable(json['preparation_time']),
+        ingredients: json['ingredients'] != null
+            ? _parseIngredients(json['ingredients'])
+            : null,
+        allergens: json['allergens'] != null
+            ? _parseAllergens(json['allergens'])
+            : null,
+        isFeatured: json['is_featured'] ?? false,
+        sortOrder: _parseIntNullable(json['sort_order']),
+        createdAt: _parseDateTimeNullable(json['created_at']),
+        updatedAt: _parseDateTimeNullable(json['updated_at']),
+        mainCategory: json['main_category'] != null
+            ? MainCategoryModel.fromJson(json['main_category'])
+            : null,
+      );
+    } catch (e) {
+      throw FormatException('Error parsing ProductModel from JSON: $e');
+    }
   }
 
   @override
@@ -321,5 +319,55 @@ class ProductModel extends BaseModel<ProductEntity> {
     }
 
     return null;
+  }
+
+  /// Safe string parsing with null handling
+  static String? _parseString(dynamic value) {
+    if (value == null) return null;
+    return value.toString().trim().isEmpty ? null : value.toString().trim();
+  }
+
+  /// Safe double parsing with default value
+  static double _parseDouble(dynamic value, double defaultValue) {
+    if (value == null) return defaultValue;
+    try {
+      if (value is num) return value.toDouble();
+      return double.parse(value.toString());
+    } catch (e) {
+      return defaultValue;
+    }
+  }
+
+  /// Safe double parsing with nullable result
+  static double? _parseDoubleNullable(dynamic value) {
+    if (value == null) return null;
+    try {
+      if (value is num) return value.toDouble();
+      return double.parse(value.toString());
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Safe int parsing with nullable result
+  static int? _parseIntNullable(dynamic value) {
+    if (value == null) return null;
+    try {
+      if (value is int) return value;
+      if (value is double) return value.toInt();
+      return int.parse(value.toString());
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Safe DateTime parsing with nullable result
+  static DateTime? _parseDateTimeNullable(dynamic value) {
+    if (value == null) return null;
+    try {
+      return DateTime.parse(value.toString());
+    } catch (e) {
+      return null;
+    }
   }
 }

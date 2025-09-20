@@ -1,6 +1,6 @@
 // lib/features/order/data/models/place_order_request_model.dart
 import 'package:equatable/equatable.dart';
-import '../../domain/entities/order_entity.dart';
+import '../../domain/entities/order_enums.dart';
 
 /// 🟨 Place Order Request Model
 class PlaceOrderRequestModel extends Equatable {
@@ -65,6 +65,8 @@ class PlaceOrderRequestModel extends Equatable {
         return 'dine_in';
       case OrderType.delivery:
         return 'delivery';
+      case OrderType.pickup:
+        return 'pickup';
     }
   }
 

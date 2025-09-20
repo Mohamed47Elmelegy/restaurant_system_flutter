@@ -35,10 +35,6 @@ void main() async {
   Bloc.observer = AppBlocObserver();
   await setup();
 
-  // Initialize CartCubit to load data once at app startup
-  // Note: AddressCubit will be initialized when first accessed
-  getIt<CartCubit>().add(LoadCart());
-
   runApp(const MyApp());
 }
 

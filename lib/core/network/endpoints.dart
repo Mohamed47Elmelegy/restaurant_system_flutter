@@ -1,13 +1,23 @@
 class Endpoints {
-  // Use localhost for Android emulator and 127.0.0.1 for iOS simulator
-  //static const String baseUrl = 'http://192.168.1.52:8000/api/v1';
-  static const String baseUrl = 'http://192.168.1.31:8000/api/v1';
+  // ==================== SERVER CONFIGURATION ====================
+  // Choose the appropriate baseUrl for your testing environment:
 
-  // static const String baseUrl =
-  //     'http://10.0.2.2:8000/api/v1'; // For Android Emulator
-  // static const String baseUrl =
-  //     'http://127.0.0.1:8000/api/v1'; // For iOS Simulator
-  //static const String baseUrl = 'http://localhost:8000/api/v1'; // For Web
+  // ✅ CURRENT: Android Emulator (recommended for emulator testing)
+  //  static const String baseUrl = 'http://10.0.2.2:8000/api/v1';
+
+  // 📱 OTHER OPTIONS (uncomment as needed):
+  // static const String baseUrl = 'http://127.0.0.1:8000/api/v1'; // For iOS Simulator
+  // static const String baseUrl = 'http://localhost:8000/api/v1'; // For Web/Desktop
+
+  // 🌐 REAL DEVICE TESTING (when Laravel server is running on network):
+  static const String baseUrl =
+      'http://192.168.1.56:8000/api/v1'; // Previous IP
+  // static const String baseUrl = 'http://192.168.1.31:8000/api/v1'; // Alternative IP
+
+  // ==================== NOTES ====================
+  // - 10.0.2.2 maps to localhost on Android Emulator
+  // - 127.0.0.1 works for iOS Simulator
+  // - For real devices, use your computer's network IP address
 
   // ==================== AUTHENTICATION ENDPOINTS ====================
   static const String login = '/auth/login';
@@ -46,6 +56,10 @@ class Endpoints {
   static const String orders = '/orders';
   static const String order = '/orders'; // + /{order}
   static const String placeOrder = '/orders/place';
+  static const String orderStatusHistory =
+      '/orders'; // + /{order}/status-history
+  static const String cancelOrder = '/orders'; // + /{order}/cancel
+  static const String markOrderPaid = '/orders'; // + /{order}/mark-paid
 
   // ==================== FAVORITES ENDPOINTS (يتطلب توكن) ====================
   static const String favorites = '/favorites';
@@ -85,6 +99,8 @@ class Endpoints {
   static const String adminOrders = '/admin/orders';
   static const String adminOrder = '/admin/orders'; // + /{order}
   static const String adminOrderStatus = '/admin/orders'; // + /{order}/status
+  static const String adminOrderNextStatuses =
+      '/admin/orders'; // + /{order}/next-statuses
   static const String adminOrdersStatistics = '/admin/orders/statistics';
 
   // ==================== ADMIN DASHBOARD ENDPOINTS (يتطلب role:admin) ====================
@@ -116,8 +132,8 @@ class Endpoints {
     String action,
   ) => '$baseUrl$endpoint/$id/$action';
 
-  /// Get full URL for health check
-  static String getHealthCheckUrl() => 'http://127.0.0.1:8000/api/test';
+  /// Get full URL for health check (matches current baseUrl configuration)
+  static String getHealthCheckUrl() => 'http://10.0.2.2:8000/api/test';
 
   static const String tables = '/tables'; // + /{table}
   static const String tableByQr = '/tables/qr'; // + /{qrCode}

@@ -10,6 +10,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_helper.dart';
 import '../../domain/entities/order_entity.dart';
+import '../../domain/entities/order_enums.dart';
 import '../bloc/order_bloc.dart';
 import '../bloc/order_event.dart';
 import '../bloc/order_state.dart';
@@ -107,7 +108,7 @@ class MyOrdersPage extends StatelessWidget {
                     context,
                   ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
                 ),
-                _buildStatusChip(context, order.status),
+                _buildStatusChip(context, order),
               ],
             ),
             SizedBox(height: 8.h),
@@ -122,7 +123,7 @@ class MyOrdersPage extends StatelessWidget {
                 ),
                 SizedBox(width: 4.w),
                 Text(
-                  order.type == OrderType.delivery ? 'توصيل' : 'داخل المطعم',
+                  order.typeDisplayName,
                   style: AppTextStyles.senRegular12(
                     context,
                   ).copyWith(color: ThemeHelper.getSecondaryTextColor(context)),
@@ -194,43 +195,10 @@ class MyOrdersPage extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusChip(BuildContext context, OrderStatus status) {
-    Color backgroundColor;
-    Color textColor;
-    String text;
-
-    switch (status) {
-      case OrderStatus.pending:
-        backgroundColor = Colors.orange.withOpacity(0.1);
-        textColor = Colors.orange;
-        text = 'في الانتظار';
-        break;
-      case OrderStatus.paid:
-        backgroundColor = Colors.blue.withOpacity(0.1);
-        textColor = Colors.blue;
-        text = 'مدفوع';
-        break;
-      case OrderStatus.preparing:
-        backgroundColor = AppColors.lightPrimary.withOpacity(0.1);
-        textColor = AppColors.lightPrimary;
-        text = 'قيد التحضير';
-        break;
-      case OrderStatus.delivering:
-        backgroundColor = Colors.purple.withOpacity(0.1);
-        textColor = Colors.purple;
-        text = 'في الطريق';
-        break;
-      case OrderStatus.completed:
-        backgroundColor = Colors.green.withOpacity(0.1);
-        textColor = Colors.green;
-        text = 'مكتمل';
-        break;
-      case OrderStatus.cancelled:
-        backgroundColor = Colors.red.withOpacity(0.1);
-        textColor = Colors.red;
-        text = 'ملغي';
-        break;
-    }
+  Widget _buildStatusChip(BuildContext context, OrderEntity order) {
+    final statusColor = Color(order.statusColor);
+    final backgroundColor = statusColor.withOpacity(0.1);
+    final textColor = statusColor;
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
@@ -238,9 +206,22 @@ class MyOrdersPage extends StatelessWidget {
         color: backgroundColor,
         borderRadius: BorderRadius.circular(8.r),
       ),
-      child: Text(
-        text,
-        style: AppTextStyles.senMedium12(context).copyWith(color: textColor),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            IconData(order.statusIcon, fontFamily: 'MaterialIcons'),
+            size: 12.sp,
+            color: textColor,
+          ),
+          SizedBox(width: 4.w),
+          Text(
+            order.statusDisplayName,
+            style: AppTextStyles.senMedium12(
+              context,
+            ).copyWith(color: textColor),
+          ),
+        ],
       ),
     );
   }
@@ -267,16 +248,8 @@ class MyOrdersPage extends StatelessWidget {
 
   /// Check if order can be edited
   bool _canEditOrder(OrderEntity order) {
-    if (order.type == OrderType.delivery) {
-      // For delivery orders: can edit if pending or paid (not preparing or delivering yet)
-      return order.status == OrderStatus.pending ||
-          order.status == OrderStatus.paid;
-    } else {
-      // For dine-in orders: can edit until being prepared
-      // They can keep adding items before preparation starts
-      return order.status == OrderStatus.pending ||
-          order.status == OrderStatus.paid;
-    }
+    // Use the new utility method
+    return order.canBeCancelled && !order.isFinalStatus;
   }
 
   /// Navigate to edit order page

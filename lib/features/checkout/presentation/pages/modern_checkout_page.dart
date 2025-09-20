@@ -204,9 +204,7 @@ class _ModernCheckoutView extends StatelessWidget {
           },
           onDineInSelected: () {
             // Move to table selection step instead of going directly to QR
-            context.read<CheckoutProcessBloc>().add(
-              const NavigateToNextStep(),
-            );
+            context.read<CheckoutProcessBloc>().add(const NavigateToNextStep());
           },
         );
 
@@ -433,7 +431,6 @@ class _ModernCheckoutView extends StatelessWidget {
     // This should not happen, but provide a safe fallback
     throw Exception('Cart not found in checkout process');
   }
-
 
   @override
   Widget build(BuildContext context) {

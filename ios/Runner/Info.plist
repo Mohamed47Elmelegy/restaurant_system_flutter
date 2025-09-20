@@ -47,11 +47,33 @@
 		<true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+
+		<!-- إعدادات App Transport Security -->
 		<key>NSAppTransportSecurity</key>
 		<dict>
+			<!-- السماح لأي اتصال HTTP (مفيد في التطوير) -->
 			<key>NSAllowsArbitraryLoads</key>
 			<true/>
+			<!-- استثناءات للـ localhost و IP الجهاز -->
+			<key>NSExceptionDomains</key>
+			<dict>
+				<key>localhost</key>
+				<dict>
+					<key>NSExceptionAllowsInsecureHTTPLoads</key>
+					<true/>
+					<key>NSIncludesSubdomains</key>
+					<true/>
+				</dict>
+				<key>192.168.1.56</key>
+				<dict>
+					<key>NSExceptionAllowsInsecureHTTPLoads</key>
+					<true/>
+					<key>NSIncludesSubdomains</key>
+					<true/>
+				</dict>
+			</dict>
 		</dict>
+
 		<key>io.flutter.embedded_views_preview</key>
 		<true/>
 		<key>NSCameraUsageDescription</key>

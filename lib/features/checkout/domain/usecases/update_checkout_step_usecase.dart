@@ -1,4 +1,4 @@
-import '../../../orders/domain/entities/order_entity.dart';
+import '../../../orders/domain/entities/order_enums.dart';
 import '../entities/checkout_process_entity.dart';
 import '../entities/checkout_step_entity.dart';
 

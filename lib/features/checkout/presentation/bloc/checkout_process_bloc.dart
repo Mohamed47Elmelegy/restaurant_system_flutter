@@ -119,7 +119,9 @@ class CheckoutProcessBloc
     }
 
     try {
-      log('🔄 CheckoutProcessBloc: Updating step ${event.stepType} and proceeding');
+      log(
+        '🔄 CheckoutProcessBloc: Updating step ${event.stepType} and proceeding',
+      );
 
       // First, update the step
       _currentProcess = _updateCheckoutStepUseCase(

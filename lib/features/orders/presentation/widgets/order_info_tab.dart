@@ -4,7 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_helper.dart';
+import '../../../../core/utils/order_utils.dart';
 import '../../domain/entities/order_entity.dart';
+import '../../domain/entities/order_enums.dart';
+import 'status_chip.dart';
 
 class OrderInfoTab extends StatelessWidget {
   final OrderEntity order;
@@ -23,13 +26,17 @@ class OrderInfoTab extends StatelessWidget {
             _buildInfoRow(
               context,
               'نوع الطلب',
-              order.type == OrderType.delivery ? 'توصيل' : 'داخل المطعم',
+              OrderUtils.getOrderTypeDisplayName(order.type),
             ),
-            _buildInfoRow(context, 'حالة الطلب', _getStatusText(order.status)),
+            _buildInfoRowWithWidget(
+              context,
+              'حالة الطلب',
+              StatusChip(status: order.status, fontSize: 11),
+            ),
             _buildInfoRow(
               context,
               'حالة الدفع',
-              _getPaymentStatusText(order.paymentStatus),
+              OrderUtils.getPaymentStatusDisplayName(order.paymentStatus),
             ),
             _buildInfoRow(
               context,
@@ -145,6 +152,33 @@ class OrderInfoTab extends StatelessWidget {
     );
   }
 
+  Widget _buildInfoRowWithWidget(
+    BuildContext context,
+    String label,
+    Widget widget,
+  ) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 8.h),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 120.w,
+            child: Text(
+              label,
+              style: AppTextStyles.senMedium14(
+                context,
+              ).copyWith(color: ThemeHelper.getSecondaryTextColor(context)),
+            ),
+          ),
+          Expanded(
+            child: Align(alignment: Alignment.centerRight, child: widget),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildTotalSummary(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(16.w),
@@ -220,34 +254,6 @@ class OrderInfoTab extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String _getStatusText(OrderStatus status) {
-    switch (status) {
-      case OrderStatus.pending:
-        return 'في الانتظار';
-      case OrderStatus.paid:
-        return 'مدفوع';
-      case OrderStatus.preparing:
-        return 'قيد التحضير';
-      case OrderStatus.delivering:
-        return 'في الطريق';
-      case OrderStatus.completed:
-        return 'مكتمل';
-      case OrderStatus.cancelled:
-        return 'ملغي';
-    }
-  }
-
-  String _getPaymentStatusText(PaymentStatus status) {
-    switch (status) {
-      case PaymentStatus.unpaid:
-        return 'غير مدفوع';
-      case PaymentStatus.paid:
-        return 'مدفوع';
-      case PaymentStatus.refunded:
-        return 'مسترد';
-    }
   }
 
   String _formatDateTime(DateTime dateTime) {

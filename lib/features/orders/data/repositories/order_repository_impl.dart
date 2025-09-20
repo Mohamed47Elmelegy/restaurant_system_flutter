@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import '../../domain/entities/order_entity.dart';
+import '../../domain/entities/order_enums.dart';
 import '../../domain/repositories/order_repository.dart';
 import '../datasources/order_remote_data_source.dart';
 import '../models/order_item_model.dart';

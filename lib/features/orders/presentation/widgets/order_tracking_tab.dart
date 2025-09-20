@@ -4,7 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_helper.dart';
+import '../../../../core/utils/order_utils.dart';
 import '../../domain/entities/order_entity.dart';
+import '../../domain/entities/order_enums.dart';
 
 class OrderTrackingTab extends StatelessWidget {
   final OrderEntity order;
@@ -46,12 +48,17 @@ class OrderTrackingTab extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(8.w),
                 decoration: BoxDecoration(
-                  color: _getStatusColor(order.status).withOpacity(0.1),
+                  color: Color(
+                    OrderUtils.getStatusColor(order.status),
+                  ).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Icon(
-                  _getStatusIcon(order.status),
-                  color: _getStatusColor(order.status),
+                  IconData(
+                    OrderUtils.getStatusIcon(order.status),
+                    fontFamily: 'MaterialIcons',
+                  ),
+                  color: Color(OrderUtils.getStatusColor(order.status)),
                   size: 24.sp,
                 ),
               ),
@@ -61,7 +68,7 @@ class OrderTrackingTab extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _getStatusText(order.status),
+                      OrderUtils.getStatusDisplayName(order.status),
                       style: AppTextStyles.senBold16(context).copyWith(
                         color: ThemeHelper.getPrimaryTextColor(context),
                       ),
@@ -263,7 +270,6 @@ class OrderTrackingTab extends StatelessWidget {
   }
 
   List<TrackingStep> _generateTrackingSteps() {
-    final now = DateTime.now();
     final steps = <TrackingStep>[];
 
     // Order placed
@@ -291,7 +297,7 @@ class OrderTrackingTab extends StatelessWidget {
     // Preparing
     if ([
       OrderStatus.preparing,
-      OrderStatus.delivering,
+      OrderStatus.onTheWay,
       OrderStatus.completed,
     ].contains(order.status)) {
       steps.add(
@@ -302,7 +308,7 @@ class OrderTrackingTab extends StatelessWidget {
               ? null
               : _formatTime(order.updatedAt),
           isCompleted: [
-            OrderStatus.delivering,
+            OrderStatus.onTheWay,
             OrderStatus.completed,
           ].contains(order.status),
         ),
@@ -311,15 +317,12 @@ class OrderTrackingTab extends StatelessWidget {
 
     // Delivering (for delivery orders)
     if (order.type == OrderType.delivery &&
-        [
-          OrderStatus.delivering,
-          OrderStatus.completed,
-        ].contains(order.status)) {
+        [OrderStatus.onTheWay, OrderStatus.completed].contains(order.status)) {
       steps.add(
         TrackingStep(
           title: 'في الطريق إليك',
           description: 'المندوب في الطريق لتوصيل طلبك',
-          time: order.status == OrderStatus.delivering
+          time: order.status == OrderStatus.onTheWay
               ? null
               : _formatTime(order.updatedAt),
           isCompleted: order.status == OrderStatus.completed,
@@ -343,71 +346,34 @@ class OrderTrackingTab extends StatelessWidget {
     return steps;
   }
 
-  Color _getStatusColor(OrderStatus status) {
-    switch (status) {
-      case OrderStatus.pending:
-        return Colors.orange;
-      case OrderStatus.paid:
-        return Colors.blue;
-      case OrderStatus.preparing:
-        return AppColors.lightPrimary;
-      case OrderStatus.delivering:
-        return Colors.purple;
-      case OrderStatus.completed:
-        return Colors.green;
-      case OrderStatus.cancelled:
-        return Colors.red;
-    }
-  }
-
-  IconData _getStatusIcon(OrderStatus status) {
-    switch (status) {
-      case OrderStatus.pending:
-        return Icons.access_time;
-      case OrderStatus.paid:
-        return Icons.payment;
-      case OrderStatus.preparing:
-        return Icons.restaurant;
-      case OrderStatus.delivering:
-        return Icons.delivery_dining;
-      case OrderStatus.completed:
-        return Icons.check_circle;
-      case OrderStatus.cancelled:
-        return Icons.cancel;
-    }
-  }
-
-  String _getStatusText(OrderStatus status) {
-    switch (status) {
-      case OrderStatus.pending:
-        return 'في انتظار التأكيد';
-      case OrderStatus.paid:
-        return 'تم الدفع';
-      case OrderStatus.preparing:
-        return 'قيد التحضير';
-      case OrderStatus.delivering:
-        return 'في الطريق';
-      case OrderStatus.completed:
-        return 'مكتمل';
-      case OrderStatus.cancelled:
-        return 'ملغي';
-    }
-  }
-
   String _getStatusDescription(OrderStatus status) {
     switch (status) {
       case OrderStatus.pending:
         return 'سيتم تأكيد طلبك قريباً';
+      case OrderStatus.confirmed:
+        return 'تم تأكيد طلبك بنجاح';
       case OrderStatus.paid:
         return 'تم استلام الدفع وسيبدأ التحضير';
       case OrderStatus.preparing:
         return 'المطعم يحضر طلبك الآن';
-      case OrderStatus.delivering:
+      case OrderStatus.readyToServe:
+        return 'طلبك جاهز للتقديم على الطاولة';
+      case OrderStatus.served:
+        return 'تم تقديم طلبك بنجاح';
+      case OrderStatus.readyForPickup:
+        return 'طلبك جاهز للاستلام من المطعم';
+      case OrderStatus.pickedUp:
+        return 'تم استلام طلبك بنجاح';
+      case OrderStatus.onTheWay:
         return 'المندوب في الطريق إليك';
+      case OrderStatus.delivered:
+        return 'تم توصيل طلبك بنجاح';
       case OrderStatus.completed:
-        return 'تم ${order.type == OrderType.delivery ? 'توصيل' : 'تقديم'} طلبك بنجاح';
+        return 'تم إنهاء طلبك بنجاح';
       case OrderStatus.cancelled:
         return 'تم إلغاء الطلب';
+      case OrderStatus.refunded:
+        return 'تم استرداد مبلغ الطلب';
     }
   }
 

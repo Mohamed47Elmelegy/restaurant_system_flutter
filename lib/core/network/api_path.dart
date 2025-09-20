@@ -85,8 +85,19 @@ class ApiPath {
   static String order(int orderId) =>
       Endpoints.getUrlWithId(Endpoints.order, orderId);
   static String placeOrder() => Endpoints.getUrl(Endpoints.placeOrder);
+  static String orderStatusHistory(int orderId) =>
+      Endpoints.getUrlWithIdAndAction(
+        Endpoints.orderStatusHistory,
+        orderId,
+        'status-history',
+      );
   static String cancelOrder(int orderId) =>
-      Endpoints.getUrlWithIdAndAction(Endpoints.orders, orderId, 'cancel');
+      Endpoints.getUrlWithIdAndAction(Endpoints.cancelOrder, orderId, 'cancel');
+  static String markOrderPaid(int orderId) => Endpoints.getUrlWithIdAndAction(
+    Endpoints.markOrderPaid,
+    orderId,
+    'mark-paid',
+  );
 
   // ==================== FAVORITES PATHS (يتطلب توكن) ====================
   static String favorites() => Endpoints.getUrl(Endpoints.favorites);
@@ -160,6 +171,12 @@ class ApiPath {
         Endpoints.adminOrderStatus,
         orderId,
         'status',
+      );
+  static String adminOrderNextStatuses(int orderId) =>
+      Endpoints.getUrlWithIdAndAction(
+        Endpoints.adminOrderNextStatuses,
+        orderId,
+        'next-statuses',
       );
   static String adminOrdersStatistics() =>
       Endpoints.getUrl(Endpoints.adminOrdersStatistics);
