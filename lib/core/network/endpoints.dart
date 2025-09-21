@@ -11,7 +11,7 @@ class Endpoints {
 
   // 🌐 REAL DEVICE TESTING (when Laravel server is running on network):
   static const String baseUrl =
-      'http://192.168.1.56:8000/api/v1'; // Previous IP
+      'http://192.168.1.59:8000/api/v1'; // Previous IP
   // static const String baseUrl = 'http://192.168.1.31:8000/api/v1'; // Alternative IP
 
   // ==================== NOTES ====================
