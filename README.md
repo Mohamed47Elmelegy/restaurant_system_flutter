@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/images/Walima-Logo.png" width="550" alt="Walima Restaurant System"></p>
+<p align="center"><img src="assets/Walima-Logo.png" width="550" alt="Walima Restaurant System"></p>
 
 <p align="center" style="margin-top: 20px;">
     <a href=""><img src="https://img.shields.io/badge/Flutter-3.8.1-blue.svg" alt="Flutter Version"></a>
@@ -103,17 +103,17 @@ A comprehensive digital restaurant management solution built with Flutter and La
 ## Screenshots
 
 <p align="center">
-  <img src="restaurant_system_flutter/assets/screenshots/Home.jpg" width="200" alt="Home Screen">
-  <img src="restaurant_system_flutter/assets/screenshots/placeordar.jpg" width="200" alt="Place Order">
-  <img src="restaurant_system_flutter/assets/screenshots/table.jpg" width="200" alt="Table Management">
-  <img src="restaurant_system_flutter/assets/screenshots/Myordars.jpg" width="200" alt="My Orders">
+  <img src="assets/Home.jpg" width="200" alt="Home Screen">
+  <img src="assets/placeordar.jpg" width="200" alt="Place Order">
+  <img src="assets/table.jpg" width="200" alt="Table Management">
+  <img src="assets/Myordars.jpg" width="200" alt="My Orders">
 </p>
 
 <p align="center">
-  <img src="restaurant_system_flutter/assets/screenshots/placeordar1.jpg" width="200" alt="Order Details">
-  <img src="restaurant_system_flutter/assets/screenshots/myordars2.jpg" width="200" alt="Order History">
-  <img src="restaurant_system_flutter/assets/screenshots/Address.jpg" width="200" alt="Address Management">
-  <img src="restaurant_system_flutter/assets/screenshots/settings.jpg" width="200" alt="Settings">
+  <img src="assets/placeordar1.jpg" width="200" alt="Order Details">
+  <img src="assets/myordars2.jpg" width="200" alt="Order History">
+  <img src="assets/Address.jpg" width="200" alt="Address Management">
+  <img src="assets/settings.jpg" width="200" alt="Settings">
 </p>
 
 ---
