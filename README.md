@@ -1,252 +1,175 @@
-# 🍽️ Restaurant Management System - Walima
+<p align="center"><img src="assets/images/Walima-Logo.png" width="550" alt="Walima Restaurant System"></p>
 
-<div align="center">
-  
-![Restaurant System](https://img.shields.io/badge/Walima-Restaurant%20Management%20System-orange.svg)
-![Flutter](https://img.shields.io/badge/Flutter-3.8.1-blue.svg)
-![Laravel](https://img.shields.io/badge/Laravel-12.0-red.svg)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
+<p align="center" style="margin-top: 20px;">
+    <a href=""><img src="https://img.shields.io/badge/Flutter-3.8.1-blue.svg" alt="Flutter Version"></a>
+    <a href=""><img src="https://img.shields.io/badge/Dart-3.8.1-blue.svg" alt="Dart Version"></a>
+    <a href=""><img src="https://img.shields.io/badge/Laravel-12.0-red.svg" alt="Laravel Version"></a>
+    <a href=""><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License"></a>
+</p>
 
-**A comprehensive digital restaurant management solution with Flutter mobile app and Laravel backend**
+# Walima Restaurant Management System
 
-[Features](#-features) • [Tech Stack](#-tech-stack) • [Installation](#-installation) • [API Documentation](#-api-documentation) • [Contributing](#-contributing)
-
-</div>
+A comprehensive digital restaurant management solution built with Flutter and Laravel, offering seamless dining experiences for both customers and restaurant staff.
 
 ---
 
-## 📋 Project Overview
+## Features
 
-**Restaurant Management System - Walima** is a modern, full-stack solution designed to digitize restaurant operations. It combines a beautiful Flutter mobile application for customers and staff with a robust Laravel backend API and advanced admin panel.
+### Customer Features
+- 🔐 **Authentication**
+  - Secure login and registration
+  - Email verification and password reset
+  - User profile management
+  - Guest browsing capabilities
 
-### 🎯 Key Objectives
-- **Improve customer experience** by 60% through digital ordering
-- **Increase operational efficiency** by 40% through automation
-- **Drive business growth** by 15% using analytical data
-- **Achieve 95% order accuracy** with digital order management
-- **Reach 70% customer adoption** in 6 months
+- 🍽️ **Digital Dining**
+  - QR code table scanning for dine-in orders
+  - Digital menu browsing with categories
+  - Real-time product search and filtering
+  - Shopping cart with instant updates
+  - Dual order types (delivery/dine-in)
 
----
+- 📱 **Order Management**
+  - Real-time order tracking
+  - Order history and reordering
+  - Special instructions support
+  - Push notifications for updates
+  - Multiple payment methods
 
-## ✨ Features
+- 🎨 **User Experience**
+  - Dark/Light theme support
+  - Responsive design for all devices
+  - Smooth animations and transitions
+  - Offline browsing capability
+  - Multi-language support (Arabic/English)
 
-### 📱 **Customer Mobile App (Flutter)**
+### Restaurant Management Features
+- 📊 **Admin Dashboard**
+  - Real-time statistics and analytics
+  - Revenue tracking and reports
+  - Performance metrics monitoring
+  - User management system
 
-#### 🔐 **Authentication & User Management**
-- Secure user registration and login
-- Email verification and password reset
-- User profile management
-- Guest browsing capabilities
+- 🏢 **Operations**
+  - Table management with QR codes
+  - Real-time order processing
+  - Kitchen display system
+  - Staff interface and roles
+  - Inventory tracking
 
-#### 🍽️ **Menu & Ordering**
-- **QR Code Table Scanning** - Scan table QR codes for dine-in orders
-- **Digital Menu Browsing** - Beautiful, categorized menu display
-- **Real-time Product Search** - Find dishes instantly
-- **Shopping Cart** - Add, remove, and modify orders
-- **Dual Order Types**:
-  - 🏠 **Delivery Orders** - With address management and delivery fees
-  - 🪑 **Dine-in Orders** - Table-based ordering with no delivery fees
-
-#### 📊 **Order Management**
-- Real-time order tracking and status updates
-- Order history and reordering functionality
-- Special instructions and customizations
-- Push notifications for order updates
-
-#### 🎨 **User Experience**
-- **Dark/Light Theme** support
-- **Responsive Design** - Works on all screen sizes
-- **Skeleton Loading** - Smooth loading states
-- **Offline Support** - Cache management for offline browsing
-- **Multi-language Ready** - Arabic and English support
-
-### 🖥️ **Admin Dashboard & Backend (Laravel)**
-
-#### 📊 **Admin Panel (Filament)**
-- **Product Management** - Add, edit, delete menu items
-- **Order Management** - View, update, and track all orders
-- **Category Management** - Organize menu categories and meal times
-- **User Management** - Customer and staff account management
-- **Real-time Statistics** - Revenue, orders, and performance metrics
-
-#### 🏢 **Restaurant Operations**
-- **Table Management** - QR code generation and table status tracking
-- **Real-time Order Processing** - Live order updates with Pusher
-- **Inventory Tracking** - Stock management and alerts
-- **Staff Interface** - Kitchen and service staff dashboards
-
-#### 🔧 **Technical Features**
-- **RESTful API** - Comprehensive API for mobile app
-- **Real-time Broadcasting** - Pusher integration for live updates
-- **Secure Authentication** - Laravel Sanctum for API security
-- **File Management** - Image upload and storage
-- **Database Optimization** - Efficient queries and caching
+- 🔧 **Technical Features**
+  - RESTful API architecture
+  - Real-time broadcasting with Pusher
+  - Secure authentication (Laravel Sanctum)
+  - File management and storage
+  - Database optimization
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-### Frontend (Flutter)
-```yaml
-Framework: Flutter 3.8.1
-Language: Dart
-State Management: BLoC Pattern
-Architecture: Clean Architecture
-```
+### Frontend - Flutter Mobile App
+- **Framework:** Flutter 3.8.1
+- **Language:** Dart 3.8.1
+- **State Management:** BLoC Pattern
+- **Architecture:** Clean Architecture
+- **UI:** Material Design 3
 
-#### 📦 Key Dependencies (From actual pubspec.yaml)
-- **flutter_bloc** `^8.1.3` - State management
-- **dio** `^5.3.2` - HTTP client for API calls
-- **hive** `^2.2.3` - Local database and caching
-- **flutter_secure_storage** `^9.0.0` - Secure token storage
-- **qr_code_scanner_plus** `^2.0.10+1` - QR code scanning
-- **fl_chart** `^1.0.0` - Charts and analytics
-- **cached_network_image** `^3.3.1` - Image caching
-- **lottie** `^3.1.2` - Animations
-- **connectivity_plus** `^4.0.2` - Network connectivity
-- **flutter_screenutil** `^5.9.3` - Responsive design
-- **bot_toast** `^4.0.0` - Notifications and messages
-- **skeletonizer** `^2.1.0+1` - Loading states
-- **camera** `^0.11.0+2` - Camera support
+### Backend - Laravel API
+- **Framework:** Laravel 12.0
+- **Language:** PHP 8.2+
+- **Database:** MySQL/PostgreSQL
+- **Authentication:** Laravel Sanctum
+- **Admin Panel:** Filament 3.x
+- **Real-time:** Pusher
 
-### Backend (Laravel)
-```php
-Framework: Laravel 12.0
-Language: PHP 8.2+
-Database: MySQL/PostgreSQL
-Authentication: Laravel Sanctum
-Admin Panel: Filament 3.x
-```
+### Key Dependencies
+#### Flutter
+- `flutter_bloc ^8.1.3` - State management
+- `dio ^5.3.2` - HTTP client
+- `hive ^2.2.3` - Local storage
+- `qr_code_scanner_plus ^2.0.10+1` - QR scanning
+- `fl_chart ^1.0.0` - Charts
+- `cached_network_image ^3.3.1` - Image caching
 
-#### 📦 Key Packages (From actual composer.json)
-- **filament/filament** - Modern admin panel
-- **laravel/sanctum** `^4.1` - API authentication
-- **pusher/pusher-php-server** `^7.2` - Real-time broadcasting
-- **bezhansalleh/filament-shield** `^4.0` - Role and permission management
-- **spatie/laravel-permission** `^6.20` - Advanced permission system
-- **leandrocfe/filament-apex-charts** `4.0.0-beta1` - Analytics charts
-- **awcodes/light-switch** `^2.0` - Theme switching
+#### Laravel
+- `filament/filament` - Admin panel
+- `laravel/sanctum ^4.1` - API auth
+- `pusher/pusher-php-server ^7.2` - Real-time
+- `spatie/laravel-permission ^6.20` - Permissions
 
 ---
 
-## 📱 Screenshots
+## Screenshots
 
-<div align="center">
+<p align="center">
+  <img src="assets/Home.jpg" width="200" alt="Home Screen">
+  <img src="assets/placeordar.jpg" width="200" alt="Place Order">
+  <img src="assets/table.jpg" width="200" alt="Table Management">
+  <img src="assets/Myordars.jpg" width="200" alt="My Orders">
+</p>
 
-| Home Screen | Menu Browsing | QR Scanning | Order Tracking |
-|-------------|---------------|-------------|----------------|
-| ![Home](assets/screenshots/home.png) | ![Menu](assets/screenshots/menu.png) | ![QR](assets/screenshots/qr.png) | ![Orders](assets/screenshots/orders.png) |
-
-| Admin Dashboard | Order Management | Product Management | Analytics |
-|-----------------|------------------|-------------------|-----------|
-| ![Dashboard](assets/screenshots/admin-dashboard.png) | ![Admin Orders](assets/screenshots/admin-orders.png) | ![Products](assets/screenshots/products.png) | ![Analytics](assets/screenshots/analytics.png) |
-
-</div>
+<p align="center">
+  <img src="assets/placeordar1.jpg" width="200" alt="Order Details">
+  <img src="assets/myordars2.jpg" width="200" alt="Order History">
+  <img src="assets/Address.jpg" width="200" alt="Address Management">
+  <img src="assets/settings.jpg" width="200" alt="Settings">
+</p>
 
 ---
 
-## 🚀 Installation
+## Getting Started
 
 ### Prerequisites
-- **Flutter SDK** 3.8.1 or higher
-- **Dart SDK** 3.8.1 or higher  
-- **PHP** 8.2 or higher
-- **Composer** 2.x
-- **Node.js** 16+ (for asset compilation)
-- **MySQL** 8.0 or PostgreSQL 13+
 
-### 🔧 Backend Setup (Laravel)
+- Flutter SDK (3.8.1 or higher)
+- Dart SDK (3.8.1 or higher)
+- PHP 8.2 or higher
+- Composer 2.x
+- Node.js 16+ (for asset compilation)
+- MySQL 8.0 or PostgreSQL 13+
+- Android Studio / VS Code
+- Git
+- Android SDK / Xcode (for iOS development)
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/restaurant-system.git
-   cd restaurant-system/Restaurant-System
-   ```
+### Installation
 
-2. **Install PHP dependencies**
-   ```bash
-   composer install
-   ```
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/Walima-Restaurant-System.git
+cd Walima-Restaurant-System
+```
 
-3. **Environment setup**
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   ```
+2. Backend setup (Laravel):
+```bash
+cd Restaurant-System
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate:fresh --seed
+php artisan make:filament-user
+php artisan serve
+```
 
-4. **Configure your `.env` file**
-   ```env
-   DB_CONNECTION=mysql
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_DATABASE=restaurant_system
-   DB_USERNAME=your_username
-   DB_PASSWORD=your_password
-   
-   # Pusher Configuration (for real-time features)
-   PUSHER_APP_ID=your_app_id
-   PUSHER_APP_KEY=your_app_key
-   PUSHER_APP_SECRET=your_app_secret
-   PUSHER_APP_CLUSTER=your_cluster
-   BROADCAST_DRIVER=pusher
-   ```
+3. Frontend setup (Flutter):
+```bash
+cd ../restaurant_system_flutter
+flutter pub get
+flutter packages pub run build_runner build
+```
 
-5. **Database setup**
-   ```bash
-   php artisan migrate:fresh --seed
-   ```
+4. Configure API endpoint in `lib/core/network/endpoints.dart`:
+```dart
+// For Android Emulator
+static const String baseUrl = 'http://10.0.2.2:8000/api/v1';
+// For Real Devices (use your computer's IP)
+static const String baseUrl = 'http://192.168.1.X:8000/api/v1';
+```
 
-6. **Create admin user**
-   ```bash
-   php artisan make:filament-user
-   ```
-
-7. **Start the server**
-   ```bash
-   php artisan serve
-   ```
-
-8. **Access admin panel**
-   Open `http://localhost:8000/admin` in your browser
-
-### 📱 Frontend Setup (Flutter)
-
-1. **Navigate to Flutter project**
-   ```bash
-   cd ../restaurant_system_flutter
-   ```
-
-2. **Install dependencies**
-   ```bash
-   flutter pub get
-   ```
-
-3. **Generate necessary files**
-   ```bash
-   flutter packages pub run build_runner build
-   ```
-
-4. **Configure API endpoint**
-   Update the base URL in `lib/core/network/endpoints.dart`:
-   ```dart
-   // Choose the appropriate URL for your testing environment:
-   
-   // For Android Emulator
-   static const String baseUrl = 'http://10.0.2.2:8000/api/v1';
-   
-   // For Real Devices (use your computer's IP)
-   static const String baseUrl = 'http://192.168.1.X:8000/api/v1';
-   
-   // For iOS Simulator
-   static const String baseUrl = 'http://127.0.0.1:8000/api/v1';
-   ```
-
-5. **Run the app**
-   ```bash
-   flutter run
-   ```
-
-> 💡 **Note**: Make sure to run the Laravel server first before running the Flutter app
+5. Run the app:
+```bash
+flutter run
+```
 
 ---
 
@@ -398,90 +321,91 @@ Restaurant-System/
 
 ---
 
-## 🧪 Testing
+## Building for Production
 
-### Flutter Tests
+### Android
 ```bash
-cd restaurant_system_flutter
-flutter test
+flutter build apk --release
 ```
 
-### Laravel Tests
+### iOS
 ```bash
+flutter build ios --release
+```
+
+## Testing
+
+Run the tests using:
+```bash
+# Flutter tests
+cd restaurant_system_flutter
+flutter test
+
+# Laravel tests
 cd Restaurant-System
 php artisan test
 ```
 
 ---
 
-## 🚀 Deployment
+## Project Structure
 
-### Mobile App Deployment
-1. **Android**: `flutter build apk --release`
-2. **iOS**: `flutter build ios --release`
-
-### Backend Deployment
-1. Configure production environment
-2. Set up SSL certificates
-3. Configure domain and hosting
-4. Set up database and Redis
-5. Configure Pusher for production
-
----
-
-## 📄 Documentation
-
-- 📱 [Flutter Setup Guide](FLUTTER_SETUP_STEPS.md)
-- 🖥️ [Laravel Setup Guide](LARAVEL_SETUP_STEPS.md)
-- 🔄 [Real-time Features Setup](REALTIME_ORDERS_SETUP.md)
-- 📊 [Dashboard Documentation](restaurant_system_flutter/DASHBOARD_README.md)
-- 🛠️ [Development Guide](DEVELOPER_BRAIN_LIGHT_CONTENT.md)
-- 🎯 [Project Management](PROJECT_MANAGEMENT_TEMPLATE.md)
-- 📋 [Orders Refactoring Summary](restaurant_system_flutter/lib/features/orders/REFACTORING_SUMMARY.md)
-- 🔧 [Pusher Setup Guide](PUSHER_CREDENTIALS_GUIDE.md)
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Please follow these steps:
-
-1. **Fork the repository**
-2. **Create a feature branch** (`git checkout -b feature/amazing-feature`)
-3. **Commit your changes** (`git commit -m 'Add amazing feature'`)
-4. **Push to the branch** (`git push origin feature/amazing-feature`)
-5. **Open a Pull Request**
-
-### Development Guidelines
-- Follow Flutter and Laravel best practices
-- Write tests for new features
-- Update documentation as needed
-- Use meaningful commit messages
+```
+Walima-Restaurant-System/
+├── Restaurant-System/          # Laravel Backend
+│   ├── app/
+│   │   ├── Filament/          # Admin panel resources
+│   │   ├── Http/Controllers/  # API controllers
+│   │   ├── Models/            # Eloquent models
+│   │   └── Services/          # Business logic
+│   ├── database/
+│   │   ├── migrations/        # Database migrations
+│   │   └── seeders/          # Data seeders
+│   ├── routes/
+│   │   ├── api.php           # API routes
+│   │   └── web.php           # Web routes
+│   └── config/               # Configuration files
+└── restaurant_system_flutter/ # Flutter Mobile App
+    ├── lib/
+    │   ├── core/             # Core functionality
+    │   │   ├── network/      # API endpoints
+    │   │   ├── theme/        # App theming
+    │   │   └── utils/        # Utilities
+    │   ├── features/         # Feature modules
+    │   │   ├── auth/         # Authentication
+    │   │   ├── home/         # Home screen
+    │   │   ├── menu/         # Menu browsing
+    │   │   ├── cart/         # Shopping cart
+    │   │   ├── orders/       # Order management
+    │   │   └── admin/        # Admin features
+    │   └── main.dart         # Entry point
+    └── assets/               # Images and assets
+```
 
 ---
 
-## 📝 License
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
----
+## Support
 
-## 👥 Team
+For support, email elmelegy.dev@gmail.com
 
-- **Frontend Developer** - Flutter Mobile App
-- **Backend Developer** - Laravel API & Admin Panel  
-- **UI/UX Designer** - App Design & User Experience
-- **Project Manager** - Coordination & Planning
-
----
-
-## 🎉 Acknowledgments
+## Acknowledgments
 
 - Flutter team for the amazing framework
 - Laravel team for the robust backend framework
 - Filament team for the beautiful admin panel
 - Pusher for real-time functionality
-- All contributors and testers
 
 ---
 
@@ -489,6 +413,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **⭐ Star this repository if you find it helpful!**
 
-Made with ❤️ by the Restaurant System Team - Walima
+Made with ❤️ by the Walima Restaurant System Team
 
 </div>
