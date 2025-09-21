@@ -108,28 +108,32 @@ class _AddAddressPageContentState extends State<_AddAddressPageContent> {
       );
 
       // Add address using cubit
-      context.read<AddressCubit>().add(AddAddress(address: address));
+      if (mounted) {
+        context.read<AddressCubit>().add(AddAddress(address: address));
+      }
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'An error occurred: $e',
-            style: AppTextStyles.senBold14(
-              context,
-            ).copyWith(color: Colors.white),
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'An error occurred: $e',
+              style: AppTextStyles.senBold14(
+                context,
+              ).copyWith(color: Colors.white),
+            ),
+            backgroundColor: AppColors.error,
+            duration: const Duration(seconds: 3),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.r),
+            ),
           ),
-          backgroundColor: AppColors.error,
-          duration: const Duration(seconds: 3),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.r),
-          ),
-        ),
-      );
+        );
+      }
     }
   }
 

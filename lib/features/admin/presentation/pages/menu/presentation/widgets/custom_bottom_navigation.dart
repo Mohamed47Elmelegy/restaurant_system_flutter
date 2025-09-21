@@ -21,7 +21,7 @@ class CustomBottomNavigation extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
+            color: Colors.grey.withValues(alpha: 0.2),
             spreadRadius: 1,
             blurRadius: 10,
             offset: const Offset(0, -2),
@@ -54,7 +54,7 @@ class CustomBottomNavigation extends StatelessWidget {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.lightPrimary.withOpacity(0.3),
+                  color: AppColors.lightPrimary.withValues(alpha: 0.3),
                   spreadRadius: 2,
                   blurRadius: 8,
                   offset: const Offset(0, 4),
@@ -97,7 +97,7 @@ class CustomBottomNavigation extends StatelessWidget {
         height: 50,
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.lightPrimary.withOpacity(0.1)
+              ? AppColors.lightPrimary.withValues(alpha: 0.1)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(25),
         ),

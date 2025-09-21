@@ -113,13 +113,15 @@ class _PaymentMethodStepState extends State<PaymentMethodStep> {
             border: Border.all(
               color: isSelected && isEnabled
                   ? AppColors.lightPrimary
-                  : ThemeHelper.getSecondaryTextColor(context).withOpacity(0.2),
+                  : ThemeHelper.getSecondaryTextColor(
+                      context,
+                    ).withValues(alpha: 0.2),
               width: isSelected && isEnabled ? 2 : 1,
             ),
             boxShadow: isSelected && isEnabled
                 ? [
                     BoxShadow(
-                      color: AppColors.lightPrimary.withOpacity(0.2),
+                      color: AppColors.lightPrimary.withValues(alpha: 0.2),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),
@@ -133,7 +135,7 @@ class _PaymentMethodStepState extends State<PaymentMethodStep> {
                 decoration: BoxDecoration(
                   color: isSelected && isEnabled
                       ? AppColors.lightPrimary
-                      : AppColors.lightPrimary.withOpacity(0.1),
+                      : AppColors.lightPrimary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Icon(
@@ -167,7 +169,7 @@ class _PaymentMethodStepState extends State<PaymentMethodStep> {
                               vertical: 2.h,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.orange.withOpacity(0.1),
+                              color: Colors.orange.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(4.r),
                             ),
                             child: Text(

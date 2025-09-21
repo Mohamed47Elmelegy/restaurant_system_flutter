@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_helper.dart';
@@ -48,18 +47,16 @@ class OrderItemsTab extends StatelessWidget {
               width: 60.w,
               height: 60.h,
               decoration: BoxDecoration(
-                color: ThemeHelper.getSecondaryTextColor(
-                  context,
-                ).withOpacity(0.1),
+                color: const Color(0xFF8DA0B3),
+                borderRadius: BorderRadius.circular(8.r),
               ),
               child: CachedImageThumbnail(
-                imageUrl: item.image,
-                width: 50.w,
-                height: 50.h,
+                imageUrl: item.image ?? '',
+                width: 60.w,
+                height: 60.h,
                 fit: BoxFit.cover,
-                backgroundColor: ThemeHelper.getSecondaryTextColor(
-                  context,
-                ).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8.r),
+                backgroundColor: const Color(0xFF8DA0B3),
               ),
             ),
           ),
@@ -90,7 +87,7 @@ class OrderItemsTab extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      '${item.unitPrice.toStringAsFixed(2)} ر.س',
+                      '${item.unitPrice.toStringAsFixed(1)} ج.م',
                       style: AppTextStyles.senMedium14(
                         context,
                       ).copyWith(color: AppColors.lightPrimary),
@@ -102,7 +99,7 @@ class OrderItemsTab extends StatelessWidget {
                         vertical: 4.h,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.lightPrimary.withOpacity(0.1),
+                        color: AppColors.lightPrimary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(6.r),
                       ),
                       child: Text(
@@ -123,7 +120,7 @@ class OrderItemsTab extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                '${item.totalPrice.toStringAsFixed(2)} ر.س',
+                '${item.totalPrice.toStringAsFixed(2)} ج.م',
                 style: AppTextStyles.senBold16(
                   context,
                 ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),

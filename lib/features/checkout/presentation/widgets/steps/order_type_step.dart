@@ -10,7 +10,8 @@ import '../../../../orders/domain/entities/order_enums.dart';
 class OrderTypeStep extends StatefulWidget {
   final OrderType? selectedOrderType;
   final ValueChanged<OrderType> onOrderTypeSelected;
-  final VoidCallback? onDineInSelected; // Callback for dine-in to handle QR scanning
+  final VoidCallback?
+  onDineInSelected; // Callback for dine-in to handle QR scanning
 
   const OrderTypeStep({
     super.key,
@@ -85,7 +86,7 @@ class _OrderTypeStepState extends State<OrderTypeStep> {
           _selectedType = type;
         });
         widget.onOrderTypeSelected(type);
-        
+
         // If dine-in is selected and callback is provided, trigger QR scanning
         if (type == OrderType.dineIn && widget.onDineInSelected != null) {
           widget.onDineInSelected!();
@@ -100,13 +101,15 @@ class _OrderTypeStepState extends State<OrderTypeStep> {
           border: Border.all(
             color: isSelected
                 ? AppColors.lightPrimary
-                : ThemeHelper.getSecondaryTextColor(context).withOpacity(0.2),
+                : ThemeHelper.getSecondaryTextColor(
+                    context,
+                  ).withValues(alpha: 0.2),
             width: isSelected ? 2 : 1,
           ),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: AppColors.lightPrimary.withOpacity(0.2),
+                    color: AppColors.lightPrimary.withValues(alpha: 0.2),
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),
@@ -120,7 +123,7 @@ class _OrderTypeStepState extends State<OrderTypeStep> {
               decoration: BoxDecoration(
                 color: isSelected
                     ? AppColors.lightPrimary
-                    : AppColors.lightPrimary.withOpacity(0.1),
+                    : AppColors.lightPrimary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8.r),
               ),
               child: Icon(

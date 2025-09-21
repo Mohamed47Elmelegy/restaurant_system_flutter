@@ -155,4 +155,19 @@ class OrderRepositoryImpl implements OrderRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<OrderEntity> updateOrderStatus({
+    required int orderId,
+    required OrderStatus status,
+    PaymentStatus? paymentStatus,
+    String? notes,
+  }) {
+    return remoteDataSource.updateOrderStatus(
+      orderId: orderId,
+      status: status.name,
+      paymentStatus: paymentStatus?.name,
+      notes: notes,
+    );
+  }
 }

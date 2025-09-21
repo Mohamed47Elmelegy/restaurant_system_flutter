@@ -1,6 +1,7 @@
 import '../../data/models/order_item_model.dart';
 import '../../data/models/place_order_request_model.dart';
 import '../entities/order_entity.dart';
+import '../entities/order_enums.dart';
 
 abstract class OrderRepository {
   Future<List<OrderEntity>> getAllOrders();
@@ -13,4 +14,11 @@ abstract class OrderRepository {
     PlaceOrderRequestModel request,
     List<OrderItemModel> items,
   );
+
+  Future<OrderEntity> updateOrderStatus({
+    required int orderId,
+    required OrderStatus status,
+    PaymentStatus? paymentStatus,
+    String? notes,
+  });
 }

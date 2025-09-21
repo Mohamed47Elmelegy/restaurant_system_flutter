@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
 
 import '../../../../core/config/constants.dart';
 import '../../../../core/constants/dialog_constants.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
+import '../../../../core/theme/theme_cubit.dart';
 import '../../../../core/theme/theme_helper.dart';
-import '../../../../core/theme/theme_provider.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -70,12 +70,12 @@ class SettingsPage extends StatelessWidget {
               icon: Icons.dark_mode_outlined,
               title: 'المظهر',
               subtitle: 'تغيير بين الوضع الفاتح والداكن',
-              trailing: Consumer<ThemeProvider>(
-                builder: (context, themeProvider, child) {
+              trailing: BlocBuilder<ThemeCubit, ThemeState>(
+                builder: (context, themeState) {
                   return Switch(
-                    value: themeProvider.themeMode == ThemeMode.dark,
+                    value: themeState.isDarkMode,
                     onChanged: (value) {
-                      themeProvider.toggleTheme();
+                      context.read<ThemeCubit>().toggleTheme();
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
@@ -267,7 +267,7 @@ class SettingsPage extends StatelessWidget {
         borderRadius: Constants.mediumRadius,
         boxShadow: [
           BoxShadow(
-            color: AppColors.lightPrimary.withOpacity(0.3),
+            color: AppColors.lightPrimary.withValues(alpha: 0.3),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -300,14 +300,14 @@ class SettingsPage extends StatelessWidget {
                   'ahmed.mohamed@example.com',
                   style: AppTextStyles.senRegular14(
                     context,
-                  ).copyWith(color: Colors.white.withOpacity(0.9)),
+                  ).copyWith(color: Colors.white.withValues(alpha: 0.9)),
                 ),
                 SizedBox(height: Constants.extraSmallSpacing),
                 Text(
                   'عضو منذ يناير 2024',
                   style: AppTextStyles.senRegular12(
                     context,
-                  ).copyWith(color: Colors.white.withOpacity(0.8)),
+                  ).copyWith(color: Colors.white.withValues(alpha: 0.8)),
                 ),
               ],
             ),
@@ -326,9 +326,9 @@ class SettingsPage extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: Constants.smallSpacing),
       decoration: BoxDecoration(
-        color: AppColors.error.withOpacity(0.1),
+        color: AppColors.error.withValues(alpha: 0.1),
         borderRadius: Constants.mediumRadius,
-        border: Border.all(color: AppColors.error.withOpacity(0.3)),
+        border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
       ),
       child: ListTile(
         leading: Icon(
@@ -346,7 +346,7 @@ class SettingsPage extends StatelessWidget {
           'تسجيل الخروج من الحساب',
           style: AppTextStyles.senRegular12(
             context,
-          ).copyWith(color: AppColors.error.withOpacity(0.7)),
+          ).copyWith(color: AppColors.error.withValues(alpha: 0.7)),
         ),
         trailing: Icon(
           Icons.arrow_forward_ios,
@@ -478,7 +478,7 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  void _showLogoutDialog(BuildContext context) async {
+  void _showLogoutDialog(context) async {
     final result = await DialogConstants.showLogoutConfirmation(
       context: context,
     );

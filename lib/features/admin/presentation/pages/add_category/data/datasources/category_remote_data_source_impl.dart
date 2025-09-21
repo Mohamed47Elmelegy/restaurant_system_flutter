@@ -299,7 +299,6 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
   Future<ApiResponse<MainCategoryModel>> updateCategory(
     MainCategoryModel category,
   ) {
-    // TODO: implement updateCategory
     throw UnimplementedError();
   }
 }

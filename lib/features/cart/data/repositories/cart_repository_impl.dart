@@ -104,7 +104,9 @@ class CartRepositoryImpl implements CartRepository {
       }
     } catch (e) {
       log('❌ CartRepositoryImpl: Exception updating cart item - $e');
-      return const Left(ServerFailure(message: 'حدث خطأ أثناء تحديث عنصر السلة'));
+      return const Left(
+        ServerFailure(message: 'حدث خطأ أثناء تحديث عنصر السلة'),
+      );
     }
   }
 

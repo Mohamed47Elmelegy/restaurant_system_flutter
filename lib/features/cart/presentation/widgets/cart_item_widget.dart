@@ -51,7 +51,7 @@ class CartItemWidget extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        item.product.name ?? 'Unknown Product',
+                        item.product.name,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,

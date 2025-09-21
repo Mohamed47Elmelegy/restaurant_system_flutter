@@ -138,7 +138,7 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
     try {
       final products = await getProducts();
       final categoryProducts = products.where((product) {
-        return product.mainCategoryId == categoryId;
+        return product.mainCategoryId == categoryId.toString();
       }).toList();
 
       log(

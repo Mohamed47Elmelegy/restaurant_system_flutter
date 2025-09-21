@@ -6,6 +6,7 @@ import '../../../../core/entities/main_category.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/widgets/category_card.dart';
+import '../../../../core/widgets/common_state_builder.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
 import '../bloc/home_state.dart';
@@ -15,39 +16,43 @@ class CategoriesListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeBloc, HomeState>(
-      builder: (context, state) {
-        return Padding(
-          padding: EdgeInsets.all(20.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Categories', style: AppTextStyles.senBold20(context)),
-              SizedBox(height: 16.h),
-              SizedBox(
-                height: 120.h,
-                child: _buildCategoriesList(context, state),
-              ),
-            ],
+    return Padding(
+      padding: EdgeInsets.all(20.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Categories', style: AppTextStyles.senBold20(context)),
+          SizedBox(height: 16.h),
+          SizedBox(
+            height: 120.h,
+            child: CommonStateBuilder<HomeBloc, HomeState>(
+              isLoading: (state) =>
+                  state is HomeLoading || state is HomeInitial,
+              hasError: (state) => state is HomeError,
+              isEmpty: (state) =>
+                  state is HomeLoaded && state.categories.isEmpty,
+              getErrorMessage: (state) =>
+                  state is HomeError ? state.message : 'حدث خطأ غير متوقع',
+              builder: (context, state) {
+                if (state is HomeLoaded) {
+                  return _buildCategoriesList(context, state);
+                }
+                return _buildPlaceholderCategories();
+              },
+            ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 
-  Widget _buildCategoriesList(BuildContext context, HomeState state) {
-    final categories = state is HomeLoaded
-        ? state.categories
-        : _generatePlaceholderCategories();
-
+  Widget _buildCategoriesList(BuildContext context, HomeLoaded state) {
     return ListView.builder(
       scrollDirection: Axis.horizontal,
-      itemCount: categories.length,
+      itemCount: state.categories.length,
       itemBuilder: (context, index) {
-        final category = categories[index];
-        final isSelected = state is HomeLoaded
-            ? state.selectedCategoryId == category.id
-            : false;
+        final category = state.categories[index];
+        final isSelected = state.selectedCategoryId == category.id;
 
         return Padding(
           padding: EdgeInsets.only(right: 16.w),
@@ -68,6 +73,25 @@ class CategoriesListWidget extends StatelessWidget {
                 SelectCategory(int.parse(category.id)),
               );
             },
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildPlaceholderCategories() {
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount: 5,
+      itemBuilder: (context, index) {
+        final category = _generatePlaceholderCategories()[index];
+        return Padding(
+          padding: EdgeInsets.only(right: 16.w),
+          child: CategoryCard(
+            category: category,
+            isSelected: false,
+            onTap: () {},
+            setSelected: (selected) {},
           ),
         );
       },

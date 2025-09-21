@@ -96,6 +96,8 @@ import '../../features/orders/domain/usecases/get_all_orders_usecase.dart';
 import '../../features/orders/domain/usecases/get_running_orders_usecase.dart';
 import '../../features/orders/domain/usecases/mark_order_done_usecase.dart';
 import '../../features/orders/domain/usecases/place_order_usecase.dart';
+import '../../features/orders/domain/usecases/update_order_status_usecase.dart';
+import '../../features/orders/domain/usecases/update_table_occupancy_usecase.dart';
 import '../../features/orders/presentation/bloc/order_bloc.dart';
 import '../../features/orders/presentation/cubit/order_cubit.dart';
 import '../../features/orders/presentation/cubit/table_cubit.dart';
@@ -225,6 +227,12 @@ Future<void> setup() async {
   );
   getIt.registerLazySingleton<CancelOrderUseCase>(
     () => CancelOrderUseCase(getIt<OrderRepository>()),
+  );
+  getIt.registerLazySingleton<UpdateOrderStatusUseCase>(
+    () => UpdateOrderStatusUseCase(getIt<OrderRepository>()),
+  );
+  getIt.registerLazySingleton<UpdateTableOccupancyUseCase>(
+    () => UpdateTableOccupancyUseCase(getIt<TableRepository>()),
   );
 
   // MealTime use cases

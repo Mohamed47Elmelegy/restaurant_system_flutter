@@ -6,6 +6,7 @@ import '../../../../core/di/service_locator.dart';
 import '../../../../core/entities/main_category.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/utils/cubit_initializer.dart';
+import '../../../../core/widgets/skeletons/skeletons.dart';
 import '../cubit/category_items_cubit.dart';
 import '../cubit/category_items_state.dart';
 import '../widgets/food_items_grid_view.dart';
@@ -44,7 +45,7 @@ class _CategoryItemsPageState extends State<CategoryItemsPage> {
             child: BlocBuilder<CategoryItemsCubit, CategoryItemsState>(
               builder: (context, state) {
                 if (state is CategoryItemsLoading) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const CategoryItemsSkeleton();
                 } else if (state is CategoryItemsError) {
                   return Center(child: Text(state.message));
                 } else if (state is CategoryItemsLoaded) {

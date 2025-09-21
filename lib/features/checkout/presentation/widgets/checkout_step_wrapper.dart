@@ -66,7 +66,7 @@ class CheckoutStepWrapper extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: step.isCompleted
                       ? AppColors.lightPrimary
-                      : AppColors.lightPrimary.withOpacity(0.1),
+                      : AppColors.lightPrimary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(

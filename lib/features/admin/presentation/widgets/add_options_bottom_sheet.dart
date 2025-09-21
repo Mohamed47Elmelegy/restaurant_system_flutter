@@ -114,7 +114,7 @@ class AddOptionsBottomSheet extends StatelessWidget {
               decoration: BoxDecoration(
                 color: ThemeHelper.getPrimaryColorForTheme(
                   context,
-                ).withOpacity(0.1),
+                ).withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Icon(

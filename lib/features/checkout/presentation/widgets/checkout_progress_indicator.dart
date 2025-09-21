@@ -45,23 +45,27 @@ class CheckoutProgressIndicator extends StatelessWidget {
           children: [
             Text(
               'تقدم عملية الشراء',
-              style: AppTextStyles.senBold16(context).copyWith(
-                color: ThemeHelper.getPrimaryTextColor(context),
-              ),
+              style: AppTextStyles.senBold16(
+                context,
+              ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
             ),
             Text(
               '${(process.progressPercentage * 100).toInt()}%',
-              style: AppTextStyles.senMedium14(context).copyWith(
-                color: AppColors.lightPrimary,
-              ),
+              style: AppTextStyles.senMedium14(
+                context,
+              ).copyWith(color: AppColors.lightPrimary),
             ),
           ],
         ),
         SizedBox(height: 8.h),
         LinearProgressIndicator(
           value: process.progressPercentage,
-          backgroundColor: ThemeHelper.getSecondaryTextColor(context).withOpacity(0.1),
-          valueColor: const AlwaysStoppedAnimation<Color>(AppColors.lightPrimary),
+          backgroundColor: ThemeHelper.getSecondaryTextColor(
+            context,
+          ).withValues(alpha: 0.1),
+          valueColor: const AlwaysStoppedAnimation<Color>(
+            AppColors.lightPrimary,
+          ),
           minHeight: 6.h,
         ),
       ],
@@ -75,25 +79,28 @@ class CheckoutProgressIndicator extends StatelessWidget {
           .entries
           .where((entry) => entry.value.isEnabled)
           .map((entry) {
-        final index = entry.key;
-        final step = entry.value;
-        final isLast = index == process.steps.length - 1;
+            final index = entry.key;
+            final step = entry.value;
+            final isLast = index == process.steps.length - 1;
 
-        return Expanded(
-          child: Row(
-            children: [
-              Expanded(
-                child: _buildStepItem(context, step, index),
+            return Expanded(
+              child: Row(
+                children: [
+                  Expanded(child: _buildStepItem(context, step, index)),
+                  if (!isLast) _buildConnector(context, step),
+                ],
               ),
-              if (!isLast) _buildConnector(context, step),
-            ],
-          ),
-        );
-      }).toList(),
+            );
+          })
+          .toList(),
     );
   }
 
-  Widget _buildStepItem(BuildContext context, CheckoutStepEntity step, int index) {
+  Widget _buildStepItem(
+    BuildContext context,
+    CheckoutStepEntity step,
+    int index,
+  ) {
     final isActive = step.isActive;
     final isCompleted = step.isCompleted;
     final isEnabled = step.isEnabled;
@@ -114,15 +121,21 @@ class CheckoutProgressIndicator extends StatelessWidget {
         style: AppTextStyles.senBold14(context).copyWith(color: Colors.white),
       );
     } else if (isEnabled) {
-      circleColor = ThemeHelper.getSecondaryTextColor(context).withOpacity(0.3);
+      circleColor = ThemeHelper.getSecondaryTextColor(
+        context,
+      ).withValues(alpha: 0.3);
       textColor = ThemeHelper.getSecondaryTextColor(context);
       circleChild = Text(
         '${index + 1}',
         style: AppTextStyles.senMedium12(context).copyWith(color: textColor),
       );
     } else {
-      circleColor = ThemeHelper.getSecondaryTextColor(context).withOpacity(0.1);
-      textColor = ThemeHelper.getSecondaryTextColor(context).withOpacity(0.5);
+      circleColor = ThemeHelper.getSecondaryTextColor(
+        context,
+      ).withValues(alpha: 0.1);
+      textColor = ThemeHelper.getSecondaryTextColor(
+        context,
+      ).withValues(alpha: 0.5);
       circleChild = Text(
         '${index + 1}',
         style: AppTextStyles.senMedium12(context).copyWith(color: textColor),
@@ -148,7 +161,9 @@ class CheckoutProgressIndicator extends StatelessWidget {
           SizedBox(height: 4.h),
           Text(
             step.title,
-            style: AppTextStyles.senMedium14(context).copyWith(fontSize: 12.sp,color: textColor),
+            style: AppTextStyles.senMedium14(
+              context,
+            ).copyWith(fontSize: 12.sp, color: textColor),
             textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
@@ -165,7 +180,7 @@ class CheckoutProgressIndicator extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 20.h),
       color: step.isCompleted
           ? AppColors.lightPrimary
-          : ThemeHelper.getSecondaryTextColor(context).withOpacity(0.2),
+          : ThemeHelper.getSecondaryTextColor(context).withValues(alpha: 0.2),
     );
   }
 }

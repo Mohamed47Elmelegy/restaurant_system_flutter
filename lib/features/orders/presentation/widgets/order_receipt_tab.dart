@@ -56,7 +56,7 @@ class OrderReceiptTab extends StatelessWidget {
     return Column(
       children: [
         Text(
-          'مطعم الذواقة',
+          'مطعم وليمة',
           style: AppTextStyles.senBold20(
             context,
           ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
@@ -78,7 +78,9 @@ class OrderReceiptTab extends StatelessWidget {
         SizedBox(height: 16.h),
         Container(
           height: 1.h,
-          color: ThemeHelper.getSecondaryTextColor(context).withOpacity(0.3),
+          color: ThemeHelper.getSecondaryTextColor(
+            context,
+          ).withValues(alpha: 0.3),
         ),
       ],
     );
@@ -109,7 +111,9 @@ class OrderReceiptTab extends StatelessWidget {
       children: [
         Container(
           height: 1.h,
-          color: ThemeHelper.getSecondaryTextColor(context).withOpacity(0.3),
+          color: ThemeHelper.getSecondaryTextColor(
+            context,
+          ).withValues(alpha: 0.3),
         ),
         SizedBox(height: 12.h),
         Text(
@@ -141,7 +145,9 @@ class OrderReceiptTab extends StatelessWidget {
         SizedBox(height: 12.h),
         Container(
           height: 1.h,
-          color: ThemeHelper.getSecondaryTextColor(context).withOpacity(0.3),
+          color: ThemeHelper.getSecondaryTextColor(
+            context,
+          ).withValues(alpha: 0.3),
         ),
       ],
     );
@@ -173,7 +179,7 @@ class OrderReceiptTab extends StatelessWidget {
             ),
           ),
           Text(
-            '${(price * quantity).toStringAsFixed(2)} ر.س',
+            '${(price * quantity).toStringAsFixed(2)} ج.م',
             style: AppTextStyles.senRegular12(
               context,
             ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
@@ -189,23 +195,25 @@ class OrderReceiptTab extends StatelessWidget {
         _buildReceiptRow(
           context,
           'المبلغ الفرعي:',
-          '${order.subtotalAmount.toStringAsFixed(2)} ر.س',
+          '${order.subtotalAmount.toStringAsFixed(2)} ج.م',
         ),
         _buildReceiptRow(
           context,
           'الضريبة (15%):',
-          '${order.taxAmount.toStringAsFixed(2)} ر.س',
+          '${order.taxAmount.toStringAsFixed(2)} ج.م',
         ),
         if (order.deliveryFee > 0)
           _buildReceiptRow(
             context,
             'رسوم التوصيل:',
-            '${order.deliveryFee.toStringAsFixed(2)} ر.س',
+            '${order.deliveryFee.toStringAsFixed(2)} ج.م',
           ),
         SizedBox(height: 8.h),
         Container(
           height: 1.h,
-          color: ThemeHelper.getSecondaryTextColor(context).withOpacity(0.3),
+          color: ThemeHelper.getSecondaryTextColor(
+            context,
+          ).withValues(alpha: 0.3),
         ),
         SizedBox(height: 8.h),
         Row(
@@ -218,7 +226,7 @@ class OrderReceiptTab extends StatelessWidget {
               ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
             ),
             Text(
-              '${order.totalAmount.toStringAsFixed(2)} ر.س',
+              '${order.totalAmount.toStringAsFixed(2)} ج.م',
               style: AppTextStyles.senBold16(
                 context,
               ).copyWith(color: AppColors.lightPrimary),
@@ -235,11 +243,13 @@ class OrderReceiptTab extends StatelessWidget {
         SizedBox(height: 16.h),
         Container(
           height: 1.h,
-          color: ThemeHelper.getSecondaryTextColor(context).withOpacity(0.3),
+          color: ThemeHelper.getSecondaryTextColor(
+            context,
+          ).withValues(alpha: 0.3),
         ),
         SizedBox(height: 12.h),
         Text(
-          'شكراً لاختياركم مطعم الذواقة',
+          'شكراً لاختياركم مطعم وليمة',
           style: AppTextStyles.senBold14(
             context,
           ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),

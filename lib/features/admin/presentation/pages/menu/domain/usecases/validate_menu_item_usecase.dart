@@ -24,7 +24,9 @@ class ValidateMenuItemUseCase
       if (isValid) {
         return const Right(true);
       } else {
-        return const Left(ServerFailure(message: 'Menu item validation failed'));
+        return const Left(
+          ServerFailure(message: 'Menu item validation failed'),
+        );
       }
     } catch (e) {
       return Left(ServerFailure(message: 'Validation error: $e'));

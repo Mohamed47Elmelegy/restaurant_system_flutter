@@ -153,7 +153,7 @@ class _TableSelectionStepState extends State<TableSelectionStep> {
         border: Border.all(color: AppColors.lightPrimary, width: 2),
         boxShadow: [
           BoxShadow(
-            color: AppColors.lightPrimary.withOpacity(0.2),
+            color: AppColors.lightPrimary.withValues(alpha: 0.2),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -241,7 +241,9 @@ class _TableSelectionStepState extends State<TableSelectionStep> {
           color: ThemeHelper.getCardBackgroundColor(context),
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
-            color: ThemeHelper.getSecondaryTextColor(context).withOpacity(0.2),
+            color: ThemeHelper.getSecondaryTextColor(
+              context,
+            ).withValues(alpha: 0.2),
           ),
           boxShadow: ThemeHelper.getCardShadow(context),
         ),
@@ -250,7 +252,7 @@ class _TableSelectionStepState extends State<TableSelectionStep> {
             Container(
               padding: EdgeInsets.all(16.w),
               decoration: BoxDecoration(
-                color: AppColors.lightPrimary.withOpacity(0.1),
+                color: AppColors.lightPrimary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Icon(
@@ -298,7 +300,9 @@ class _TableSelectionStepState extends State<TableSelectionStep> {
         color: ThemeHelper.getCardBackgroundColor(context),
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
-          color: ThemeHelper.getSecondaryTextColor(context).withOpacity(0.2),
+          color: ThemeHelper.getSecondaryTextColor(
+            context,
+          ).withValues(alpha: 0.2),
         ),
         boxShadow: ThemeHelper.getCardShadow(context),
       ),
@@ -310,7 +314,7 @@ class _TableSelectionStepState extends State<TableSelectionStep> {
               Container(
                 padding: EdgeInsets.all(16.w),
                 decoration: BoxDecoration(
-                  color: AppColors.lightPrimary.withOpacity(0.1),
+                  color: AppColors.lightPrimary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Icon(
@@ -355,7 +359,7 @@ class _TableSelectionStepState extends State<TableSelectionStep> {
                 borderSide: BorderSide(
                   color: ThemeHelper.getSecondaryTextColor(
                     context,
-                  ).withOpacity(0.3),
+                  ).withValues(alpha: 0.3),
                 ),
               ),
               focusedBorder: OutlineInputBorder(

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../../core/services/snack_bar_service.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/common_empty_state.dart';
+import '../../../../core/widgets/common_error_state.dart';
+import '../../../../core/widgets/common_state_builder.dart';
 import '../../../orders/domain/entities/order_enums.dart';
 import '../bloc/cart_cubit.dart';
 import '../bloc/cart_event.dart';
@@ -10,7 +11,6 @@ import '../bloc/cart_state.dart';
 import '../widgets/cart_app_bar.dart';
 import '../widgets/cart_item_widget.dart';
 import '../widgets/cart_summary_widget.dart';
-import '../widgets/empty_cart_widget.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -73,68 +73,38 @@ class _CartPageState extends State<CartPage> {
             children: [
               const CartAppBar(),
               Expanded(
-                child: BlocBuilder<CartCubit, CartState>(
+                child: CommonStateBuilder<CartCubit, CartState>(
                   buildWhen: (previous, current) {
                     // لا تعيد بناء القائمة كلها إذا كان التغيير فقط في كمية عنصر
                     return current is! CartItemQuantityUpdated;
                   },
+                  isLoading: (state) => state is CartLoading,
+                  hasError: (state) =>
+                      state is CartError ||
+                      state is CartValidationError ||
+                      state is CartAuthError ||
+                      state is CartNetworkError,
+                  isEmpty: (state) => state is CartLoaded && state.cart.isEmpty,
+                  getErrorMessage: (state) {
+                    if (state is CartError) return state.message;
+                    if (state is CartValidationError) return state.message;
+                    if (state is CartAuthError) return state.message;
+                    if (state is CartNetworkError) return state.message;
+                    return 'حدث خطأ غير متوقع';
+                  },
+                  loadingMessage: 'جاري تحميل السلة...',
+                  errorBuilder: (context, message) => CommonErrorState.general(
+                    message: message,
+                    onRetry: () => context.read<CartCubit>().add(LoadCart()),
+                  ),
+                  emptyBuilder: (context) => CommonEmptyState.cart(
+                    onActionPressed: () {
+                      // Navigate to menu
+                      Navigator.pop(context);
+                    },
+                  ),
                   builder: (context, state) {
-                    if (state is CartLoading) {
-                      return const Center(
-                        child: CircularProgressIndicator(
-                          color: AppColors.lightPrimary,
-                        ),
-                      );
-                    }
-
-                    if (state is CartError) {
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.error_outline,
-                              size: 64,
-                              color: AppColors.error,
-                            ),
-                            const SizedBox(height: 16),
-                            const Text(
-                              'حدث خطأ في تحميل السلة',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              state.message,
-                              style: TextStyle(
-                                color: Colors.grey[400],
-                                fontSize: 14,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 16),
-                            ElevatedButton(
-                              onPressed: () {
-                                context.read<CartCubit>().add(LoadCart());
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.lightPrimary,
-                                foregroundColor: Colors.white,
-                              ),
-                              child: const Text('إعادة المحاولة'),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-
                     if (state is CartLoaded) {
-                      if (state.cart.isEmpty) {
-                        return const EmptyCartWidget();
-                      }
-
                       return Column(
                         children: [
                           Expanded(
@@ -164,8 +134,7 @@ class _CartPageState extends State<CartPage> {
                         ],
                       );
                     }
-
-                    return const EmptyCartWidget();
+                    return const CommonEmptyState.cart();
                   },
                 ),
               ),

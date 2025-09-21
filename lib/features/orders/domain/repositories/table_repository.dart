@@ -6,4 +6,9 @@ import '../entities/table_entity.dart';
 abstract class TableRepository {
   Future<Either<Failure, TableEntity>> getTableByQr(String qrCode);
   Future<Either<Failure, void>> occupyTable(int tableId);
+  Future<TableEntity> updateTableAvailability({
+    required int tableId,
+    required bool isAvailable,
+  });
+  Future<List<TableEntity>> getAllTables();
 }

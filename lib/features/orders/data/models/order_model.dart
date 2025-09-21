@@ -276,8 +276,8 @@ class OrderModel extends OrderEntity {
     if (items == null || items is! List) return [];
     try {
       return items
-          .where((item) => item is Map<String, dynamic>)
-          .map((item) => OrderItemModel.fromJson(item as Map<String, dynamic>))
+          .whereType<Map<String, dynamic>>()
+          .map((item) => OrderItemModel.fromJson(item))
           .toList();
     } catch (e) {
       return [];
@@ -289,10 +289,8 @@ class OrderModel extends OrderEntity {
     if (logs == null || logs is! List) return [];
     try {
       return logs
-          .where((log) => log is Map<String, dynamic>)
-          .map(
-            (log) => OrderStatusLogModel.fromJson(log as Map<String, dynamic>),
-          )
+          .whereType<Map<String, dynamic>>()
+          .map((log) => OrderStatusLogModel.fromJson(log))
           .toList();
     } catch (e) {
       return [];

@@ -52,14 +52,14 @@ class AdminNotificationsPage extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isUnread ? Colors.blue.withOpacity(0.1) : Colors.white,
+        color: isUnread ? Colors.blue.withValues(alpha: 0.1) : Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: isUnread
-            ? Border.all(color: Colors.blue.withOpacity(0.3))
+            ? Border.all(color: Colors.blue.withValues(alpha: 0.3))
             : null,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withValues(alpha: 0.1),
             spreadRadius: 1,
             blurRadius: 5,
             offset: const Offset(0, 2),

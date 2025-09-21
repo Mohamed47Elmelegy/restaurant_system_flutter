@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import '../../../../core/constants/dialog_constants.dart';
-import '../../../../core/constants/empty_page.dart';
 import '../../../../core/routes/app_routes.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_helper.dart';
 import '../../../../core/utils/cubit_initializer.dart';
+import '../../../../core/widgets/common_empty_state.dart';
+import '../../../../core/widgets/common_error_state.dart';
+import '../../../../core/widgets/common_state_builder.dart';
 import '../../../../core/widgets/custom_button.dart';
+import '../../../../core/widgets/skeletons/skeletons.dart';
 import '../../domain/entitiy/address_entity.dart';
 import '../cubit/address_cubit.dart';
 import '../cubit/address_event.dart';
@@ -83,20 +87,33 @@ class _AddressPageContent extends StatelessWidget {
                 }
               },
               builder: (context, state) {
-                if (state is AddressLoading) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.lightPrimary,
-                    ),
-                  );
-                } else if (state is AddressEmpty) {
-                  return EmptyPagePresets.noAddresses(context);
-                } else if (state is AddressLoaded) {
-                  return _buildAddressesList(context, state.addresses);
-                } else if (state is AddressError) {
-                  return _buildErrorState(context, state.message);
-                }
-                return EmptyPagePresets.noAddresses(context);
+                return CommonStateBuilder<AddressCubit, AddressState>(
+                  isLoading: (state) => state is AddressLoading,
+                  hasError: (state) => state is AddressError,
+                  isEmpty: (state) =>
+                      state is AddressEmpty ||
+                      (state is AddressLoaded && state.addresses.isEmpty),
+                  getErrorMessage: (state) => state is AddressError
+                      ? state.message
+                      : 'حدث خطأ غير متوقع',
+                  loadingMessage: 'جاري تحميل العناوين...',
+                  loadingBuilder: (context) => const AddressSkeleton(),
+                  errorBuilder: (context, message) => CommonErrorState.general(
+                    message: message,
+                    onRetry: () =>
+                        context.read<AddressCubit>().add(LoadAddresses()),
+                  ),
+                  emptyBuilder: (context) => CommonEmptyState.addresses(
+                    onActionPressed: () =>
+                        Navigator.pushNamed(context, AppRoutes.addAddress),
+                  ),
+                  builder: (context, state) {
+                    if (state is AddressLoaded) {
+                      return _buildAddressesList(context, state.addresses);
+                    }
+                    return const CommonEmptyState.addresses();
+                  },
+                );
               },
             ),
           ),
@@ -115,44 +132,6 @@ class _AddressPageContent extends StatelessWidget {
               ).copyWith(color: Colors.white),
               boxShadow: ThemeHelper.getButtonShadow(context),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
- 
-  Widget _buildErrorState(BuildContext context, String message) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.error_outline, size: 80.w, color: AppColors.error),
-          SizedBox(height: 16.h),
-          Text(
-            'An Error Occurred',
-            style: AppTextStyles.senBold18(
-              context,
-            ).copyWith(color: ThemeHelper.getPrimaryTextColor(context)),
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            message,
-            style: AppTextStyles.senRegular14(
-              context,
-            ).copyWith(color: ThemeHelper.getSecondaryTextColor(context)),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 16.h),
-          ElevatedButton(
-            onPressed: () {
-              context.read<AddressCubit>().add(LoadAddresses());
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.lightPrimary,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Retry'),
           ),
         ],
       ),

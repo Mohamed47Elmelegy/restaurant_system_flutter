@@ -195,12 +195,9 @@ class AddressSectionWidget extends StatelessWidget {
   String _formatAddress(AddressEntity address) {
     final parts = <String>[];
 
-
     if (address.city.isNotEmpty) {
       parts.add(address.city);
     }
-
-   
 
     return parts.take(2).join(', '); // أخذ أول عنصرين فقط لتجنب النص الطويل
   }

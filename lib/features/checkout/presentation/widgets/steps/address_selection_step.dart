@@ -233,13 +233,15 @@ class _AddressSelectionStepState extends State<AddressSelectionStep> {
           border: Border.all(
             color: isSelected
                 ? AppColors.lightPrimary
-                : ThemeHelper.getSecondaryTextColor(context).withOpacity(0.2),
+                : ThemeHelper.getSecondaryTextColor(
+                    context,
+                  ).withValues(alpha: 0.2),
             width: isSelected ? 2 : 1,
           ),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: AppColors.lightPrimary.withOpacity(0.2),
+                    color: AppColors.lightPrimary.withValues(alpha: 0.2),
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),
@@ -253,7 +255,7 @@ class _AddressSelectionStepState extends State<AddressSelectionStep> {
               decoration: BoxDecoration(
                 color: isSelected
                     ? AppColors.lightPrimary
-                    : AppColors.lightPrimary.withOpacity(0.1),
+                    : AppColors.lightPrimary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8.r),
               ),
               child: Icon(

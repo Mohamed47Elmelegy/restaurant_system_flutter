@@ -74,7 +74,7 @@ class OrderConfirmationStep extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(12.w),
             decoration: BoxDecoration(
-              color: AppColors.lightPrimary.withOpacity(0.1),
+              color: AppColors.lightPrimary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8.r),
             ),
             child: Icon(
@@ -121,7 +121,7 @@ class OrderConfirmationStep extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(12.w),
             decoration: BoxDecoration(
-              color: AppColors.lightPrimary.withOpacity(0.1),
+              color: AppColors.lightPrimary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8.r),
             ),
             child: Icon(
@@ -170,7 +170,7 @@ class OrderConfirmationStep extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(12.w),
             decoration: BoxDecoration(
-              color: AppColors.lightPrimary.withOpacity(0.1),
+              color: AppColors.lightPrimary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8.r),
             ),
             child: Icon(
@@ -218,7 +218,7 @@ class OrderConfirmationStep extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(12.w),
             decoration: BoxDecoration(
-              color: AppColors.lightPrimary.withOpacity(0.1),
+              color: AppColors.lightPrimary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8.r),
             ),
             child: Icon(
@@ -296,7 +296,9 @@ class OrderConfirmationStep extends StatelessWidget {
           ),
           SizedBox(height: 8.h),
           Divider(
-            color: ThemeHelper.getSecondaryTextColor(context).withOpacity(0.2),
+            color: ThemeHelper.getSecondaryTextColor(
+              context,
+            ).withValues(alpha: 0.2),
           ),
           SizedBox(height: 8.h),
           Row(

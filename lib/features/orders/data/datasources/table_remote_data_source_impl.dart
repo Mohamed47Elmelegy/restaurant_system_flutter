@@ -46,4 +46,51 @@ class TableRemoteDataSourceImpl implements TableRemoteDataSource {
       throw Exception('حدث خطأ في الاتصال بالخادم');
     }
   }
+
+  @override
+  Future<TableModel> updateTableAvailability({
+    required int tableId,
+    required bool isAvailable,
+  }) async {
+    try {
+      final response = await dio.put(
+        '${ApiPath.tables}/$tableId/availability',
+        data: {'is_available': isAvailable},
+      );
+      if (response.data['success'] == true) {
+        return TableModel.fromJson(response.data['data']);
+      } else {
+        throw Exception(response.data['message']);
+      }
+    } on DioException catch (e) {
+      if (e.response?.data != null && e.response!.data is Map) {
+        final errorData = e.response!.data as Map<String, dynamic>;
+        final message = errorData['message'] ?? 'حدث خطأ غير متوقع';
+        throw Exception(message);
+      }
+      throw Exception('حدث خطأ في الاتصال بالخادم');
+    }
+  }
+
+  @override
+  Future<List<TableModel>> getAllTables() async {
+    try {
+      final response = await dio.get(ApiPath.tables);
+      if (response.data['success'] == true) {
+        final List<dynamic> tablesData = response.data['data'];
+        return tablesData
+            .map((json) => TableModel.fromJson(json as Map<String, dynamic>))
+            .toList();
+      } else {
+        throw Exception(response.data['message']);
+      }
+    } on DioException catch (e) {
+      if (e.response?.data != null && e.response!.data is Map) {
+        final errorData = e.response!.data as Map<String, dynamic>;
+        final message = errorData['message'] ?? 'حدث خطأ غير متوقع';
+        throw Exception(message);
+      }
+      throw Exception('حدث خطأ في الاتصال بالخادم');
+    }
+  }
 }

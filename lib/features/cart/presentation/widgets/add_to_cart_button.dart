@@ -91,7 +91,7 @@ class _AddToCartButtonState extends State<AddToCartButton>
                 boxShadow: widget.isAvailable
                     ? [
                         BoxShadow(
-                          color: AppColors.lightPrimary.withOpacity(0.3),
+                          color: AppColors.lightPrimary.withValues(alpha: 0.3),
                           blurRadius: 8,
                           offset: const Offset(0, 4),
                         ),
@@ -197,7 +197,7 @@ class _AddToCartButtonState extends State<AddToCartButton>
 //         shape: BoxShape.circle,
 //         boxShadow: [
 //           BoxShadow(
-//             color: AppColors.lightPrimary.withOpacity(0.3),
+//             color: AppColors.lightPrimary.withValues(alpha:0.3),
 //             blurRadius: 8,
 //             offset: const Offset(0, 2),
 //           ),

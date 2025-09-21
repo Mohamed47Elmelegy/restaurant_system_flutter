@@ -205,4 +205,5 @@ class ApiPath {
       Endpoints.getUrlWithId(Endpoints.tableByQr, qrCode);
   static String occupyTable(int tableId) =>
       Endpoints.getUrlWithIdAndAction(Endpoints.occupyTable, tableId, 'occupy');
+  static String tables = Endpoints.getUrl(Endpoints.tables);
 }

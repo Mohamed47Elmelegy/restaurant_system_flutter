@@ -8,5 +8,4 @@ export 'custom_indicator.dart';
 export 'custom_text_field.dart';
 export 'error_widget.dart';
 export 'food_item_card.dart';
-export 'skeleton_wrapper.dart';
 export 'web_safe_wrapper.dart';

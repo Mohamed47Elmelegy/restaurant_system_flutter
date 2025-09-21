@@ -27,4 +27,30 @@ class TableRepositoryImpl implements TableRepository {
       return Left(ServerFailure.custom(e.toString()));
     }
   }
+
+  @override
+  Future<TableEntity> updateTableAvailability({
+    required int tableId,
+    required bool isAvailable,
+  }) async {
+    try {
+      final table = await remoteDataSource.updateTableAvailability(
+        tableId: tableId,
+        isAvailable: isAvailable,
+      );
+      return table;
+    } catch (e) {
+      throw Exception('Failed to update table availability: $e');
+    }
+  }
+
+  @override
+  Future<List<TableEntity>> getAllTables() async {
+    try {
+      final tables = await remoteDataSource.getAllTables();
+      return tables;
+    } catch (e) {
+      throw Exception('Failed to get all tables: $e');
+    }
+  }
 }

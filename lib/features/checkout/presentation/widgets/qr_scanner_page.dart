@@ -86,10 +86,10 @@ class _QrScannerPageState extends State<QrScannerPage> {
             margin: EdgeInsets.all(16.w),
             padding: EdgeInsets.all(16.w),
             decoration: BoxDecoration(
-              color: AppColors.lightPrimary.withOpacity(0.1),
+              color: AppColors.lightPrimary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12.r),
               border: Border.all(
-                color: AppColors.lightPrimary.withOpacity(0.3),
+                color: AppColors.lightPrimary.withValues(alpha: 0.3),
               ),
             ),
             child: Column(
@@ -161,7 +161,11 @@ class _QrScannerPageState extends State<QrScannerPage> {
                         textAlign: TextAlign.center,
                       ),
                     ] else if (result != null) ...[
-                      Icon(Icons.check_circle, color: Colors.green, size: 32.sp),
+                      Icon(
+                        Icons.check_circle,
+                        color: Colors.green,
+                        size: 32.sp,
+                      ),
                       SizedBox(height: 8.h),
                       Text(
                         'تم العثور على QR!',

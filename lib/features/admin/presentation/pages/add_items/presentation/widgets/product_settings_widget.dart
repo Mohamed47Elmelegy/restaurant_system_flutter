@@ -77,7 +77,9 @@ class ProductSettingsWidget extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(8),
         color: value
-            ? ThemeHelper.getPrimaryColorForTheme(context).withOpacity(0.1)
+            ? ThemeHelper.getPrimaryColorForTheme(
+                context,
+              ).withValues(alpha: 0.1)
             : Colors.transparent,
       ),
       child: Column(

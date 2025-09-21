@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:toastification/toastification.dart';
 
 import '../../features/orders/domain/entities/order_enums.dart';
 
@@ -175,26 +176,26 @@ class OrderUtils {
   static int getStatusColor(OrderStatus status) {
     switch (status) {
       case OrderStatus.pending:
-        return Colors.orange.value;
+        return Colors.orange.intValue;
       case OrderStatus.confirmed:
-        return Colors.blueGrey.value;
+        return Colors.blueGrey.intValue;
       case OrderStatus.paid:
-        return Colors.blue.value;
+        return Colors.blue.intValue;
       case OrderStatus.preparing:
-        return Colors.deepOrange.value;
+        return Colors.deepOrange.intValue;
       case OrderStatus.readyToServe:
       case OrderStatus.readyForPickup:
-        return Colors.teal.value;
+        return Colors.teal.intValue;
       case OrderStatus.served:
       case OrderStatus.pickedUp:
       case OrderStatus.delivered:
       case OrderStatus.completed:
-        return Colors.green.value;
+        return Colors.green.intValue;
       case OrderStatus.onTheWay:
-        return Colors.purple.value;
+        return Colors.purple.intValue;
       case OrderStatus.cancelled:
       case OrderStatus.refunded:
-        return Colors.red.value;
+        return Colors.red.intValue;
     }
   }
 
@@ -262,6 +263,135 @@ class OrderUtils {
         return 'مدفوع';
       case PaymentStatus.refunded:
         return 'مسترد';
+    }
+  }
+
+  /// Check if table should be available based on order status and type
+  static bool shouldTableBeAvailable(OrderStatus status, OrderType type) {
+    // For delivery and pickup orders, table should always be available
+    if (type == OrderType.delivery || type == OrderType.pickup) {
+      return true;
+    }
+
+    // For dine-in orders, table is available only when order is completed, cancelled, or paid
+    if (type == OrderType.dineIn) {
+      return status == OrderStatus.completed ||
+          status == OrderStatus.cancelled ||
+          status == OrderStatus.paid;
+    }
+
+    return true;
+  }
+
+  /// Check if order can be edited based on status and type
+  static bool canEditOrder(
+    OrderStatus status,
+    OrderType type,
+    PaymentStatus paymentStatus,
+  ) {
+    // Delivery orders can be edited until they're out for delivery
+    if (type == OrderType.delivery) {
+      return status == OrderStatus.pending ||
+          status == OrderStatus.confirmed ||
+          status == OrderStatus.paid ||
+          status == OrderStatus.preparing;
+    }
+
+    // Pickup orders can be edited until they're ready for pickup
+    if (type == OrderType.pickup) {
+      return status == OrderStatus.pending ||
+          status == OrderStatus.confirmed ||
+          status == OrderStatus.paid ||
+          status == OrderStatus.preparing;
+    }
+
+    // Dine-in orders can have items added until paid
+    if (type == OrderType.dineIn) {
+      return paymentStatus == PaymentStatus.unpaid &&
+          (status == OrderStatus.pending ||
+              status == OrderStatus.confirmed ||
+              status == OrderStatus.preparing ||
+              status == OrderStatus.readyToServe);
+    }
+
+    return false;
+  }
+
+  /// Get orders grouped by status categories for tab view
+  static Map<String, List<T>> groupOrdersByStatusCategory<T extends dynamic>(
+    List<T> orders,
+    OrderStatus Function(T) getStatus,
+    OrderType Function(T) getType,
+  ) {
+    final Map<String, List<T>> grouped = {
+      'active': <T>[],
+      'completed': <T>[],
+      'cancelled': <T>[],
+    };
+
+    for (final order in orders) {
+      final status = getStatus(order);
+
+      if (status == OrderStatus.cancelled || status == OrderStatus.refunded) {
+        grouped['cancelled']!.add(order);
+      } else if (status == OrderStatus.completed ||
+          status == OrderStatus.delivered ||
+          status == OrderStatus.served ||
+          status == OrderStatus.pickedUp) {
+        grouped['completed']!.add(order);
+      } else {
+        grouped['active']!.add(order);
+      }
+    }
+
+    return grouped;
+  }
+
+  /// Get next possible statuses for an order
+  static List<OrderStatus> getNextPossibleStatuses(
+    OrderStatus currentStatus,
+    OrderType type,
+  ) {
+    switch (currentStatus) {
+      case OrderStatus.pending:
+        return [OrderStatus.confirmed, OrderStatus.cancelled];
+
+      case OrderStatus.confirmed:
+        return [OrderStatus.paid, OrderStatus.preparing, OrderStatus.cancelled];
+
+      case OrderStatus.paid:
+        return [OrderStatus.preparing, OrderStatus.cancelled];
+
+      case OrderStatus.preparing:
+        if (type == OrderType.dineIn) {
+          return [OrderStatus.readyToServe, OrderStatus.cancelled];
+        } else if (type == OrderType.pickup) {
+          return [OrderStatus.readyForPickup, OrderStatus.cancelled];
+        } else if (type == OrderType.delivery) {
+          return [OrderStatus.onTheWay, OrderStatus.cancelled];
+        }
+        return [];
+
+      case OrderStatus.readyToServe:
+        return [OrderStatus.served];
+
+      case OrderStatus.served:
+        return [OrderStatus.completed];
+
+      case OrderStatus.readyForPickup:
+        return [OrderStatus.pickedUp];
+
+      case OrderStatus.pickedUp:
+        return [OrderStatus.completed];
+
+      case OrderStatus.onTheWay:
+        return [OrderStatus.delivered];
+
+      case OrderStatus.delivered:
+        return [OrderStatus.completed];
+
+      default:
+        return [];
     }
   }
 }

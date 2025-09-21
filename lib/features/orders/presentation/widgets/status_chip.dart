@@ -43,79 +43,79 @@ class StatusChip extends StatelessWidget {
     switch (status) {
       case OrderStatus.pending:
         return _StatusConfiguration(
-          backgroundColor: Colors.orange.withOpacity(0.1),
+          backgroundColor: Colors.orange.withValues(alpha: 0.1),
           textColor: Colors.orange,
           text: OrderUtils.getStatusDisplayName(status),
         );
       case OrderStatus.confirmed:
         return _StatusConfiguration(
-          backgroundColor: Colors.blue.withOpacity(0.1),
+          backgroundColor: Colors.blue.withValues(alpha: 0.1),
           textColor: Colors.blue,
           text: OrderUtils.getStatusDisplayName(status),
         );
       case OrderStatus.paid:
         return _StatusConfiguration(
-          backgroundColor: Colors.blue.withOpacity(0.1),
+          backgroundColor: Colors.blue.withValues(alpha: 0.1),
           textColor: Colors.blue,
           text: OrderUtils.getStatusDisplayName(status),
         );
       case OrderStatus.preparing:
         return _StatusConfiguration(
-          backgroundColor: AppColors.lightPrimary.withOpacity(0.1),
+          backgroundColor: AppColors.lightPrimary.withValues(alpha: 0.1),
           textColor: AppColors.lightPrimary,
           text: OrderUtils.getStatusDisplayName(status),
         );
       case OrderStatus.readyToServe:
         return _StatusConfiguration(
-          backgroundColor: Colors.green.withOpacity(0.1),
+          backgroundColor: Colors.green.withValues(alpha: 0.1),
           textColor: Colors.green,
           text: OrderUtils.getStatusDisplayName(status),
         );
       case OrderStatus.served:
         return _StatusConfiguration(
-          backgroundColor: Colors.green.withOpacity(0.1),
+          backgroundColor: Colors.green.withValues(alpha: 0.1),
           textColor: Colors.green,
           text: OrderUtils.getStatusDisplayName(status),
         );
       case OrderStatus.readyForPickup:
         return _StatusConfiguration(
-          backgroundColor: Colors.amber.withOpacity(0.1),
+          backgroundColor: Colors.amber.withValues(alpha: 0.1),
           textColor: Colors.amber.shade700,
           text: OrderUtils.getStatusDisplayName(status),
         );
       case OrderStatus.pickedUp:
         return _StatusConfiguration(
-          backgroundColor: Colors.green.withOpacity(0.1),
+          backgroundColor: Colors.green.withValues(alpha: 0.1),
           textColor: Colors.green,
           text: OrderUtils.getStatusDisplayName(status),
         );
       case OrderStatus.onTheWay:
         return _StatusConfiguration(
-          backgroundColor: Colors.purple.withOpacity(0.1),
+          backgroundColor: Colors.purple.withValues(alpha: 0.1),
           textColor: Colors.purple,
           text: OrderUtils.getStatusDisplayName(status),
         );
       case OrderStatus.delivered:
         return _StatusConfiguration(
-          backgroundColor: Colors.green.withOpacity(0.1),
+          backgroundColor: Colors.green.withValues(alpha: 0.1),
           textColor: Colors.green,
           text: OrderUtils.getStatusDisplayName(status),
         );
       case OrderStatus.completed:
         return _StatusConfiguration(
-          backgroundColor: Colors.green.withOpacity(0.1),
+          backgroundColor: Colors.green.withValues(alpha: 0.1),
           textColor: Colors.green,
           text: OrderUtils.getStatusDisplayName(status),
         );
       case OrderStatus.cancelled:
         return _StatusConfiguration(
-          backgroundColor: Colors.red.withOpacity(0.1),
+          backgroundColor: Colors.red.withValues(alpha: 0.1),
           textColor: Colors.red,
           text: OrderUtils.getStatusDisplayName(status),
         );
       case OrderStatus.refunded:
         return _StatusConfiguration(
-          backgroundColor: Colors.grey.withOpacity(0.1),
+          backgroundColor: Colors.grey.withValues(alpha: 0.1),
           textColor: Colors.grey.shade700,
           text: OrderUtils.getStatusDisplayName(status),
         );

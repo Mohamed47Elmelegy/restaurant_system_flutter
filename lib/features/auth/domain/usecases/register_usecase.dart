@@ -12,11 +12,7 @@ class RegisterUseCase implements UseCase<AuthEntity, RegisterParams> {
 
   @override
   Future<Either<Failure, AuthEntity>> call(RegisterParams params) async {
-    return repository.register(
-      params.name,
-      params.email,
-      params.password,
-    );
+    return repository.register(params.name, params.email, params.password);
   }
 }
 

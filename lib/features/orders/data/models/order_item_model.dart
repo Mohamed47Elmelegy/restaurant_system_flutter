@@ -23,7 +23,6 @@ class OrderItemModel extends OrderItemEntity {
       return OrderItemModel(
         id: _parseInt(json['id'], 0),
         orderId: _parseInt(json['order_id'], 0),
-        // Handle both menu_item_id (frontend) and product_id (backend)
         menuItemId: _parseInt(
           json['menu_item_id'],
           _parseInt(json['product_id'], 0),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
-
 import '../../features/cart/domain/entities/cart_item_entity.dart';
 import '../../features/cart/presentation/bloc/cart_cubit.dart';
 import '../../features/cart/presentation/bloc/cubit/cart_item_cubit.dart';

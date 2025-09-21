@@ -80,6 +80,17 @@ class OrderEntity extends Equatable {
   /// Check if order can be cancelled
   bool get canBeCancelled => OrderUtils.canBeCancelled(status);
 
+  /// Check if order can be edited
+  bool get canBeEdited => OrderUtils.canEditOrder(status, type, paymentStatus);
+
+  /// Check if table should be available based on this order
+  bool get shouldTableBeAvailable =>
+      OrderUtils.shouldTableBeAvailable(status, type);
+
+  /// Get next possible statuses for this order
+  List<OrderStatus> get nextPossibleStatuses =>
+      OrderUtils.getNextPossibleStatuses(status, type);
+
   /// Get progress percentage
   double get progressPercentage => OrderUtils.getProgressPercentage(status);
 

@@ -62,7 +62,7 @@ class OrderInfoTab extends StatelessWidget {
               _buildInfoRow(
                 context,
                 'رسوم التوصيل',
-                '${order.deliveryFee.toStringAsFixed(2)} ر.س',
+                '${order.deliveryFee.toStringAsFixed(2)} ج.م',
               ),
             ]),
             SizedBox(height: 20.h),
@@ -202,7 +202,9 @@ class OrderInfoTab extends StatelessWidget {
           if (order.deliveryFee > 0)
             _buildAmountRow(context, 'رسوم التوصيل', order.deliveryFee),
           Divider(
-            color: ThemeHelper.getSecondaryTextColor(context).withOpacity(0.3),
+            color: ThemeHelper.getSecondaryTextColor(
+              context,
+            ).withValues(alpha: 0.3),
             height: 20.h,
           ),
           _buildAmountRow(
@@ -240,7 +242,7 @@ class OrderInfoTab extends StatelessWidget {
                     ),
           ),
           Text(
-            '${amount.toStringAsFixed(2)} ر.س',
+            '${amount.toStringAsFixed(2)} ج.م',
             style:
                 (isTotal
                         ? AppTextStyles.senBold16(context)

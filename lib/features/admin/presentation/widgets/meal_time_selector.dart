@@ -136,7 +136,7 @@ class MealTimeSelector extends StatelessWidget {
     final backgroundColor = isSelected
         ? primaryColor
         : isCurrent
-        ? primaryColor.withOpacity(0.1)
+        ? primaryColor.withValues(alpha: 0.1)
         : ThemeHelper.getCardBackgroundColor(context);
 
     final textColor = isSelected
@@ -168,7 +168,7 @@ class MealTimeSelector extends StatelessWidget {
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: primaryColor.withOpacity(0.3),
+                    color: primaryColor.withValues(alpha: 0.3),
                     blurRadius: 4,
                     offset: const Offset(0, 2),
                   ),
@@ -197,7 +197,7 @@ class MealTimeSelector extends StatelessWidget {
                     '${mealTime.categoryIds.length} فئة',
                     style: TextStyle(
                       fontSize: 11.sp,
-                      color: textColor.withOpacity(0.7),
+                      color: textColor.withValues(alpha: 0.7),
                     ),
                   ),
               ],

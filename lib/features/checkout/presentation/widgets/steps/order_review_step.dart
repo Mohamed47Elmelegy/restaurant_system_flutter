@@ -104,7 +104,9 @@ class _OrderReviewStepState extends State<OrderReviewStep> {
           ...widget.cart.items.map((item) => _buildOrderItem(item)),
           SizedBox(height: 12.h),
           Divider(
-            color: ThemeHelper.getSecondaryTextColor(context).withOpacity(0.2),
+            color: ThemeHelper.getSecondaryTextColor(
+              context,
+            ).withValues(alpha: 0.2),
           ),
           SizedBox(height: 12.h),
           _buildTotalRow(),
@@ -230,7 +232,7 @@ class _OrderReviewStepState extends State<OrderReviewStep> {
                 borderSide: BorderSide(
                   color: ThemeHelper.getSecondaryTextColor(
                     context,
-                  ).withOpacity(0.3),
+                  ).withValues(alpha: 0.3),
                 ),
               ),
               focusedBorder: OutlineInputBorder(

@@ -60,7 +60,7 @@ class IngredientsWidget extends StatelessWidget {
       },
       selectedColor: ThemeHelper.getPrimaryColorForTheme(
         context,
-      ).withOpacity(0.2),
+      ).withValues(alpha: 0.2),
       checkmarkColor: ThemeHelper.getPrimaryColorForTheme(context),
     );
   }

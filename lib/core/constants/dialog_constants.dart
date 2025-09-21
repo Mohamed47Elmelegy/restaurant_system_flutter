@@ -282,9 +282,9 @@ class DialogConstants {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: ( context) {
-        return WillPopScope(
-          onWillPop: () async => false,
+      builder: (context) {
+        return PopScope(
+          canPop: false,
           child: AlertDialog(
             backgroundColor: ThemeHelper.getSurfaceColor(context),
             shape: RoundedRectangleBorder(
@@ -384,7 +384,7 @@ class DialogConstants {
   }) async {
     return showDialog<void>(
       context: context,
-      builder: ( context) {
+      builder: (context) {
         return AlertDialog(
           backgroundColor: ThemeHelper.getSurfaceColor(context),
           shape: RoundedRectangleBorder(
@@ -449,7 +449,7 @@ class DialogConstants {
     return showCupertinoDialog<void>(
       context: context,
       barrierDismissible: barrierDismissible,
-      builder: ( context) {
+      builder: (context) {
         return CupertinoAlertDialog(
           title: Text(title, style: AppTextStyles.senBold18(context)),
           content: Text(content, style: AppTextStyles.senRegular16(context)),
@@ -492,7 +492,7 @@ class DialogConstants {
   }) async {
     return showCupertinoDialog<bool>(
       context: context,
-      builder: ( context) {
+      builder: (context) {
         return CupertinoAlertDialog(
           title: Text(title, style: AppTextStyles.senBold18(context)),
           content: Text(content, style: AppTextStyles.senRegular16(context)),
@@ -531,9 +531,9 @@ class DialogConstants {
     showCupertinoDialog(
       context: context,
       barrierDismissible: false,
-      builder: ( context) {
-        return WillPopScope(
-          onWillPop: () async => false,
+      builder: (context) {
+        return PopScope(
+          canPop: false,
           child: CupertinoAlertDialog(
             content: Column(
               mainAxisSize: MainAxisSize.min,
@@ -564,7 +564,7 @@ class DialogConstants {
   }) async {
     return showCupertinoDialog<void>(
       context: context,
-      builder: ( context) {
+      builder: (context) {
         return CupertinoAlertDialog(
           title: Text(title, style: AppTextStyles.senBold18(context)),
           content: Column(
@@ -609,7 +609,7 @@ class DialogConstants {
   }) async {
     return showCupertinoDialog<void>(
       context: context,
-      builder: ( context) {
+      builder: (context) {
         return CupertinoAlertDialog(
           title: Text(title, style: AppTextStyles.senBold18(context)),
           content: Column(

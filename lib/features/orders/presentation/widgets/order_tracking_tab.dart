@@ -50,7 +50,7 @@ class OrderTrackingTab extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Color(
                     OrderUtils.getStatusColor(order.status),
-                  ).withOpacity(0.1),
+                  ).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8.r),
                 ),
                 child: Icon(
@@ -138,7 +138,7 @@ class OrderTrackingTab extends StatelessWidget {
                     ? AppColors.lightPrimary
                     : ThemeHelper.getSecondaryTextColor(
                         context,
-                      ).withOpacity(0.3),
+                      ).withValues(alpha: 0.3),
                 shape: BoxShape.circle,
               ),
               child: step.isCompleted
@@ -150,10 +150,10 @@ class OrderTrackingTab extends StatelessWidget {
                 width: 2.w,
                 height: 40.h,
                 color: step.isCompleted
-                    ? AppColors.lightPrimary.withOpacity(0.3)
+                    ? AppColors.lightPrimary.withValues(alpha: 0.3)
                     : ThemeHelper.getSecondaryTextColor(
                         context,
-                      ).withOpacity(0.2),
+                      ).withValues(alpha: 0.2),
               ),
           ],
         ),

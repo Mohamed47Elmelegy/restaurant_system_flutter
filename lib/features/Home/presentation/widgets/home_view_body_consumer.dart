@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/services/snack_bar_service.dart';
-import '../../../../core/widgets/skeleton_wrapper.dart';
+import '../../../../core/widgets/common_error_state.dart';
+import '../../../../core/widgets/common_state_builder.dart';
+import '../../../../core/widgets/skeletons/skeletons.dart';
 import '../../../cart/presentation/bloc/cart_cubit.dart';
 import '../../../cart/presentation/bloc/cart_state.dart';
 import '../bloc/home_bloc.dart';
+import '../bloc/home_event.dart';
 import '../bloc/home_state.dart';
 import 'home_view_body.dart';
 
@@ -61,13 +64,26 @@ class HomeViewBodyBuilder extends StatelessWidget {
           },
         ),
       ],
-      child: BlocBuilder<HomeBloc, HomeState>(
+      child: CommonStateBuilder<HomeBloc, HomeState>(
+        isLoading: (state) => state is HomeLoading || state is HomeInitial,
+        hasError: (state) => state is HomeError,
+        isEmpty: (state) =>
+            state is HomeLoaded &&
+            state.categories.isEmpty &&
+            state.popularItems.isEmpty &&
+            state.recommendedItems.isEmpty,
+        getErrorMessage: (state) =>
+            state is HomeError ? state.message : 'حدث خطأ غير متوقع',
+        loadingMessage: 'جاري تحميل البيانات...',
+        errorBuilder: (context, message) => CommonErrorState.general(
+          message: message,
+          onRetry: () => context.read<HomeBloc>().add(const LoadHomeData()),
+        ),
         builder: (context, state) {
-          final isLoading = state is HomeLoading || state is HomeInitial;
-          return SkeletonWrapper(
-            enabled: isLoading,
-            child: const HomeViewBody(),
-          );
+          return const HomeViewBody();
+        },
+        loadingBuilder: (context) {
+          return const HomePageSkeleton();
         },
       ),
     );

@@ -57,7 +57,7 @@ class AllergensWidget extends StatelessWidget {
         }
         onAllergensChanged(newList);
       },
-      selectedColor: Colors.red.withOpacity(0.2),
+      selectedColor: Colors.red.withValues(alpha: 0.2),
       checkmarkColor: Colors.red,
     );
   }

@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import 'core/di/service_locator.dart';
@@ -13,9 +12,7 @@ import 'core/routes/app_router.dart';
 import 'core/routes/app_routes.dart';
 import 'core/services/app_bloc_observer.dart';
 import 'core/theme/app_theme.dart';
-import 'core/theme/theme_provider.dart';
-import 'features/cart/presentation/bloc/cart_cubit.dart';
-import 'features/cart/presentation/bloc/cart_event.dart';
+import 'core/theme/theme_cubit.dart';
 
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -43,10 +40,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => ThemeProvider(),
-      child: Consumer<ThemeProvider>(
-        builder: (context, themeProvider, child) {
+    return BlocProvider(
+      create: (_) => ThemeCubit(),
+      child: BlocBuilder<ThemeCubit, ThemeState>(
+        builder: (context, themeState) {
           return ScreenUtilInit(
             designSize: const Size(375, 812),
             minTextAdapt: true,
@@ -63,7 +60,7 @@ class MyApp extends StatelessWidget {
                 darkTheme: AppTheme.darkTheme.copyWith(
                   extensions: const [SkeletonizerConfigData.dark()],
                 ),
-                themeMode: themeProvider.themeMode,
+                themeMode: themeState.themeMode,
                 debugShowCheckedModeBanner: false,
                 navigatorKey: navigatorKey,
               );

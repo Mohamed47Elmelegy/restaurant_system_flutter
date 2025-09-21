@@ -191,8 +191,6 @@ class EmptyPagePresets {
       actionButtonText: onAction != null ? 'Explore Menu' : null,
       onActionButtonPressed: onAction,
       actionButtonColor: ThemeHelper.getPrimaryColor(),
-
-
     );
   }
 

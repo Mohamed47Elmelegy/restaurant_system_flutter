@@ -16,10 +16,7 @@ class OrderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => OrderCubit(
-        getIt<PlaceOrderUseCase>(),
-       
-      ),
+      create: (_) => OrderCubit(getIt<PlaceOrderUseCase>()),
       child: BlocConsumer<OrderCubit, OrderState>(
         listener: (context, state) {
           if (state is OrderSuccess) {

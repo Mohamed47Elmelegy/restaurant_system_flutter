@@ -3,6 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../../core/di/service_locator.dart';
 import '../../../../../../../core/utils/app_bar_helper.dart';
+import '../../../../../../../core/widgets/common_empty_state.dart';
+import '../../../../../../../core/widgets/common_error_state.dart';
+import '../../../../../../../core/widgets/common_loading_widget.dart';
+import '../../../../../../../core/widgets/common_state_builder.dart';
 import '../../../add_category/presentation/cubit/category_cubit.dart';
 import '../../../add_category/presentation/cubit/category_events.dart';
 import '../../domain/entities/menu_item.dart';
@@ -59,7 +63,7 @@ class _AdminMenuPageState extends State<AdminMenuPage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: _isLoadingCategories
-                          ? const Center(child: CircularProgressIndicator())
+                          ? const CommonLoadingWidget.small()
                           : MenuFilterTabs(
                               categories: _categories,
                               selectedIndex: _selectedCategoryIndex,
@@ -190,37 +194,57 @@ class _AdminMenuPageState extends State<AdminMenuPage> {
   }
 
   Widget _buildMenuItemsList(MenuState state) {
+    return CommonStateBuilder<MenuCubit, MenuState>(
+      isLoading: (state) => state is MenuLoading,
+      hasError: (state) =>
+          state is MenuError ||
+          state is MenuAuthError ||
+          state is MenuValidationError,
+      isEmpty: (state) =>
+          state is MenuEmpty ||
+          (state is MenuItemsLoaded && state.menuItems.isEmpty),
+      getErrorMessage: (state) {
+        if (state is MenuError) return state.message;
+        if (state is MenuAuthError) return state.message;
+        if (state is MenuValidationError) return state.message;
+        return 'حدث خطأ غير متوقع';
+      },
+      loadingMessage: 'جاري تحميل قائمة الطعام...',
+      errorBuilder: (context, message) => CommonErrorState.general(
+        message: message,
+        onRetry: () => getIt<MenuCubit>().add(LoadMenuItems()),
+      ),
+      emptyBuilder: (context) => const CommonEmptyState(
+        icon: Icons.restaurant_menu,
+        title: 'لا توجد عناصر في القائمة',
+        subtitle: 'لم يتم إضافة أي عناصر للقائمة بعد',
+        actionButtonText: 'إضافة عنصر جديد',
+        onActionPressed: null, // سيتم التعامل معه في الـ navigation
+      ),
+      builder: (context, state) {
+        return _buildMenuItemsContent(state);
+      },
+    );
+  }
+
+  Widget _buildMenuItemsContent(MenuState state) {
     if (state is MenuLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const CommonLoadingWidget();
     }
 
-    if (state is MenuError) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.error_outline, size: 64, color: Colors.grey[400]),
-            const SizedBox(height: 16),
-            Text(
-              'حدث خطأ في تحميل البيانات',
-              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              state.message,
-              style: TextStyle(fontSize: 14, color: Colors.grey[500]),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                // Use service locator instead of context
-                getIt<MenuCubit>().add(LoadMenuItems());
-              },
-              child: const Text('إعادة المحاولة'),
-            ),
-          ],
-        ),
+    if (state is MenuError ||
+        state is MenuAuthError ||
+        state is MenuValidationError) {
+      final message = state is MenuError
+          ? state.message
+          : state is MenuAuthError
+          ? state.message
+          : state is MenuValidationError
+          ? state.message
+          : 'حدث خطأ غير متوقع';
+      return CommonErrorState.general(
+        message: message,
+        onRetry: () => getIt<MenuCubit>().add(LoadMenuItems()),
       );
     }
 

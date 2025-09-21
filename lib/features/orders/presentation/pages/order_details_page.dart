@@ -139,7 +139,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
               ),
               const Spacer(),
               Text(
-                '${widget.order.totalAmount.toStringAsFixed(2)} EGP',
+                '${widget.order.totalAmount.toStringAsFixed(2)} ج.م',
                 style: AppTextStyles.senBold16(
                   context,
                 ).copyWith(color: AppColors.lightPrimary),
@@ -157,7 +157,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
         color: ThemeHelper.getSurfaceColor(context),
         border: Border(
           bottom: BorderSide(
-            color: ThemeHelper.getSecondaryTextColor(context).withOpacity(0.2),
+            color: ThemeHelper.getSecondaryTextColor(
+              context,
+            ).withValues(alpha: 0.2),
             width: 1,
           ),
         ),
