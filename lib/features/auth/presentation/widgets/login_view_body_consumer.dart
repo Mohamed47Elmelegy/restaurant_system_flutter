@@ -16,6 +16,12 @@ class LoginViewBodyConsumer extends StatelessWidget {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthSuccess) {
+          print('✅ Login: Authentication successful!');
+          print('💾 Login: Token saved to secure storage');
+          print(
+            '👤 Login: User: ${state.auth.user.name} (${state.auth.user.email})',
+          );
+
           // Get username from auth data
           final String username = state.auth.user.name;
           SnackBarService.showSuccessMessage(
@@ -23,14 +29,18 @@ class LoginViewBodyConsumer extends StatelessWidget {
             'تم تسجيل الدخول بنجاح',
             title: "مرحبا بك $username",
           );
+
           // Navigate based on user role
           final userRole = state.auth.user.role.toLowerCase();
           if (userRole == 'admin') {
+            print('🔑 Login: Admin user, navigating to admin panel');
             Navigator.pushReplacementNamed(context, AppRoutes.admin);
           } else {
+            print('🏠 Login: Regular user, navigating to main layout (home)');
             Navigator.pushReplacementNamed(context, AppRoutes.mainLayout);
           }
         } else if (state is AuthFailure) {
+          print('❌ Login: Authentication failed - ${state.message}');
           SnackBarService.showErrorMessage(context, state.message);
         }
       },

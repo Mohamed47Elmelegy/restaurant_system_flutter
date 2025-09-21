@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/services/snack_bar_service.dart';
+import '../../../../core/theme/theme_helper.dart';
 import '../../../../core/widgets/common_empty_state.dart';
 import '../../../../core/widgets/common_error_state.dart';
 import '../../../../core/widgets/common_state_builder.dart';
@@ -29,9 +30,7 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(
-        0xFF2A2A3A,
-      ), // Dark background like in the image
+      backgroundColor: ThemeHelper.getBackgroundColor(context),
       body: SafeArea(
         child: BlocListener<CartCubit, CartState>(
           listener: (context, state) {

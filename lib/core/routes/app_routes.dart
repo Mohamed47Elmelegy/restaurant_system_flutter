@@ -20,4 +20,5 @@ class AppRoutes {
   static const String qrScanner = '/qr-scanner';
   static const String tableInfo = '/table-info';
   static const String checkout = '/checkout';
+  static const String settings = '/settings';
 }

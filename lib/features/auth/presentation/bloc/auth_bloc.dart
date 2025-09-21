@@ -72,19 +72,43 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     CheckAuthStatus event,
     Emitter<AuthState> emit,
   ) async {
+    print('🔍 AuthBloc: Checking authentication status...');
     final isLoggedIn = await authRepository.isLoggedIn();
-    isLoggedIn.fold((failure) => emit(AuthLoggedOut()), (loggedIn) {
-      if (loggedIn) {
-        // محاولة استرجاع البيانات المحفوظة
-        authRepository.getAuthData().then((result) {
-          result.fold(
-            (failure) => emit(AuthLoggedOut()),
-            (auth) => emit(AuthSuccess(auth!)),
+
+    if (isLoggedIn.isLeft()) {
+      // Handle failure case
+      final failure = isLoggedIn.fold(
+        (l) => l,
+        (r) => throw Exception('Unexpected'),
+      );
+      print('❌ AuthBloc: Failed to check login status - ${failure.message}');
+      emit(AuthLoggedOut());
+      return;
+    }
+
+    final loggedIn = isLoggedIn.fold((l) => false, (r) => r);
+
+    if (loggedIn) {
+      print('✅ AuthBloc: User is logged in, retrieving auth data...');
+      // محاولة استرجاع البيانات المحفوظة
+      final result = await authRepository.getAuthData();
+      result.fold(
+        (failure) {
+          print(
+            '❌ AuthBloc: Failed to retrieve auth data - ${failure.message}',
           );
-        });
-      } else {
-        emit(AuthLoggedOut());
-      }
-    });
+          emit(AuthLoggedOut());
+        },
+        (auth) {
+          print(
+            '✅ AuthBloc: Auth data retrieved successfully for user: ${auth?.user.name}',
+          );
+          emit(AuthSuccess(auth!));
+        },
+      );
+    } else {
+      print('❌ AuthBloc: User is not logged in');
+      emit(AuthLoggedOut());
+    }
   }
 }

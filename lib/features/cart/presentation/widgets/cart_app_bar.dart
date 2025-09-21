@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/theme_helper.dart';
 import '../bloc/cart_cubit.dart';
 import '../bloc/cart_state.dart';
 
@@ -12,7 +12,10 @@ class CartAppBar extends StatelessWidget {
     return Container(
       height: 80,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: const BoxDecoration(color: Color(0xFF2A2A3A)),
+      decoration: BoxDecoration(
+        color: ThemeHelper.getAppBarColor(context),
+        boxShadow: ThemeHelper.getCardShadow(context),
+      ),
       child: Row(
         children: [
           // Back button
@@ -20,9 +23,9 @@ class CartAppBar extends StatelessWidget {
             onTap: () => Navigator.of(context).pop(),
             child: Container(
               padding: const EdgeInsets.all(8),
-              child: const Icon(
+              child: Icon(
                 Icons.arrow_back_ios,
-                color: Colors.white,
+                color: ThemeHelper.getPrimaryTextColor(context),
                 size: 20,
               ),
             ),
@@ -31,10 +34,10 @@ class CartAppBar extends StatelessWidget {
           const SizedBox(width: 16),
 
           // Cart title
-          const Text(
+          Text(
             'Cart',
             style: TextStyle(
-              color: Colors.white,
+              color: ThemeHelper.getPrimaryTextColor(context),
               fontSize: 20,
               fontWeight: FontWeight.w600,
             ),
@@ -52,7 +55,7 @@ class CartAppBar extends StatelessWidget {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.lightPrimary,
+                    color: ThemeHelper.getPrimaryColorForTheme(context),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(

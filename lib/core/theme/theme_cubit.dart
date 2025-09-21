@@ -74,3 +74,4 @@ class ThemeCubit extends Cubit<ThemeState> {
     await setThemeMode(ThemeMode.system);
   }
 }
+

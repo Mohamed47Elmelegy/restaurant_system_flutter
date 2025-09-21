@@ -22,6 +22,7 @@ import '../../features/checkout/presentation/widgets/table_info_page.dart';
 import '../../features/main_layout/presentation/pages/main_layout_page.dart';
 import '../../features/menu/presentation/pages/product_details_page.dart';
 import '../../features/orders/presentation/cubit/table_cubit.dart';
+import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
 import 'app_routes.dart';
 
@@ -104,6 +105,8 @@ Route<dynamic>? appRouter(RouteSettings settings) {
       return MaterialPageRoute(
         builder: (_) => ModernCheckoutPage(cart: args['cart']),
       );
+    case AppRoutes.settings:
+      return MaterialPageRoute(builder: (_) => const SettingsPage());
 
     default:
       return MaterialPageRoute(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/theme_helper.dart';
 import '../../../../core/widgets/cached_image_widget.dart';
 import '../../domain/entities/cart_item_entity.dart';
 
@@ -19,8 +20,9 @@ class CartItemWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF3A3A4A),
+        color: ThemeHelper.getCardBackgroundColor(context),
         borderRadius: BorderRadius.circular(12),
+        boxShadow: ThemeHelper.getCardShadow(context),
       ),
       child: Row(
         children: [
@@ -29,7 +31,9 @@ class CartItemWidget extends StatelessWidget {
             width: 80,
             height: 80,
             decoration: BoxDecoration(
-              color: const Color(0xFF4A4A5A),
+              color: ThemeHelper.getSecondaryTextColor(
+                context,
+              ).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: CachedImageThumbnail(
@@ -37,7 +41,7 @@ class CartItemWidget extends StatelessWidget {
               width: 60,
               height: 60,
               fit: BoxFit.cover,
-              backgroundColor: const Color(0xFF3A3A4A),
+              backgroundColor: ThemeHelper.getCardBackgroundColor(context),
             ),
           ),
           const SizedBox(width: 16),
@@ -52,8 +56,8 @@ class CartItemWidget extends StatelessWidget {
                     Expanded(
                       child: Text(
                         item.product.name,
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: ThemeHelper.getPrimaryTextColor(context),
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),
@@ -82,8 +86,8 @@ class CartItemWidget extends StatelessWidget {
                 // Price
                 Text(
                   '\$${item.unitPrice.toStringAsFixed(0)}',
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: ThemeHelper.getPrimaryTextColor(context),
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -92,15 +96,18 @@ class CartItemWidget extends StatelessWidget {
                 // Quantity (display only)
                 Row(
                   children: [
-                    const Text(
+                    Text(
                       'Quantity:',
-                      style: TextStyle(color: Colors.white70, fontSize: 14),
+                      style: TextStyle(
+                        color: ThemeHelper.getSecondaryTextColor(context),
+                        fontSize: 14,
+                      ),
                     ),
                     const SizedBox(width: 8),
                     Text(
                       '${item.quantity}',
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: ThemeHelper.getPrimaryTextColor(context),
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),

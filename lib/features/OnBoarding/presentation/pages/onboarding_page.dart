@@ -36,6 +36,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
         child: BlocConsumer<OnboardingBloc, OnboardingState>(
           listener: (context, state) {
             if (state.isCompleted) {
+              print('📱 Onboarding: Completed, navigating to login page');
               // Navigate to login page
               Navigator.pushReplacementNamed(context, AppRoutes.login);
             }

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/constants/app_images.dart';
+import '../../../../core/routes/app_routes.dart';
 import '../../../../core/theme/theme_helper.dart';
 import '../../../Home/presentation/pages/home_page.dart';
 import '../../../address/presentation/pages/address_page.dart';
+import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../auth/presentation/bloc/auth_event.dart';
+import '../../../auth/presentation/bloc/auth_state.dart';
 import '../../../favorites/presentation/pages/favorites_page.dart';
 import '../../../orders/presentation/pages/my_orders_page.dart';
 import '../../../settings/presentation/pages/settings_page.dart';
@@ -28,10 +33,27 @@ class _MainLayoutPageState extends State<MainLayoutPage> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    // Trigger auth status check when main layout loads
+    context.read<AuthBloc>().add(CheckAuthStatus());
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(index: _selectedIndex, children: _pages),
-      bottomNavigationBar: _buildBottomNavigationBar(),
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is AuthLoggedOut) {
+          // User logged out, navigate to login page
+          Navigator.of(
+            context,
+          ).pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
+        }
+      },
+      child: Scaffold(
+        body: IndexedStack(index: _selectedIndex, children: _pages),
+        bottomNavigationBar: _buildBottomNavigationBar(),
+      ),
     );
   }
 

@@ -9,9 +9,24 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/theme/theme_cubit.dart';
 import '../../../../core/theme/theme_helper.dart';
+import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../auth/presentation/bloc/auth_event.dart';
+import '../../../auth/presentation/bloc/auth_state.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  @override
+  void initState() {
+    super.initState();
+    // Trigger auth status check when settings page loads
+    context.read<AuthBloc>().add(CheckAuthStatus());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,161 +44,186 @@ class SettingsPage extends StatelessWidget {
         ),
         automaticallyImplyLeading: false,
       ),
-      body: ListView(
-        padding: Constants.mediumPadding,
-        children: [
-          // User Profile Card
-          _buildUserProfileCard(context),
-          SizedBox(height: Constants.largeSpacing),
+      body: BlocConsumer<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthLoggedOut) {
+            // Navigate to login page when logged out
+            Navigator.of(
+              context,
+            ).pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('تم تسجيل الخروج بنجاح'),
+                backgroundColor: AppColors.success,
+              ),
+            );
+          } else if (state is AuthFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: AppColors.error,
+              ),
+            );
+          }
+        },
+        builder: (context, state) {
+          return ListView(
+            padding: Constants.mediumPadding,
+            children: [
+              // User Profile Card
+              _buildUserProfileCard(context),
+              SizedBox(height: Constants.largeSpacing),
 
-          // Account Section
-          _buildSettingsSection(context, 'الحساب', [
-            _buildSettingsTile(
-              context,
-              icon: Icons.person_outline,
-              title: 'الملف الشخصي',
-              subtitle: 'إدارة معلومات حسابك',
-              onTap: () => _navigateToProfile(context),
-            ),
-            _buildSettingsTile(
-              context,
-              icon: Icons.location_on_outlined,
-              title: 'العناوين المحفوظة',
-              subtitle: 'إدارة عناوين التوصيل',
-              onTap: () => Navigator.pushNamed(context, AppRoutes.address),
-            ),
-            _buildSettingsTile(
-              context,
-              icon: Icons.payment_outlined,
-              title: 'طرق الدفع',
-              subtitle: 'إدارة البطاقات ووسائل الدفع',
-              onTap: () => _showPaymentMethods(context),
-            ),
-          ]),
+              // Account Section
+              _buildSettingsSection(context, 'الحساب', [
+                _buildSettingsTile(
+                  context,
+                  icon: Icons.person_outline,
+                  title: 'الملف الشخصي',
+                  subtitle: 'إدارة معلومات حسابك',
+                  onTap: () => _navigateToProfile(context),
+                ),
+                _buildSettingsTile(
+                  context,
+                  icon: Icons.location_on_outlined,
+                  title: 'العناوين المحفوظة',
+                  subtitle: 'إدارة عناوين التوصيل',
+                  onTap: () => Navigator.pushNamed(context, AppRoutes.address),
+                ),
+                _buildSettingsTile(
+                  context,
+                  icon: Icons.payment_outlined,
+                  title: 'طرق الدفع',
+                  subtitle: 'إدارة البطاقات ووسائل الدفع',
+                  onTap: () => _showPaymentMethods(context),
+                ),
+              ]),
 
-          SizedBox(height: Constants.largeSpacing),
+              SizedBox(height: Constants.largeSpacing),
 
-          // App Settings Section
-          _buildSettingsSection(context, 'إعدادات التطبيق', [
-            _buildSettingsTile(
-              context,
-              icon: Icons.dark_mode_outlined,
-              title: 'المظهر',
-              subtitle: 'تغيير بين الوضع الفاتح والداكن',
-              trailing: BlocBuilder<ThemeCubit, ThemeState>(
-                builder: (context, themeState) {
-                  return Switch(
-                    value: themeState.isDarkMode,
-                    onChanged: (value) {
-                      context.read<ThemeCubit>().toggleTheme();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            value
-                                ? 'تم تفعيل الوضع الداكن'
-                                : 'تم تفعيل الوضع الفاتح',
-                          ),
-                          backgroundColor: AppColors.success,
-                          duration: const Duration(seconds: 1),
-                        ),
+              // App Settings Section
+              _buildSettingsSection(context, 'إعدادات التطبيق', [
+                _buildSettingsTile(
+                  context,
+                  icon: Icons.dark_mode_outlined,
+                  title: 'المظهر',
+                  subtitle: 'تغيير بين الوضع الفاتح والداكن',
+                  trailing: BlocBuilder<ThemeCubit, ThemeState>(
+                    builder: (context, themeState) {
+                      return Switch(
+                        value: themeState.isDarkMode,
+                        onChanged: (value) {
+                          context.read<ThemeCubit>().toggleTheme();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                value
+                                    ? 'تم تفعيل الوضع الداكن'
+                                    : 'تم تفعيل الوضع الفاتح',
+                              ),
+                              backgroundColor: AppColors.success,
+                              duration: const Duration(seconds: 1),
+                            ),
+                          );
+                        },
+                        activeColor: AppColors.lightPrimary,
                       );
                     },
-                    activeColor: AppColors.lightPrimary,
-                  );
-                },
-              ),
-            ),
-            _buildSettingsTile(
-              context,
-              icon: Icons.notifications_outlined,
-              title: 'الإشعارات',
-              subtitle: 'إعدادات الإشعارات والتنبيهات',
-              onTap: () => _showNotificationSettings(context),
-            ),
-            _buildSettingsTile(
-              context,
-              icon: Icons.language_outlined,
-              title: 'اللغة',
-              subtitle: 'العربية',
-              onTap: () => _showLanguageOptions(context),
-            ),
-            _buildSettingsTile(
-              context,
-              icon: Icons.security_outlined,
-              title: 'الخصوصية والأمان',
-              subtitle: 'إعدادات الحساب والخصوصية',
-              onTap: () => _showPrivacySettings(context),
-            ),
-          ]),
+                  ),
+                ),
+                _buildSettingsTile(
+                  context,
+                  icon: Icons.notifications_outlined,
+                  title: 'الإشعارات',
+                  subtitle: 'إعدادات الإشعارات والتنبيهات',
+                  onTap: () => _showNotificationSettings(context),
+                ),
+                _buildSettingsTile(
+                  context,
+                  icon: Icons.language_outlined,
+                  title: 'اللغة',
+                  subtitle: 'العربية',
+                  onTap: () => _showLanguageOptions(context),
+                ),
+                _buildSettingsTile(
+                  context,
+                  icon: Icons.security_outlined,
+                  title: 'الخصوصية والأمان',
+                  subtitle: 'إعدادات الحساب والخصوصية',
+                  onTap: () => _showPrivacySettings(context),
+                ),
+              ]),
 
-          SizedBox(height: Constants.largeSpacing),
+              SizedBox(height: Constants.largeSpacing),
 
-          // Orders & Favorites Section
-          _buildSettingsSection(context, 'الطلبات والمفضلة', [
-            _buildSettingsTile(
-              context,
-              icon: Icons.history_outlined,
-              title: 'تاريخ الطلبات',
-              subtitle: 'عرض جميع طلباتك السابقة',
-              onTap: () => _navigateToOrderHistory(context),
-            ),
-            _buildSettingsTile(
-              context,
-              icon: Icons.favorite_outline,
-              title: 'المفضلة',
-              subtitle: 'إدارة منتجاتك المفضلة',
-              onTap: () => _navigateToFavorites(context),
-            ),
-            _buildSettingsTile(
-              context,
-              icon: Icons.star_outline,
-              title: 'التقييمات والمراجعات',
-              subtitle: 'مراجعة تقييماتك السابقة',
-              onTap: () => _showReviews(context),
-            ),
-          ]),
+              // Orders & Favorites Section
+              _buildSettingsSection(context, 'الطلبات والمفضلة', [
+                _buildSettingsTile(
+                  context,
+                  icon: Icons.history_outlined,
+                  title: 'تاريخ الطلبات',
+                  subtitle: 'عرض جميع طلباتك السابقة',
+                  onTap: () => _navigateToOrderHistory(context),
+                ),
+                _buildSettingsTile(
+                  context,
+                  icon: Icons.favorite_outline,
+                  title: 'المفضلة',
+                  subtitle: 'إدارة منتجاتك المفضلة',
+                  onTap: () => _navigateToFavorites(context),
+                ),
+                _buildSettingsTile(
+                  context,
+                  icon: Icons.star_outline,
+                  title: 'التقييمات والمراجعات',
+                  subtitle: 'مراجعة تقييماتك السابقة',
+                  onTap: () => _showReviews(context),
+                ),
+              ]),
 
-          SizedBox(height: Constants.largeSpacing),
+              SizedBox(height: Constants.largeSpacing),
 
-          // Help & Support Section
-          _buildSettingsSection(context, 'المساعدة والدعم', [
-            _buildSettingsTile(
-              context,
-              icon: Icons.help_outline,
-              title: 'مركز المساعدة',
-              subtitle: 'الأسئلة الشائعة والدعم',
-              onTap: () => _showHelpCenter(context),
-            ),
-            _buildSettingsTile(
-              context,
-              icon: Icons.phone_outlined,
-              title: 'اتصل بنا',
-              subtitle: 'تواصل مع فريق الدعم',
-              onTap: () => _showContactOptions(context),
-            ),
-            _buildSettingsTile(
-              context,
-              icon: Icons.feedback_outlined,
-              title: 'إرسال ملاحظات',
-              subtitle: 'شاركنا رأيك لتحسين التطبيق',
-              onTap: () => _showFeedbackForm(context),
-            ),
-            _buildSettingsTile(
-              context,
-              icon: Icons.info_outline,
-              title: 'حول التطبيق',
-              subtitle: 'معلومات حول التطبيق والإصدار',
-              onTap: () => _showAboutDialog(context),
-            ),
-          ]),
+              // Help & Support Section
+              _buildSettingsSection(context, 'المساعدة والدعم', [
+                _buildSettingsTile(
+                  context,
+                  icon: Icons.help_outline,
+                  title: 'مركز المساعدة',
+                  subtitle: 'الأسئلة الشائعة والدعم',
+                  onTap: () => _showHelpCenter(context),
+                ),
+                _buildSettingsTile(
+                  context,
+                  icon: Icons.phone_outlined,
+                  title: 'اتصل بنا',
+                  subtitle: 'تواصل مع فريق الدعم',
+                  onTap: () => _showContactOptions(context),
+                ),
+                _buildSettingsTile(
+                  context,
+                  icon: Icons.feedback_outlined,
+                  title: 'إرسال ملاحظات',
+                  subtitle: 'شاركنا رأيك لتحسين التطبيق',
+                  onTap: () => _showFeedbackForm(context),
+                ),
+                _buildSettingsTile(
+                  context,
+                  icon: Icons.info_outline,
+                  title: 'حول التطبيق',
+                  subtitle: 'معلومات حول التطبيق والإصدار',
+                  onTap: () => _showAboutDialog(context),
+                ),
+              ]),
 
-          SizedBox(height: Constants.largeSpacing),
+              SizedBox(height: Constants.largeSpacing),
 
-          // Logout Button
-          _buildLogoutSection(context),
+              // Logout Button
+              _buildLogoutSection(context),
 
-          SizedBox(height: Constants.extraLargeSpacing),
-        ],
+              SizedBox(height: Constants.extraLargeSpacing),
+            ],
+          );
+        },
       ),
     );
   }
@@ -256,105 +296,155 @@ class SettingsPage extends StatelessWidget {
 
   // === USER PROFILE CARD ===
   Widget _buildUserProfileCard(BuildContext context) {
-    return Container(
-      padding: Constants.mediumPadding,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [AppColors.lightPrimary, AppColors.lightSecondary],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: Constants.mediumRadius,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.lightPrimary.withValues(alpha: 0.3),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 30.r,
-            backgroundColor: Colors.white,
-            child: Icon(
-              Icons.person,
-              size: 36.sp,
-              color: AppColors.lightPrimary,
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        String userName = 'المستخدم';
+        String userEmail = 'user@example.com';
+        String memberSince = 'عضو جديد';
+
+        if (state is AuthSuccess) {
+          userName = state.auth.user.name;
+          userEmail = state.auth.user.email;
+          // Format member since date
+          final createdAt = state.auth.user.createdAt;
+          final months = [
+            'يناير',
+            'فبراير',
+            'مارس',
+            'أبريل',
+            'مايو',
+            'يونيو',
+            'يوليو',
+            'أغسطس',
+            'سبتمبر',
+            'أكتوبر',
+            'نوفمبر',
+            'ديسمبر',
+          ];
+          memberSince =
+              'عضو منذ ${months[createdAt.month - 1]} ${createdAt.year}';
+        }
+
+        return Container(
+          padding: Constants.mediumPadding,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [AppColors.lightPrimary, AppColors.lightSecondary],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
+            borderRadius: Constants.mediumRadius,
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.lightPrimary.withValues(alpha: 0.3),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
-          SizedBox(width: Constants.mediumSpacing),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'أحمد محمد',
-                  style: AppTextStyles.senBold18(
-                    context,
-                  ).copyWith(color: Colors.white),
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 30.r,
+                backgroundColor: Colors.white,
+                child: Icon(
+                  Icons.person,
+                  size: 36.sp,
+                  color: AppColors.lightPrimary,
                 ),
-                SizedBox(height: Constants.extraSmallSpacing),
-                Text(
-                  'ahmed.mohamed@example.com',
-                  style: AppTextStyles.senRegular14(
-                    context,
-                  ).copyWith(color: Colors.white.withValues(alpha: 0.9)),
+              ),
+              SizedBox(width: Constants.mediumSpacing),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      userName,
+                      style: AppTextStyles.senBold18(
+                        context,
+                      ).copyWith(color: Colors.white),
+                    ),
+                    SizedBox(height: Constants.extraSmallSpacing),
+                    Text(
+                      userEmail,
+                      style: AppTextStyles.senRegular14(
+                        context,
+                      ).copyWith(color: Colors.white.withValues(alpha: 0.9)),
+                    ),
+                    SizedBox(height: Constants.extraSmallSpacing),
+                    Text(
+                      memberSince,
+                      style: AppTextStyles.senRegular12(
+                        context,
+                      ).copyWith(color: Colors.white.withValues(alpha: 0.8)),
+                    ),
+                  ],
                 ),
-                SizedBox(height: Constants.extraSmallSpacing),
-                Text(
-                  'عضو منذ يناير 2024',
-                  style: AppTextStyles.senRegular12(
-                    context,
-                  ).copyWith(color: Colors.white.withValues(alpha: 0.8)),
-                ),
-              ],
-            ),
+              ),
+              IconButton(
+                onPressed: () => _navigateToProfile(context),
+                icon: const Icon(Icons.edit, color: Colors.white),
+              ),
+            ],
           ),
-          IconButton(
-            onPressed: () => _navigateToProfile(context),
-            icon: const Icon(Icons.edit, color: Colors.white),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
   // === LOGOUT SECTION ===
   Widget _buildLogoutSection(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: Constants.smallSpacing),
-      decoration: BoxDecoration(
-        color: AppColors.error.withValues(alpha: 0.1),
-        borderRadius: Constants.mediumRadius,
-        border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
-      ),
-      child: ListTile(
-        leading: Icon(
-          Icons.logout,
-          color: AppColors.error,
-          size: Constants.mediumIcon,
-        ),
-        title: Text(
-          'تسجيل الخروج',
-          style: AppTextStyles.senMedium16(
-            context,
-          ).copyWith(color: AppColors.error),
-        ),
-        subtitle: Text(
-          'تسجيل الخروج من الحساب',
-          style: AppTextStyles.senRegular12(
-            context,
-          ).copyWith(color: AppColors.error.withValues(alpha: 0.7)),
-        ),
-        trailing: Icon(
-          Icons.arrow_forward_ios,
-          size: 16.sp,
-          color: AppColors.error,
-        ),
-        onTap: () => _showLogoutDialog(context),
-      ),
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        final isLoading = state is AuthLoading;
+
+        return Container(
+          margin: EdgeInsets.symmetric(horizontal: Constants.smallSpacing),
+          decoration: BoxDecoration(
+            color: AppColors.error.withValues(alpha: 0.1),
+            borderRadius: Constants.mediumRadius,
+            border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
+          ),
+          child: ListTile(
+            leading: isLoading
+                ? SizedBox(
+                    width: Constants.mediumIcon,
+                    height: Constants.mediumIcon,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        AppColors.error,
+                      ),
+                    ),
+                  )
+                : Icon(
+                    Icons.logout,
+                    color: AppColors.error,
+                    size: Constants.mediumIcon,
+                  ),
+            title: Text(
+              isLoading ? 'جاري تسجيل الخروج...' : 'تسجيل الخروج',
+              style: AppTextStyles.senMedium16(
+                context,
+              ).copyWith(color: AppColors.error),
+            ),
+            subtitle: Text(
+              'تسجيل الخروج من الحساب',
+              style: AppTextStyles.senRegular12(
+                context,
+              ).copyWith(color: AppColors.error.withValues(alpha: 0.7)),
+            ),
+            trailing: isLoading
+                ? null
+                : Icon(
+                    Icons.arrow_forward_ios,
+                    size: 16.sp,
+                    color: AppColors.error,
+                  ),
+            onTap: isLoading ? null : () => _showLogoutDialog(context),
+          ),
+        );
+      },
     );
   }
 
@@ -478,37 +568,14 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  void _showLogoutDialog(context) async {
+  void _showLogoutDialog(BuildContext context) async {
     final result = await DialogConstants.showLogoutConfirmation(
       context: context,
     );
 
-    if (result == true) {
-      // Show loading dialog
-      DialogConstants.showPlatformLoading(
-        context: context,
-        message: 'جاري تسجيل الخروج...',
-      );
-
-      // Simulate logout process
-      await Future.delayed(const Duration(seconds: 2));
-
-      // Close loading dialog
+    if (result == true && mounted) {
       if (context.mounted) {
-        Navigator.of(context).pop();
-
-        // Navigate to login page
-        Navigator.of(
-          context,
-        ).pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
-
-        // Show success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('تم تسجيل الخروج بنجاح'),
-            backgroundColor: AppColors.success,
-          ),
-        );
+        context.read<AuthBloc>().add(LogoutRequested());
       }
     }
   }

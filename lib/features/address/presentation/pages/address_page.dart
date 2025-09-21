@@ -159,8 +159,8 @@ class _AddressPageContent extends StatelessWidget {
               ),
             );
           },
-          onDelete: () {
-            DialogConstants.showPlatformConfirmation(
+          onDelete: () async {
+            final confirmed = await DialogConstants.showPlatformConfirmation(
               context: context,
               title: 'Delete Address',
               content: 'Are you sure you want to delete this address?',
@@ -168,6 +168,12 @@ class _AddressPageContent extends StatelessWidget {
               cancelText: 'Cancel',
               isDestructive: true,
             );
+
+            if (confirmed == true && context.mounted) {
+              context.read<AddressCubit>().add(
+                DeleteAddress(addressId: address.id),
+              );
+            }
           },
           onSetDefault: address.isDefault
               ? null

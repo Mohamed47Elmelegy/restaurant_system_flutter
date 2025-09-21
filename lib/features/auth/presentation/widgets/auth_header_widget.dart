@@ -62,6 +62,7 @@ class AuthHeaderWidget extends StatelessWidget {
           ),
           textAlign: TextAlign.center,
         ),
+        SizedBox(height: 32.h),
       ],
     );
   }
