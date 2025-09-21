@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/images/Walima-Logo.png" width="550" alt="Walima Restaurant System"></p>
+<p align="center"><img src="assets/Walima-Logo.png" width="550" alt="Walima Restaurant System"></p>
 
 <p align="center" style="margin-top: 20px;">
     <a href=""><img src="https://img.shields.io/badge/Flutter-3.8.1-blue.svg" alt="Flutter Version"></a>
