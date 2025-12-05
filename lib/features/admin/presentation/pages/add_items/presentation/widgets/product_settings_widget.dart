@@ -110,7 +110,7 @@ class ProductSettingsWidget extends StatelessWidget {
               Switch(
                 value: value,
                 onChanged: onChanged,
-                activeColor: ThemeHelper.getPrimaryColorForTheme(context),
+                activeThumbColor: ThemeHelper.getPrimaryColorForTheme(context),
               ),
             ],
           ),

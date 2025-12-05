@@ -15,6 +15,8 @@ abstract class HomeDataSource {
   Future<ApiResponse<List<ProductModel>>> getAllProducts();
   Future<ApiResponse<List<ProductModel>>> getProductsByCategory(int categoryId);
   Future<ApiResponse<List<ProductModel>>> getNewProducts();
+  Future<ApiResponse<ProductModel>> getProductById(int productId);
+  Future<ApiResponse<bool>> toggleFavorite(int productId);
 
   Future<ApiResponse<MainCategoryModel?>> getCategoryById(int id);
 }
@@ -244,6 +246,46 @@ class HomeDataSourceImpl implements HomeDataSource {
         status: false,
         message: 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.',
       );
+    }
+  }
+
+  @override
+  Future<ApiResponse<ProductModel>> getProductById(int productId) async {
+    try {
+      log('🔄 HomeDataSourceImpl: Getting product by ID: $productId');
+
+      final response = await dio.get(ApiPath.publicProduct(productId));
+
+      final product = ProductModel.fromJson(response.data['data']);
+      log('✅ HomeDataSourceImpl: Product loaded - ${product.name}');
+      return ApiResponse.success(product);
+    } on DioException catch (e) {
+      log('❌ HomeDataSourceImpl: Failed to get product by ID - $e');
+      return ApiResponse.fromDioException(e);
+    } catch (e) {
+      log('❌ HomeDataSourceImpl: Failed to get product by ID - $e');
+      return ApiResponse.error('Failed to get product by ID: $e');
+    }
+  }
+
+  @override
+  Future<ApiResponse<bool>> toggleFavorite(int productId) async {
+    try {
+      log('🔄 HomeDataSourceImpl: Toggling favorite for product: $productId');
+
+      // TODO: استبدال هذا بالـ endpoint الصحيح عندما يكون جاهزاً
+      // final response = await dio.post('/api/favorites/toggle/$productId');
+      
+      // مؤقتاً نرجع true
+      await Future.delayed(const Duration(milliseconds: 500));
+      log('✅ HomeDataSourceImpl: Favorite toggled successfully');
+      return ApiResponse.success(true);
+    } on DioException catch (e) {
+      log('❌ HomeDataSourceImpl: Failed to toggle favorite - $e');
+      return ApiResponse.fromDioException(e);
+    } catch (e) {
+      log('❌ HomeDataSourceImpl: Failed to toggle favorite - $e');
+      return ApiResponse.error('Failed to toggle favorite: $e');
     }
   }
 }

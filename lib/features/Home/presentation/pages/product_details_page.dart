@@ -1,20 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../core/di/service_locator.dart';
 import '../../../../core/entities/product.dart';
+import '../../../../core/services/snack_bar_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/widgets/cached_image_widget.dart';
+import '../cubit/product_details_cubit.dart';
+import '../cubit/product_details_state.dart';
 
-class ProductDetailsPage extends StatefulWidget {
+class ProductDetailsPage extends StatelessWidget {
   final ProductEntity product;
 
   const ProductDetailsPage({super.key, required this.product});
 
   @override
-  State<ProductDetailsPage> createState() => _ProductDetailsPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => getIt<ProductDetailsCubit>()
+        ..loadProductFromEntity(product),
+      child: ProductDetailsView(product: product),
+    );
+  }
 }
 
-class _ProductDetailsPageState extends State<ProductDetailsPage> {
+class ProductDetailsView extends StatefulWidget {
+  final ProductEntity product;
+
+  const ProductDetailsView({super.key, required this.product});
+
+  @override
+  State<ProductDetailsView> createState() => _ProductDetailsViewState();
+}
+
+class _ProductDetailsViewState extends State<ProductDetailsView> {
   String selectedSize = '14"';
   int quantity = 1;
   bool isFavorite = false;
@@ -34,23 +54,32 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.lightBackground,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    // Product image section with back and favorite buttons
-                    _buildImageSection(),
+      body: BlocListener<ProductDetailsCubit, ProductDetailsState>(
+        listener: (context, state) {
+          if (state is ProductFavoriteUpdated) {
+            setState(() {
+              isFavorite = state.isFavorite;
+            });
+          }
+        },
+        child: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      // Product image section with back and favorite buttons
+                      _buildImageSection(),
 
-                    // Product details card
-                    _buildProductDetailsCard(),
-                  ],
+                      // Product details card
+                      _buildProductDetailsCard(),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -107,13 +136,21 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           Positioned(
             top: 16.h,
             right: 16.w,
-            child: _buildCircularButton(
-              icon: isFavorite ? Icons.favorite : Icons.favorite_border,
-              iconColor: isFavorite ? Colors.red : Colors.black,
-              onTap: () {
-                setState(() {
-                  isFavorite = !isFavorite;
-                });
+            child: BlocBuilder<ProductDetailsCubit, ProductDetailsState>(
+              builder: (context, state) {
+                return _buildCircularButton(
+                  icon: isFavorite ? Icons.favorite : Icons.favorite_border,
+                  iconColor: isFavorite ? Colors.red : Colors.black,
+                  onTap: () {
+                    setState(() {
+                      isFavorite = !isFavorite;
+                    });
+                    context.read<ProductDetailsCubit>().toggleFavorite(
+                          int.parse(widget.product.id),
+                          isFavorite,
+                        );
+                  },
+                );
               },
             ),
           ),
@@ -462,36 +499,63 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   }
 
   Widget _buildAddToCartButton() {
-    return SizedBox(
-      width: double.infinity,
-      height: 56.h,
-      child: ElevatedButton(
-        onPressed: () {
-          // TODO: Implement add to cart functionality
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Added ${quantity}x ${widget.product.name} to cart',
-              ),
-              backgroundColor: AppColors.lightPrimary,
-            ),
-          );
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.lightPrimary,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.r),
-          ),
-          elevation: 0,
-        ),
-        child: Text(
-          'ADD TO CART',
-          style: AppTextStyles.senBold16(
+    return BlocConsumer<ProductDetailsCubit, ProductDetailsState>(
+      listener: (context, state) {
+        if (state is ProductAddedToCart) {
+          SnackBarService.showSuccessMessage(
             context,
-          ).copyWith(color: Colors.white, letterSpacing: 0.5),
-        ),
-      ),
+            'تم إضافة ${quantity}x ${widget.product.name} إلى السلة',
+          );
+        } else if (state is ProductAddToCartError) {
+          SnackBarService.showErrorMessage(
+            context,
+            state.message,
+          );
+        }
+      },
+      builder: (context, state) {
+        final isLoading = state is ProductDetailsLoading;
+        
+        return SizedBox(
+          width: double.infinity,
+          height: 56.h,
+          child: ElevatedButton(
+            onPressed: isLoading
+                ? null
+                : () {
+                    context.read<ProductDetailsCubit>().addToCart(
+                          productId: int.parse(widget.product.id),
+                          quantity: quantity,
+                          selectedSize: selectedSize,
+                        );
+                  },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.lightPrimary,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+              elevation: 0,
+              disabledBackgroundColor: Colors.grey[300],
+            ),
+            child: isLoading
+                ? SizedBox(
+                    height: 20.h,
+                    width: 20.w,
+                    child: const CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  )
+                : Text(
+                    'إضافة إلى السلة',
+                    style: AppTextStyles.senBold16(
+                      context,
+                    ).copyWith(color: Colors.white, letterSpacing: 0.5),
+                  ),
+          ),
+        );
+      },
     );
   }
 }

@@ -126,7 +126,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             ),
                           );
                         },
-                        activeColor: AppColors.lightPrimary,
+                        activeThumbColor: AppColors.lightPrimary,
                       );
                     },
                   ),
@@ -410,7 +410,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ? SizedBox(
                     width: Constants.mediumIcon,
                     height: Constants.mediumIcon,
-                    child: CircularProgressIndicator(
+                    child: const CircularProgressIndicator(
                       strokeWidth: 2,
                       valueColor: AlwaysStoppedAnimation<Color>(
                         AppColors.error,

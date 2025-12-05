@@ -18,4 +18,10 @@ abstract class HomeRepository {
   Future<Either<Failure, List<ProductEntity>>> getProductsByCategory(
     int categoryId,
   );
+
+  /// Get product details by ID
+  Future<Either<Failure, ProductEntity>> getProductById(int productId);
+
+  /// Toggle favorite status for a product
+  Future<Either<Failure, bool>> toggleFavorite(int productId);
 }

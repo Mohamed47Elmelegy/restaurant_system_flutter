@@ -9,9 +9,12 @@ import '../../features/Home/data/repositories/home_repository_impl.dart';
 import '../../features/Home/domain/repositories/home_repository.dart';
 import '../../features/Home/domain/usecases/get_categories_usecase.dart';
 import '../../features/Home/domain/usecases/get_popular_items_usecase.dart';
+import '../../features/Home/domain/usecases/get_product_details_usecase.dart';
 import '../../features/Home/domain/usecases/get_recommended_items_usecase.dart';
+import '../../features/Home/domain/usecases/toggle_favorite_usecase.dart';
 import '../../features/Home/presentation/bloc/home_bloc.dart';
 import '../../features/Home/presentation/cubit/category_items_cubit.dart';
+import '../../features/Home/presentation/cubit/product_details_cubit.dart';
 // Address imports
 import '../../features/address/data/datasources/address_remote_data_source.dart';
 import '../../features/address/data/datasources/address_remote_data_source_impl.dart';
@@ -215,6 +218,12 @@ Future<void> setup() async {
   getIt.registerLazySingleton<GetRecommendedItemsUseCase>(
     () => GetRecommendedItemsUseCase(getIt<HomeRepository>()),
   );
+  getIt.registerLazySingleton<GetProductDetailsUseCase>(
+    () => GetProductDetailsUseCase(getIt<HomeRepository>()),
+  );
+  getIt.registerLazySingleton<ToggleFavoriteUseCase>(
+    () => ToggleFavoriteUseCase(getIt<HomeRepository>()),
+  );
 
   getIt.registerLazySingleton<GetAllOrdersUseCase>(
     () => GetAllOrdersUseCase(getIt<OrderRepository>()),
@@ -313,6 +322,13 @@ Future<void> setup() async {
   );
   getIt.registerFactory<CategoryItemsCubit>(
     () => CategoryItemsCubit(homeRepository: getIt<HomeRepository>()),
+  );
+  getIt.registerFactory<ProductDetailsCubit>(
+    () => ProductDetailsCubit(
+      getProductDetailsUseCase: getIt<GetProductDetailsUseCase>(),
+      toggleFavoriteUseCase: getIt<ToggleFavoriteUseCase>(),
+      addToCartUseCase: getIt<AddToCartUseCase>(),
+    ),
   );
   getIt.registerFactory<OrderBloc>(
     () => OrderBloc(

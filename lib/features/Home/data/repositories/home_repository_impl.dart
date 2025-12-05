@@ -142,4 +142,41 @@ class HomeRepositoryImpl implements HomeRepository {
       return Left(ServerFailure(message: 'Failed to get category by name: $e'));
     }
   }
+  
+  @override
+  Future<Either<Failure, ProductEntity>> getProductById(int productId) async {
+    try {
+      log('🌐 HomeRepository: Fetching product $productId from API...');
+      final response = await remoteDataSource.getProductById(productId);
+
+      if (response.status) {
+        final product = response.data!.toEntity();
+        log('✅ HomeRepository: Product loaded - ${product.name}');
+        return Right(product);
+      } else {
+        return Left(ServerFailure(message: response.message));
+      }
+    } catch (e) {
+      log('❌ HomeRepository: Error getting product - $e');
+      return Left(ServerFailure(message: 'Failed to get product: $e'));
+    }
+  }
+  
+  @override
+  Future<Either<Failure, bool>> toggleFavorite(int productId) async {
+    try {
+      log('🌐 HomeRepository: Toggling favorite for product $productId');
+      final response = await remoteDataSource.toggleFavorite(productId);
+
+      if (response.status) {
+        log('✅ HomeRepository: Favorite toggled successfully');
+        return Right(response.data ?? true);
+      } else {
+        return Left(ServerFailure(message: response.message));
+      }
+    } catch (e) {
+      log('❌ HomeRepository: Error toggling favorite - $e');
+      return Left(ServerFailure(message: 'Failed to toggle favorite: $e'));
+    }
+  }
 }
