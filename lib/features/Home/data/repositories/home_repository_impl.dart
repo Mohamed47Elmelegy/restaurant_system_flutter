@@ -142,7 +142,7 @@ class HomeRepositoryImpl implements HomeRepository {
       return Left(ServerFailure(message: 'Failed to get category by name: $e'));
     }
   }
-  
+
   @override
   Future<Either<Failure, ProductEntity>> getProductById(int productId) async {
     try {
@@ -161,7 +161,7 @@ class HomeRepositoryImpl implements HomeRepository {
       return Left(ServerFailure(message: 'Failed to get product: $e'));
     }
   }
-  
+
   @override
   Future<Either<Failure, bool>> toggleFavorite(int productId) async {
     try {

@@ -18,8 +18,8 @@ class ProductDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<ProductDetailsCubit>()
-        ..loadProductFromEntity(product),
+      create: (context) =>
+          getIt<ProductDetailsCubit>()..loadProductFromEntity(product),
       child: ProductDetailsView(product: product),
     );
   }
@@ -146,9 +146,9 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                       isFavorite = !isFavorite;
                     });
                     context.read<ProductDetailsCubit>().toggleFavorite(
-                          int.parse(widget.product.id),
-                          isFavorite,
-                        );
+                      int.parse(widget.product.id),
+                      isFavorite,
+                    );
                   },
                 );
               },
@@ -507,15 +507,12 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
             'تم إضافة ${quantity}x ${widget.product.name} إلى السلة',
           );
         } else if (state is ProductAddToCartError) {
-          SnackBarService.showErrorMessage(
-            context,
-            state.message,
-          );
+          SnackBarService.showErrorMessage(context, state.message);
         }
       },
       builder: (context, state) {
         final isLoading = state is ProductDetailsLoading;
-        
+
         return SizedBox(
           width: double.infinity,
           height: 56.h,
@@ -524,10 +521,10 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                 ? null
                 : () {
                     context.read<ProductDetailsCubit>().addToCart(
-                          productId: int.parse(widget.product.id),
-                          quantity: quantity,
-                          selectedSize: selectedSize,
-                        );
+                      productId: int.parse(widget.product.id),
+                      quantity: quantity,
+                      selectedSize: selectedSize,
+                    );
                   },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.lightPrimary,

@@ -275,7 +275,7 @@ class HomeDataSourceImpl implements HomeDataSource {
 
       // TODO: استبدال هذا بالـ endpoint الصحيح عندما يكون جاهزاً
       // final response = await dio.post('/api/favorites/toggle/$productId');
-      
+
       // مؤقتاً نرجع true
       await Future.delayed(const Duration(milliseconds: 500));
       log('✅ HomeDataSourceImpl: Favorite toggled successfully');

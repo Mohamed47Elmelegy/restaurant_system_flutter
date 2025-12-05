@@ -34,11 +34,15 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
 
       result.fold(
         (failure) {
-          log('❌ ProductDetailsCubit: Failed to load product - ${failure.message}');
+          log(
+            '❌ ProductDetailsCubit: Failed to load product - ${failure.message}',
+          );
           emit(ProductDetailsError(failure.message));
         },
         (product) {
-          log('✅ ProductDetailsCubit: Product loaded successfully - ${product.name}');
+          log(
+            '✅ ProductDetailsCubit: Product loaded successfully - ${product.name}',
+          );
           emit(ProductDetailsLoaded(product));
         },
       );
@@ -51,7 +55,9 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
   /// تحميل تفاصيل المنتج (من object موجود)
   void loadProductFromEntity(ProductEntity product) {
     try {
-      log('🔄 ProductDetailsCubit: Loading product details for ${product.name}');
+      log(
+        '🔄 ProductDetailsCubit: Loading product details for ${product.name}',
+      );
       emit(ProductDetailsLoaded(product));
     } catch (e) {
       log('❌ ProductDetailsCubit: Failed to load product details - $e');
@@ -63,16 +69,20 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
   Future<void> toggleFavorite(int productId, bool currentFavoriteStatus) async {
     try {
       log('🔄 ProductDetailsCubit: Toggling favorite for product $productId');
-      
+
       final result = await toggleFavoriteUseCase(productId);
 
       result.fold(
         (failure) {
-          log('❌ ProductDetailsCubit: Failed to toggle favorite - ${failure.message}');
+          log(
+            '❌ ProductDetailsCubit: Failed to toggle favorite - ${failure.message}',
+          );
           emit(ProductDetailsError(failure.message));
         },
         (isFavorite) {
-          log('✅ ProductDetailsCubit: Favorite toggled successfully to $isFavorite');
+          log(
+            '✅ ProductDetailsCubit: Favorite toggled successfully to $isFavorite',
+          );
           emit(ProductFavoriteUpdated(isFavorite));
         },
       );
@@ -96,25 +106,20 @@ class ProductDetailsCubit extends Cubit<ProductDetailsState> {
 
       emit(ProductDetailsLoading());
 
-      final params = AddToCartParams(
-        productId: productId,
-        quantity: quantity,
-      );
+      final params = AddToCartParams(productId: productId, quantity: quantity);
 
       final result = await addToCartUseCase(params);
 
       result.fold(
         (failure) {
-          log('❌ ProductDetailsCubit: Failed to add to cart - ${failure.message}');
+          log(
+            '❌ ProductDetailsCubit: Failed to add to cart - ${failure.message}',
+          );
           emit(ProductAddToCartError(failure.message));
         },
         (cartItem) {
           log('✅ ProductDetailsCubit: Product added to cart successfully');
-          emit(
-            const ProductAddedToCart(
-              'تم إضافة المنتج إلى السلة بنجاح',
-            ),
-          );
+          emit(const ProductAddedToCart('تم إضافة المنتج إلى السلة بنجاح'));
         },
       );
     } catch (e) {
