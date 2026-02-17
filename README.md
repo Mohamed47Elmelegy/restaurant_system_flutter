@@ -103,20 +103,18 @@ A comprehensive digital restaurant management solution built with Flutter and La
 ## Screenshots
 
 <p align="center">
-  <img src="assets/Home.jpg" width="200" alt="Home Screen">
-  <img src="assets/placeordar.jpg" width="200" alt="Place Order">
-  <img src="assets/table.jpg" width="200" alt="Table Management">
-  <img src="assets/Myordars.jpg" width="200" alt="My Orders">
+  <img src="assets/screenshots/Home.jpg" width="200" alt="Home Screen">
+  <img src="assets/screenshots/placeordar.jpg" width="200" alt="Place Order">
+  <img src="assets/screenshots/table.jpg" width="200" alt="Table Management">
+  <img src="assets/screenshots/Myordars.jpg" width="200" alt="My Orders">
 </p>
 
 <p align="center">
-  <img src="assets/placeordar1.jpg" width="200" alt="Order Details">
-  <img src="assets/myordars2.jpg" width="200" alt="Order History">
-  <img src="assets/Address.jpg" width="200" alt="Address Management">
-  <img src="assets/settings.jpg" width="200" alt="Settings">
+  <img src="assets/screenshots/placeordar1.jpg" width="200" alt="Order Details">
+  <img src="assets/screenshots/myordars2.jpg" width="200" alt="Order History">
+  <img src="assets/screenshots/Address.jpg" width="200" alt="Address Management">
+  <img src="assets/screenshots/settings.jpg" width="200" alt="Settings">
 </p>
-
----
 
 ## Getting Started
 
